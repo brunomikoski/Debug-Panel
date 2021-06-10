@@ -7,7 +7,6 @@
 
 </p> 
 <p align="center">
-	<a href="https://www.codacy.com/gh/brunomikoski/Animation-Sequencer/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=brunomikoski/Animation-Sequencer&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/ab4c5923ca0545c9b8c85d87adbd689a"/></a>
     <a href="https://openupm.com/packages/com.brunomikoski.debugpanel/">
         <img src="https://img.shields.io/npm/v/com.brunomikoski.debugpanel?label=openupm&amp;registry_uri=https://package.openupm.com" />
     </a>
@@ -33,7 +32,7 @@
 </p>
 
 <p align="center">
-  <img alt="Example" src="https://user-images.githubusercontent.com/600419/109826506-c299cb00-7c32-11eb-8b0d-8c0e97c4b5b7.gif">
+  <img alt="Example" src="https://user-images.githubusercontent.com/600419/121535785-5f21f500-c9fa-11eb-8660-c56e891f1eec.gif">
 </p>
 
 Debug Panel is a tool to expose methods, fields to be activated/tweaked by the Panel, this is useful for the development process where you can expose hacks and tools to be easily accessible.
@@ -70,6 +69,8 @@ public class ExampleExposingMethod : MonoBehaviour
     }
 }
 ```
+![exposed-method-example](https://user-images.githubusercontent.com/600419/121535865-719c2e80-c9fa-11eb-9b80-38f387b662be.gif)
+
 
 
 ### Tweaking Fields
@@ -82,6 +83,9 @@ public sealed class ExampleExposedField : MonoBehaviour
     private Vector3 playerVelocity = Vector3.one;
 }
 ```
+
+![exposed-field](https://user-images.githubusercontent.com/600419/121535880-7660e280-c9fa-11eb-864c-8c53f602e99c.gif)
+
 
 #### Supported fields:
 - float
