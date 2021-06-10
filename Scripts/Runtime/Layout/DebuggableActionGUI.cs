@@ -41,6 +41,9 @@ namespace BrunoMikoski.DebugTools.Layout
 
         public void SetHumanReadableHotkey(string humanReadableHotKey)
         {
+            if (!Application.isEditor)
+                return;
+
             hotkeyText.text = humanReadableHotKey;
         }
     }

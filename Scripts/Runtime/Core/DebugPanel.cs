@@ -1,6 +1,7 @@
 ﻿using System;
 using BrunoMikoski.DebugTools.Layout;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugTools.Core
@@ -24,6 +25,8 @@ namespace BrunoMikoski.DebugTools.Core
         [Header("Settings")]
         [SerializeField]
         private bool dontDestroyOnLoad = true;
+        [SerializeField]
+        private bool refreshActionOnOpen = false;
         
         [Header("References")]
         [SerializeField]
@@ -32,6 +35,7 @@ namespace BrunoMikoski.DebugTools.Core
         [SerializeField] 
         private HotKeyManager hotKeyManager;
         public static HotKeyManager HotKeyManager => Instance.hotKeyManager;
+        internal static bool RefreshOnOpen => Instance.refreshActionOnOpen;
 
         [SerializeField]
         private Button openDebugPanelWindowButton;
@@ -44,11 +48,20 @@ namespace BrunoMikoski.DebugTools.Core
             openDebugPanelWindowButton.gameObject.SetActive(true);
             if (dontDestroyOnLoad)
                 DontDestroyOnLoad(gameObject);
+         
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
         private void OnDestroy()
         {
             openDebugPanelWindowButton.onClick.RemoveListener(OnClickOpenDebugPanel);
+            
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+        
+        private void OnSceneLoaded(Scene targetScene, LoadSceneMode targetLoadMode)
+        {
+            debugPanelWindow.RegisterDebuggables();
         }
 
         private void OnClickOpenDebugPanel()

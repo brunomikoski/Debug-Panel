@@ -54,6 +54,7 @@ namespace BrunoMikoski.DebugTools.Layout
             closeButton.onClick.AddListener(OnClickCloseWindow);
             debuggableGroupGUIPrefab.gameObject.SetActive(false);
             searchField.onValueChanged.AddListener(OnSearchChanged);
+            RegisterDebuggables();
         }
 
         private void OnDestroy()
@@ -113,7 +114,10 @@ namespace BrunoMikoski.DebugTools.Layout
         public void Open()
         {
             gameObject.SetActive(true);
-            RegisterDebuggableClasses();
+            
+            if (DebugPanel.RefreshOnOpen)
+                RegisterDebuggables();
+            
             string lastSearch = PlayerPrefs.GetString(LastSearchStorageKey, String.Empty);
             if (!string.IsNullOrEmpty(lastSearch))
             {
@@ -122,8 +126,9 @@ namespace BrunoMikoski.DebugTools.Layout
             }
         }
 
-        private void RegisterDebuggableClasses()
+        internal void RegisterDebuggables()
         {
+            Cleanup();
             DebugPanel.HotKeyManager.Clear();
             debuggableObjects.Clear();
             debuggableObjects.AddRange(FindObjectsOfType<MonoBehaviour>());
@@ -251,12 +256,18 @@ namespace BrunoMikoski.DebugTools.Layout
 
         public void Close()
         {
+            Cleanup();
+            gameObject.SetActive(false);
+        }
+
+        private void Cleanup()
+        {
             foreach (var groupNameToGroupGUI in categoryNameToDebuggableGroupCache)
             {
                 Destroy(groupNameToGroupGUI.Value.gameObject);
             }
+
             categoryNameToDebuggableGroupCache.Clear();
-            gameObject.SetActive(false);
         }
 
         public void RegisterDebuggableObject(object targetObject)

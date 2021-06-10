@@ -40,6 +40,9 @@ namespace BrunoMikoski.DebugTools.Core
 
         private void Update()
         {
+            if (!Application.isEditor)
+                return;
+            
             foreach (var keyToData in hotkeyToData)
             {
                 keyToData.Value.TryTrigger();

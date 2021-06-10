@@ -83,103 +83,50 @@ public sealed class ExampleExposedField : MonoBehaviour
 }
 ```
 
+#### Supported fields:
+- float
+- string
+- int
+- double
+- Vector2
+- Vector3
+- Vector4
+- Quaternion
+
 ### Debug Text Area
 Sometimes you want to expose a big chunk of text on the panel as well, so you can expose any string on the panel like this:
-
-
-
-
-  
-- Animation Sequencer rely on DOTween for now, so it a requirement that you have `DOTween` on your project with properly created `asmdef` for it (Created by the `DOTween` setup panel)
-- Add the Animation Sequencer to any GameObject and start your animation! 
-- Using the <kbd>+</kbd> button under the `Animation Steps` you can add a new step
-- Select <kbd>Tween Target</kbd>
-- Use the <kbd>Add Actions</kbd> to add specific tweens to your target
-- Press play on the Preview bar to view it on Editor Time.
-- To play it by code, just call use `animationSequencer.Play();`
-
-## FAQ
-
-<details>
-    
-<summary>How can I create my custom DOTween actions?</summary> 
-Lets say you want to create a new action to play a specific sound from your sound manager on the game, you just need to extend the `AnimationStepBase`
-
 ```c#
-[Serializable]
-public class PlayAudioClipAnimationStep : AnimationStepBase
+[DebuggableClass("Examples")]
+public sealed class ExampleExposingTextArea : MonoBehaviour
 {
-    [SerializeField]
-    private AudioClip audioClip;
+    [DebuggableTextArea]
+    private string debugString;
 
-    //Duration of this step, in this case will return the length of the clip.
-    public override float Duration => audioClip.length;
-    //This is the name that will be displayed on the + button on the Animation Sequencer
-    public override string DisplayName => "Play Audio Clip";
-
-    //Here is actually the action of this step
-    public override void Play()
+    private void Awake()
     {
-        base.Play();
-        AudioManager.Play(audioClip);
+        debugString = "Big text area\n";
+        debugString += "<b>Value:</b> crazy value\n";
+        debugString += "<b>Another Value:</b> 78888\n";
     }
 }
 ```
 
-</details>
-
-<details>
-
-<summary>I have my own DOTween extensions, can I use that? </summary>
-
-Absolutely! The same as the step, you can add any new DOTween action by extending `DOTweenActionBase`. In order to avoid any performance issues all the tweens are created on the PrepareToPlay method on Awake, and are paused.
+## Shortcuts
+You can define hotkeys for specific actions, following Unity hotkey standard, so this method would be triggered by <kbd>Ctrl/Command</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd>
 
 ```c#
-[Serializable]
-public sealed class ChangeMaterialStrengthDOTweenAction : DOTweenActionBase
-{
-    public override string DisplayName => "Change Material Strength";
-        
-    public override Type TargetComponentType => typeof(Renderer);
-
-    [SerializeField, Range(0,1)]
-    private float materialStrength = 1;
-
-     public override bool CreateTween(GameObject target, float duration, int loops, LoopType loopType)
-     {
-        Renderer renderer = target.GetComponent<Renderer>();
-        if (renderer == null)
-            return false;
-
-        TweenerCore<float, float, FloatOptions> materialTween = renderer.sharedMaterial.DOFloat(materialStrength, "Strength", duration);
-        
-        SetTween(materialTween, loops, loopType);
-        return true;
+    [DebuggableAction("One More Test", "%#a")]
+    private void OneMoreTest()
+    {
+        Debug.Log("Called from hotkey");
     }
-}
 ```
 
-![custom-tween-action](https://user-images.githubusercontent.com/600419/109774425-3965a280-7bf8-11eb-9bfe-90b0be8b8617.gif)
+```c#
+% (ctrl on Windows, cmd on macOS), # (shift), & (alt).
+```
 
-</details>
 
-<details>
-    <summary>Using custom animation curve as easing </summary>
-    
-You can use the Custom ease to define an *AnimationCurve* for the Tween.
-    
-![custom-ease](https://user-images.githubusercontent.com/600419/109780020-7af94c00-7bfe-11eb-8f0f-52480dd97ea3.gif)
-
-</details>
-
-<details>
-   <summary>What are the differences between the initialization settings</summary>
-	
-- <kbd>None</kbd> *Don't do anything on the AnimationSequencer Awake method*	
-- <kbd>PrepareToPlayOnAwake</kbd> *This will make sure the Tweens that are from are prepared to play at the intial value on Awake.*
-- <kbd>PlayOnAwake</kbd> Will play the tween on Awake.*
-   
-</details>
 
 ## System Requirements
 Unity 2018.4.0 or later versions
