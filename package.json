@@ -1,0 +1,29 @@
+{
+  "name": "com.brunomikoski.debugpanel",
+  "displayName": "Debug Panel",
+  "version": "0.1.0",
+  "unity": "2018.4",
+  "description": "Debug Panel is a runtime tool that enables you to expose fields, methods to be changed/activated by it",
+  "keywords": [
+    "debug",
+    "runtime",
+    "console",
+    "tweak",
+    "hacks"
+  ],
+  "category": "editor extensions",
+  "homepage": "https://github.com/brunomikoski/Debug-Panel",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brunomikoski/Debug-Panel.git"
+  },
+  "bugs": "https://github.com/brunomikoski/Debug-Panel/issues",
+  "author": {
+    "name": "Bruno Mikoski",
+    "url": "https://www.brunomikoski.com"
+  },
+  "type": "tool",
+  "dependencies": {
+    "com.unity.textmeshpro": "1.0.0"
+  }
+}
