@@ -1,4 +1,4 @@
-# Animation Sequencer
+# Debug Panel
 
 <p align="center">
     <a href="https://github.com/brunomikoski/Debug-Panel/blob/master/LICENSE.md">
