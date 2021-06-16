@@ -210,7 +210,17 @@ namespace BrunoMikoski.DebugTools.Layout
                     continue;
 
                 DebuggableFieldAttribute debuggableFieldAttribute = (DebuggableFieldAttribute) fieldsAttributes[0];
-                targetDebuggableGroup.AddDebuggableField(behaviour, fieldInfo, debuggableFieldAttribute);
+
+                object[] minMaxRangeAttribute = fieldInfo.GetCustomAttributes(typeof(RangeAttribute), true);
+                if (minMaxRangeAttribute.Length > 0)
+                {
+                    RangeAttribute rangeAttribute = (RangeAttribute) minMaxRangeAttribute[0];
+                    targetDebuggableGroup.AddDebuggableRangeField(behaviour, fieldInfo, debuggableFieldAttribute, rangeAttribute);
+                }
+                else
+                {
+                    targetDebuggableGroup.AddDebuggableField(behaviour, fieldInfo, debuggableFieldAttribute);
+                }
             }
         }
 

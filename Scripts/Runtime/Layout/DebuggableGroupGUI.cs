@@ -33,6 +33,10 @@ namespace BrunoMikoski.DebugTools.Layout
         private DebuggableFieldGUI debuggableFieldGUIPrefab;
 
         [SerializeField] 
+        private DebuggableRangeFieldGUI debuggableRangeFieldGUIPrefab;
+
+        
+        [SerializeField] 
         private DebuggableTextAreaGUI debuggableTextAreaGUIPrefab;
 
         private string IsExpandedStorageKey => $"{Application.productName}.{groupName.text}.IsExpanded";
@@ -167,7 +171,25 @@ namespace BrunoMikoski.DebugTools.Layout
             nameToDebuggableActionGUICache.Add(fieldInfo.Name, debuggableFieldGUI);
 
         }
-        
+
+        public void AddDebuggableRangeField(object targetObject, FieldInfo fieldInfo, DebuggableFieldAttribute debuggableFieldAttribute, RangeAttribute rangeAttribute)
+        {
+            if (nameToDebuggableActionGUICache.ContainsKey(fieldInfo.Name))
+            {
+                Debug.LogError($"Field with the same name {fieldInfo.Name} already exist on group: {groupName.text}, ignoring it");
+                return;
+            }
+
+            DebuggableRangeFieldGUI debuggableRangeFieldGUI = Instantiate(
+                debuggableRangeFieldGUIPrefab,
+                debuggableRangeFieldGUIPrefab
+                    .transform.parent);
+            
+            debuggableRangeFieldGUI.gameObject.SetActive(IsExpanded);
+            debuggableRangeFieldGUI.Initialize(targetObject, fieldInfo, debuggableFieldAttribute, rangeAttribute); 
+            nameToDebuggableActionGUICache.Add(fieldInfo.Name, debuggableRangeFieldGUI);
+        }
+
         public void AddDebuggableTextArea(object targetObject, FieldInfo fieldInfo, DebuggableTextAreaAttribute debuggableFieldAttribute)
         {
             if (nameToDebuggableActionGUICache.ContainsKey(fieldInfo.Name))

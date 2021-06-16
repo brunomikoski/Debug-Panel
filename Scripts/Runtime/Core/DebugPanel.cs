@@ -1,8 +1,10 @@
 ﻿using System;
 using BrunoMikoski.DebugTools.Layout;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace BrunoMikoski.DebugTools.Core
 {
@@ -43,6 +45,14 @@ namespace BrunoMikoski.DebugTools.Core
 
         private void Awake()
         {
+            EventSystem eventSystem = FindObjectOfType<EventSystem>();
+            if (eventSystem == null)
+            {
+                GameObject eventSystemGameObject = new GameObject("Event System");
+                eventSystemGameObject.transform.SetParent(transform);
+                eventSystemGameObject.AddComponent<EventSystem>();
+            }
+
             openDebugPanelWindowButton.onClick.AddListener(OnClickOpenDebugPanel);
             debugPanelWindow.Close();
             openDebugPanelWindowButton.gameObject.SetActive(true);
