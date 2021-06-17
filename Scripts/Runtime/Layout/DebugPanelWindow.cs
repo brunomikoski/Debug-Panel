@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using BrunoMikoski.DebugTools.Core;
 using BrunoMikoski.DebugTools.Core.Attributes;
+using BrunoMikoski.ScriptableObjectCollections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -210,8 +211,38 @@ namespace BrunoMikoski.DebugTools.Layout
                     continue;
 
                 DebuggableFieldAttribute debuggableFieldAttribute = (DebuggableFieldAttribute) fieldsAttributes[0];
-                targetDebuggableGroup.AddDebuggableField(behaviour, fieldInfo, debuggableFieldAttribute);
+
+                object[] minMaxRangeAttribute = fieldInfo.GetCustomAttributes(typeof(RangeAttribute), true);
+                if (minMaxRangeAttribute.Length > 0)
+                {
+                    RangeAttribute rangeAttribute = (RangeAttribute) minMaxRangeAttribute[0];
+                    targetDebuggableGroup.AddDebuggableRangeField(behaviour, fieldInfo, debuggableFieldAttribute, rangeAttribute);
+                }
+                else
+                {
+                    if (IsDropDownType(fieldInfo.FieldType))
+                    {
+                        targetDebuggableGroup.AddDebuggableDropdownField(behaviour, fieldInfo, debuggableFieldAttribute);
+                    }
+                    else
+                    {
+                        targetDebuggableGroup.AddDebuggableField(behaviour, fieldInfo, debuggableFieldAttribute);
+                    }
+                }
             }
+        }
+
+        private bool IsDropDownType(Type fieldInfoFieldType)
+        {
+            if (fieldInfoFieldType.IsEnum)
+                return true;
+            
+#if SOC_ENABLED
+            if (fieldInfoFieldType == typeof(ScriptableObjectCollectionItem) ||
+                typeof(ScriptableObjectCollectionItem).IsAssignableFrom(fieldInfoFieldType))
+                return true;
+#endif
+            return false;
         }
 
         private static void RegisterDebuggableActions(Type type, object behaviour, DebuggableGroupGUI targetDebuggableGroup)

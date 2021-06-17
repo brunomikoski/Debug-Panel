@@ -1,10 +1,11 @@
 ﻿using System.Collections;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugTools.Layout
 {
-    public abstract class DebuggableItemBaseGUI : MonoBehaviour
+    public abstract class DebuggableItemGUIBase : MonoBehaviour
     {
         [Header("Base Layout Groups")]
         [SerializeField]
@@ -14,6 +15,9 @@ namespace BrunoMikoski.DebugTools.Layout
         
         private bool isDirty;
         private bool isUpdating;
+
+        protected object targetObject;
+        protected FieldInfo fieldInfo;
 
         protected void MarkAsDirty()
         {
@@ -47,6 +51,12 @@ namespace BrunoMikoski.DebugTools.Layout
             yield return null;
             contentLayoutGroup.enabled = true;
             isUpdating = false;
+        }
+
+        protected void Initialize(object targetObject, FieldInfo targetFieldInfo)
+        {
+            this.targetObject = targetObject;
+            fieldInfo = targetFieldInfo;
         }
     }
 }
