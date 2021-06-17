@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BrunoMikoski.DebugTools.Layout
 {
-    public class DebuggableTextAreaGUI : DebuggableItemBaseGUI
+    public class DebuggableTextAreaGUI : DebuggableItemGUIBase
     {
         [SerializeField]
         private TMP_Text titleText;
@@ -15,8 +15,6 @@ namespace BrunoMikoski.DebugTools.Layout
         private TMP_Text valueText;
 
 
-        private object targetObject;
-        private FieldInfo fieldInfo;
         private string currentText;
         private float previousHeight;
 
@@ -58,6 +56,8 @@ namespace BrunoMikoski.DebugTools.Layout
 
             if (Math.Abs(previousHeight - valueText.rectTransform.sizeDelta.y) < float.Epsilon)
                 return;
+
+            previousHeight = valueText.rectTransform.sizeDelta.y;
 
             MarkAsDirty();
         }

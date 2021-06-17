@@ -35,6 +35,8 @@ namespace BrunoMikoski.DebugTools.Layout
         [SerializeField] 
         private DebuggableRangeFieldGUI debuggableRangeFieldGUIPrefab;
 
+        [SerializeField] 
+        private DebuggableDropdownFieldGUI debuggableDropdownFieldGUIPrefab;
         
         [SerializeField] 
         private DebuggableTextAreaGUI debuggableTextAreaGUIPrefab;
@@ -55,9 +57,9 @@ namespace BrunoMikoski.DebugTools.Layout
             }
         }
 
-        private Dictionary<string, DebuggableItemBaseGUI> nameToDebuggableActionGUICache =
-            new Dictionary<string, DebuggableItemBaseGUI>();
-        public Dictionary<string, DebuggableItemBaseGUI> NameToDebuggableActionGUICache => nameToDebuggableActionGUICache;
+        private Dictionary<string, DebuggableItemGUIBase> nameToDebuggableActionGUICache =
+            new Dictionary<string, DebuggableItemGUIBase>();
+        public Dictionary<string, DebuggableItemGUIBase> NameToDebuggableActionGUICache => nameToDebuggableActionGUICache;
 
         private void Awake()
         {
@@ -156,6 +158,21 @@ namespace BrunoMikoski.DebugTools.Layout
             nameToDebuggableActionGUICache.Add(displayName, debuggableActionInstance);
         }
 
+        public void AddDebuggableDropdownField(object targetObject, FieldInfo fieldInfo, DebuggableFieldAttribute debuggableFieldAttribute)
+        {
+            if (nameToDebuggableActionGUICache.ContainsKey(fieldInfo.Name))
+            {
+                Debug.LogError($"Field with the same name {fieldInfo.Name} already exist on group: {groupName.text}, ignoring it");
+                return;
+            }
+            
+            DebuggableDropdownFieldGUI debuggableFieldGUI =
+                Instantiate(debuggableDropdownFieldGUIPrefab, debuggableDropdownFieldGUIPrefab.transform.parent);
+            debuggableFieldGUI.gameObject.SetActive(IsExpanded);
+            debuggableFieldGUI.Initialize(targetObject, fieldInfo, debuggableFieldAttribute); 
+            nameToDebuggableActionGUICache.Add(fieldInfo.Name, debuggableFieldGUI);
+        }
+        
         public void AddDebuggableField(object targetObject, FieldInfo fieldInfo, DebuggableFieldAttribute debuggableFieldAttribute)
         {
             if (nameToDebuggableActionGUICache.ContainsKey(fieldInfo.Name))
@@ -169,7 +186,6 @@ namespace BrunoMikoski.DebugTools.Layout
             debuggableFieldGUI.gameObject.SetActive(IsExpanded);
             debuggableFieldGUI.Initialize(targetObject, fieldInfo, debuggableFieldAttribute); 
             nameToDebuggableActionGUICache.Add(fieldInfo.Name, debuggableFieldGUI);
-
         }
 
         public void AddDebuggableRangeField(object targetObject, FieldInfo fieldInfo, DebuggableFieldAttribute debuggableFieldAttribute, RangeAttribute rangeAttribute)

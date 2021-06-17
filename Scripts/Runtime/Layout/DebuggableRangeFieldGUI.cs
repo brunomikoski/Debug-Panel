@@ -8,19 +8,14 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugTools.Layout
 {
-    public sealed class DebuggableRangeFieldGUI : DebuggableItemBaseGUI
+    public sealed class DebuggableRangeFieldGUI : DebuggableFieldGUIBase
     {
-        [SerializeField]
-        private TMP_Text labelText;
-
         [SerializeField]
         private Slider slider;
         [SerializeField]
         private TMP_Text valueText;
         
-        private object targetObject;
-        private FieldInfo fieldInfo;
-        private DebuggableFieldAttribute debuggableFieldAttribute;
+       
 
         private void Awake()
         {
@@ -52,10 +47,7 @@ namespace BrunoMikoski.DebugTools.Layout
 
         public void Initialize(object targetObject, FieldInfo targetFieldInfo, DebuggableFieldAttribute targetFieldAttribute, RangeAttribute rangeAttribute)
         {
-            this.targetObject = targetObject;
-            fieldInfo = targetFieldInfo;
-            debuggableFieldAttribute = targetFieldAttribute;
-            labelText.text = fieldInfo.Name;
+            base.Initialize(targetObject, targetFieldInfo, targetFieldAttribute);
 
             slider.minValue = rangeAttribute.min;
             slider.maxValue = rangeAttribute.max;

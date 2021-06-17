@@ -1,7 +1,8 @@
 {
     "name": "BrunoMikoski.DebugPanel",
     "references": [
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "BrunoMikoski.ScriptableObjectCollection"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -10,6 +11,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.brunomikoski.scriptableobjectcollection",
+            "expression": "1.0.0",
+            "define": "SOC_ENABLED"
+        }
+    ],
     "noEngineReferences": false
 }

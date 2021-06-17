@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugTools.Layout
 {
-    public sealed class DebuggableActionGUI : DebuggableItemBaseGUI
+    public sealed class DebuggableActionGUI : DebuggableItemGUIBase
     {
         [SerializeField]
         private Button button;

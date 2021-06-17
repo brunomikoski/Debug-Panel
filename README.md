@@ -96,6 +96,8 @@ public sealed class ExampleExposedField : MonoBehaviour
 - Vector3
 - Vector4
 - Quaternion
+- Enums
+- ScriptableObjectCollectionItem 
 
 ### Debug Text Area
 Sometimes you want to expose a big chunk of text on the panel as well, so you can expose any string on the panel like this:

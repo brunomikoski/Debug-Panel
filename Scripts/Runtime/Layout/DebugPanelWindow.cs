@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using BrunoMikoski.DebugTools.Core;
 using BrunoMikoski.DebugTools.Core.Attributes;
+using BrunoMikoski.ScriptableObjectCollections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -219,9 +220,29 @@ namespace BrunoMikoski.DebugTools.Layout
                 }
                 else
                 {
-                    targetDebuggableGroup.AddDebuggableField(behaviour, fieldInfo, debuggableFieldAttribute);
+                    if (IsDropDownType(fieldInfo.FieldType))
+                    {
+                        targetDebuggableGroup.AddDebuggableDropdownField(behaviour, fieldInfo, debuggableFieldAttribute);
+                    }
+                    else
+                    {
+                        targetDebuggableGroup.AddDebuggableField(behaviour, fieldInfo, debuggableFieldAttribute);
+                    }
                 }
             }
+        }
+
+        private bool IsDropDownType(Type fieldInfoFieldType)
+        {
+            if (fieldInfoFieldType.IsEnum)
+                return true;
+            
+#if SOC_ENABLED
+            if (fieldInfoFieldType == typeof(ScriptableObjectCollectionItem) ||
+                typeof(ScriptableObjectCollectionItem).IsAssignableFrom(fieldInfoFieldType))
+                return true;
+#endif
+            return false;
         }
 
         private static void RegisterDebuggableActions(Type type, object behaviour, DebuggableGroupGUI targetDebuggableGroup)

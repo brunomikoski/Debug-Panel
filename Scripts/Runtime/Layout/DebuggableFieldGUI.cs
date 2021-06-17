@@ -7,18 +7,10 @@ using UnityEngine;
 
 namespace BrunoMikoski.DebugTools.Layout
 {
-    public sealed class DebuggableFieldGUI : DebuggableItemBaseGUI
+    public sealed class DebuggableFieldGUI : DebuggableFieldGUIBase
     {
         [SerializeField]
-        private TMP_Text labelText;
-        
-        [SerializeField]
         private TMP_InputField valueInput;
-
-        private object targetObject;
-        private FieldInfo fieldInfo;
-        private DebuggableFieldAttribute debuggableFieldAttribute;
-
 
         private void Awake()
         {
@@ -138,13 +130,11 @@ namespace BrunoMikoski.DebugTools.Layout
             }
         }
 
-        public void Initialize(object targetObject, FieldInfo fieldInfo,
+        public new void Initialize(object targetObject, FieldInfo fieldInfo,
             DebuggableFieldAttribute debuggableFieldAttribute)
         {
-            this.targetObject = targetObject;
-            this.fieldInfo = fieldInfo;
-            this.debuggableFieldAttribute = debuggableFieldAttribute;
-            labelText.text = fieldInfo.Name;
+            base.Initialize(targetObject, fieldInfo, debuggableFieldAttribute);
+            
             valueInput.text = fieldInfo.GetValue(targetObject).ToString();
 
             if (debuggableFieldAttribute.ReadOnly)
