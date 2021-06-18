@@ -24,10 +24,12 @@ namespace BrunoMikoski.DebugTools.Layout
             if (targetFieldInfo.FieldType == typeof(float))
             {
                 slider.value = (float)fieldInfo.GetValue(targetObject);
+                valueText.text = $"{slider.value:#0.0}";
             }
             else
             {
                 slider.value = (int)fieldInfo.GetValue(targetObject);
+                valueText.text = slider.value.ToString();
             }
 
             if (debuggableFieldAttribute.ReadOnly)
@@ -36,7 +38,6 @@ namespace BrunoMikoski.DebugTools.Layout
             }
             
             slider.onValueChanged.AddListener(OnSliderValueChanged);
-            valueText.text = slider.value.ToString();
 
         }
         
