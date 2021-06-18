@@ -14,14 +14,32 @@ namespace BrunoMikoski.DebugTools.Layout
         private Slider slider;
         [SerializeField]
         private TMP_Text valueText;
-        
-       
 
-        private void Awake()
+        public void Initialize(object targetObject, FieldInfo targetFieldInfo, DebuggableFieldAttribute targetFieldAttribute, RangeAttribute rangeAttribute)
         {
-            slider.onValueChanged.AddListener(OnSliderValueChanged);
-        }
+            base.Initialize(targetObject, targetFieldInfo, targetFieldAttribute);
 
+            slider.minValue = rangeAttribute.min;
+            slider.maxValue = rangeAttribute.max;
+            if (targetFieldInfo.FieldType == typeof(float))
+            {
+                slider.value = (float)fieldInfo.GetValue(targetObject);
+            }
+            else
+            {
+                slider.value = (int)fieldInfo.GetValue(targetObject);
+            }
+
+            if (debuggableFieldAttribute.ReadOnly)
+            {
+                slider.interactable = false;
+            }
+            
+            slider.onValueChanged.AddListener(OnSliderValueChanged);
+            valueText.text = slider.value.ToString();
+
+        }
+        
         private void OnDestroy()
         {
             slider.onValueChanged.RemoveListener(OnSliderValueChanged);
@@ -42,27 +60,6 @@ namespace BrunoMikoski.DebugTools.Layout
                 int intValue = Convert.ToInt32(slider.value);
                 fieldInfo.SetValue(targetObject, intValue);
                 valueText.text = intValue.ToString();
-            }
-        }
-
-        public void Initialize(object targetObject, FieldInfo targetFieldInfo, DebuggableFieldAttribute targetFieldAttribute, RangeAttribute rangeAttribute)
-        {
-            base.Initialize(targetObject, targetFieldInfo, targetFieldAttribute);
-
-            slider.minValue = rangeAttribute.min;
-            slider.maxValue = rangeAttribute.max;
-            if (targetFieldInfo.FieldType == typeof(float))
-            {
-                slider.value = (float)fieldInfo.GetValue(targetObject);
-            }
-            else
-            {
-                slider.value = (int)fieldInfo.GetValue(targetObject);
-            }
-
-            if (debuggableFieldAttribute.ReadOnly)
-            {
-                slider.interactable = false;
             }
         }
     }

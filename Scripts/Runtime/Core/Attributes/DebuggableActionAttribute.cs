@@ -1,12 +1,11 @@
 ﻿using System;
 using JetBrains.Annotations;
-using UnityEngine.Scripting;
 
 namespace BrunoMikoski.DebugTools.Core.Attributes
 {
     [AttributeUsage(AttributeTargets.Method)]
     [MeansImplicitUse(ImplicitUseKindFlags.Access)]
-    public sealed class DebuggableActionAttribute : PreserveAttribute
+    public sealed class DebuggableActionAttribute : DebuggableAttribute
     {
         private string caption;
         public string Caption => caption;

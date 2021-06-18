@@ -18,11 +18,13 @@ namespace BrunoMikoski.DebugTools.Layout
 
         private Action callback;
 
-        private void Awake()
+        public void Initialize(string displayName, Action action)
         {
+            callback = action;
+            label.text = displayName;
             button.onClick.AddListener(OnClick);
         }
-
+        
         private void OnDestroy()
         {
             button.onClick.RemoveListener(OnClick);
@@ -33,12 +35,6 @@ namespace BrunoMikoski.DebugTools.Layout
             callback?.Invoke();
         }
 
-        public void Initialize(string displayName, Action action)
-        {
-            callback = action;
-            label.text = displayName;
-        }
-
         public void SetHumanReadableHotkey(string humanReadableHotKey)
         {
             if (!Application.isEditor)
@@ -46,5 +42,6 @@ namespace BrunoMikoski.DebugTools.Layout
 
             hotkeyText.text = humanReadableHotKey;
         }
+
     }
 }

@@ -24,22 +24,20 @@ namespace BrunoMikoski.DebugTools.Layout
 
         [SerializeField] 
         private RectTransform scrollRectContextRectTransform;
-        
+
         [Header("Prefabs")]
         [SerializeField] 
         private DebuggableActionGUI debuggableActionGUIPrefab;
-
         [SerializeField] 
         private DebuggableFieldGUI debuggableFieldGUIPrefab;
-
         [SerializeField] 
         private DebuggableRangeFieldGUI debuggableRangeFieldGUIPrefab;
-
         [SerializeField] 
         private DebuggableDropdownFieldGUI debuggableDropdownFieldGUIPrefab;
-        
         [SerializeField] 
         private DebuggableTextAreaGUI debuggableTextAreaGUIPrefab;
+        [SerializeField] 
+        private DebuggableToggleFieldGUI debuggableToggleFieldGUIPrefab;
 
         private string IsExpandedStorageKey => $"{Application.productName}.{groupName.text}.IsExpanded";
         private bool IsExpanded
@@ -65,7 +63,10 @@ namespace BrunoMikoski.DebugTools.Layout
         {
             debuggableActionGUIPrefab.gameObject.SetActive(false);
             debuggableFieldGUIPrefab.gameObject.SetActive(false);
+            debuggableRangeFieldGUIPrefab.gameObject.SetActive(false);
+            debuggableDropdownFieldGUIPrefab.gameObject.SetActive(false);
             debuggableTextAreaGUIPrefab.gameObject.SetActive(false);
+            debuggableToggleFieldGUIPrefab.gameObject.SetActive(false);
             foldoutButton.onClick.AddListener(OnToggleFoldout);
             SetExpanded(IsExpanded, false);
         }
@@ -173,6 +174,21 @@ namespace BrunoMikoski.DebugTools.Layout
             nameToDebuggableActionGUICache.Add(fieldInfo.Name, debuggableFieldGUI);
         }
         
+        public void AddDebuggableToggleField(object targetObject, FieldInfo fieldInfo, DebuggableFieldAttribute debuggableFieldAttribute)
+        {
+            if (nameToDebuggableActionGUICache.ContainsKey(fieldInfo.Name))
+            {
+                Debug.LogError($"Field with the same name {fieldInfo.Name} already exist on group: {groupName.text}, ignoring it");
+                return;
+            }
+            
+            DebuggableToggleFieldGUI debuggableFieldGUI =
+                Instantiate(debuggableToggleFieldGUIPrefab, debuggableToggleFieldGUIPrefab.transform.parent);
+            debuggableFieldGUI.gameObject.SetActive(IsExpanded);
+            debuggableFieldGUI.Initialize(targetObject, fieldInfo, debuggableFieldAttribute); 
+            nameToDebuggableActionGUICache.Add(fieldInfo.Name, debuggableFieldGUI);
+        }
+        
         public void AddDebuggableField(object targetObject, FieldInfo fieldInfo, DebuggableFieldAttribute debuggableFieldAttribute)
         {
             if (nameToDebuggableActionGUICache.ContainsKey(fieldInfo.Name))
@@ -232,6 +248,5 @@ namespace BrunoMikoski.DebugTools.Layout
         {
             SetExpanded(IsExpanded);
         }
-
     }
 }

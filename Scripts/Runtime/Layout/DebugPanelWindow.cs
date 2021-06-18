@@ -158,6 +158,33 @@ namespace BrunoMikoski.DebugTools.Layout
                 Type type = behaviour.GetType();
                 while (type != null)
                 {
+                    MethodInfo[] methods = type.GetMethods(
+                        BindingFlags.Public
+                        | BindingFlags.NonPublic
+                        | BindingFlags.Instance
+                        | BindingFlags.DeclaredOnly
+                    );
+
+                    for (int j = 0; j < methods.Length; j++)
+                    {
+                        MethodInfo method = methods[j];
+                        object[] methodAttributes = method.GetCustomAttributes(typeof(DebuggableActionAttribute), false);
+                        if (methodAttributes.Length == 0)
+                            continue;
+
+                        DebuggableActionAttribute methodDebuggableActionAttribute = (DebuggableActionAttribute) methodAttributes[0];
+
+                        string displayName = methodDebuggableActionAttribute.Caption;
+                        if (string.IsNullOrEmpty(displayName))
+                            displayName = method.Name;
+                
+                
+                        targetDebuggableGroup.AddDebuggableAction(displayName, method, behaviour,
+                            methodDebuggableActionAttribute);
+                    }
+                    
+                    
+                    
                     RegisterDebuggableActions(type, behaviour, targetDebuggableGroup);
                     RegisterDebuggableFields(type, behaviour, targetDebuggableGroup);
                     RegisterDebuggableTextAreas(type, behaviour, targetDebuggableGroup);
@@ -226,7 +253,14 @@ namespace BrunoMikoski.DebugTools.Layout
                     }
                     else
                     {
-                        targetDebuggableGroup.AddDebuggableField(behaviour, fieldInfo, debuggableFieldAttribute);
+                        if (fieldInfo.FieldType == typeof(bool))
+                        {
+                            targetDebuggableGroup.AddDebuggableToggleField(behaviour, fieldInfo, debuggableFieldAttribute);
+                        }
+                        else
+                        {
+                            targetDebuggableGroup.AddDebuggableField(behaviour, fieldInfo, debuggableFieldAttribute);
+                        }
                     }
                 }
             }
@@ -266,6 +300,8 @@ namespace BrunoMikoski.DebugTools.Layout
                 string displayName = methodDebuggableActionAttribute.Caption;
                 if (string.IsNullOrEmpty(displayName))
                     displayName = method.Name;
+                
+                
 
                 targetDebuggableGroup.AddDebuggableAction(displayName, method, behaviour,
                     methodDebuggableActionAttribute);

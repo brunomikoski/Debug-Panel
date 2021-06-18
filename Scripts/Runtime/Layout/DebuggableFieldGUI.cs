@@ -12,11 +12,21 @@ namespace BrunoMikoski.DebugTools.Layout
         [SerializeField]
         private TMP_InputField valueInput;
 
-        private void Awake()
+        public new void Initialize(object targetObject, FieldInfo fieldInfo,
+            DebuggableFieldAttribute debuggableFieldAttribute)
         {
+            base.Initialize(targetObject, fieldInfo, debuggableFieldAttribute);
+            
+            valueInput.text = fieldInfo.GetValue(targetObject).ToString();
+
+            if (debuggableFieldAttribute.ReadOnly)
+            {
+                valueInput.interactable = false;
+            }
+            
             valueInput.onSubmit.AddListener(OnSubmitValue);
         }
-
+        
         private void OnDestroy()
         {
             valueInput.onSubmit.RemoveListener(OnSubmitValue);
@@ -127,19 +137,6 @@ namespace BrunoMikoski.DebugTools.Layout
             else
             {
                 Debug.LogError($"Unsupported type {fieldInfo.FieldType}");
-            }
-        }
-
-        public new void Initialize(object targetObject, FieldInfo fieldInfo,
-            DebuggableFieldAttribute debuggableFieldAttribute)
-        {
-            base.Initialize(targetObject, fieldInfo, debuggableFieldAttribute);
-            
-            valueInput.text = fieldInfo.GetValue(targetObject).ToString();
-
-            if (debuggableFieldAttribute.ReadOnly)
-            {
-                valueInput.interactable = false;
             }
         }
 

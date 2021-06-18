@@ -18,7 +18,13 @@ namespace BrunoMikoski.DebugTools.Layout
 
         protected object targetObject;
         protected FieldInfo fieldInfo;
-
+        
+        protected void Initialize(object targetObject, FieldInfo targetFieldInfo)
+        {
+            this.targetObject = targetObject;
+            fieldInfo = targetFieldInfo;
+        }
+        
         protected void MarkAsDirty()
         {
             isDirty = true;
@@ -51,12 +57,6 @@ namespace BrunoMikoski.DebugTools.Layout
             yield return null;
             contentLayoutGroup.enabled = true;
             isUpdating = false;
-        }
-
-        protected void Initialize(object targetObject, FieldInfo targetFieldInfo)
-        {
-            this.targetObject = targetObject;
-            fieldInfo = targetFieldInfo;
         }
     }
 }

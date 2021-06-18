@@ -4,7 +4,7 @@ using UnityEngine.Scripting;
 namespace BrunoMikoski.DebugTools.Core.Attributes
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
-    public sealed class DebuggableFieldAttribute : PreserveAttribute
+    public sealed class DebuggableFieldAttribute : DebuggableAttribute
     {
         public bool ReadOnly => readOnly;
         private readonly bool readOnly;

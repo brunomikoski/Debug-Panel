@@ -39,6 +39,7 @@ namespace BrunoMikoski.DebugTools.Layout
             StopAllCoroutines();
         }
 
+
         protected override void Update()
         {
             base.Update();

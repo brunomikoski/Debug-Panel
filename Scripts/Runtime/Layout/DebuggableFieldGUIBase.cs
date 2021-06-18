@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using BrunoMikoski.DebugTools.Core.Attributes;
 using TMPro;
 using UnityEngine;
