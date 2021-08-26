@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Reflection;
 using BrunoMikoski.DebugTools.Core;
 using BrunoMikoski.DebugTools.Core.Attributes;
-using BrunoMikoski.ScriptableObjectCollections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
 using Object = UnityEngine.Object;
+
+#if SOC_ENABLED
+using BrunoMikoski.ScriptableObjectCollections;
+#endif
+
 
 namespace BrunoMikoski.DebugTools.Layout
 {
