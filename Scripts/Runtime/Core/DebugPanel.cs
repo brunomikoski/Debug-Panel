@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using Object = UnityEngine.Object;
 
 namespace BrunoMikoski.DebugTools.Core
 {
