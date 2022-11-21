@@ -1,5 +1,6 @@
 {
     "name": "BrunoMikoski.DebugPanel",
+    "rootNamespace": "",
     "references": [
         "Unity.TextMeshPro",
         "BrunoMikoski.ScriptableObjectCollection"
@@ -14,7 +15,7 @@
     "versionDefines": [
         {
             "name": "com.brunomikoski.scriptableobjectcollection",
-            "expression": "1.0.0",
+            "expression": "",
             "define": "SOC_ENABLED"
         }
     ],

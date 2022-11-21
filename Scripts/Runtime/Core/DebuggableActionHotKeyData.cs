@@ -1,41 +1,73 @@
 ﻿using System;
 using UnityEngine;
 
-namespace BrunoMikoski.DebugTools.Core
+namespace BrunoMikoski.DebugPanel
 {
+    [Serializable]
     public class DebuggableActionHotKeyData
     {
-        private readonly KeyCode keyCode;
+        [SerializeField]
+        private string hotKey;
+        
+        private readonly KeyCode[] keyCodes = new KeyCode[0];
         private readonly bool alt;
         private readonly bool shift;
         private readonly bool ctrl;
-        
+
         private readonly bool isValidShortcut;
         public bool IsValidShortcut => isValidShortcut;
 
         private readonly string displayName;
         public string DisplayName => displayName;
 
-        private readonly Action callback;
-
         private readonly string humanReadableHotKey;
         public string HumanReadableHotKey => humanReadableHotKey;
 
-        public DebuggableActionHotKeyData(string textHotKey, string targetDisplayName, Action targetCallback)
+        public DebuggableActionHotKeyData(string textHotKey)
         {
             ctrl = textHotKey.Contains("%");
             shift = textHotKey.Contains("#");
             alt = textHotKey.Contains("&");
             textHotKey = textHotKey.Replace("%", "").Replace("#", "").Replace("&", "");
 
-            if (Enum.TryParse(textHotKey.ToUpperInvariant(), out keyCode))
-                isValidShortcut = true;
+
+            if (int.TryParse(textHotKey, out int intValue))
+            {
+                keyCodes = new KeyCode[2];
+
+                if (Enum.TryParse($"Alpha{intValue}", out KeyCode alphaKeyCode))
+                {
+                    if (alphaKeyCode != KeyCode.None)
+                    {
+                        keyCodes[0] = alphaKeyCode;
+                        isValidShortcut = true;
+                    }
+                }
+
+                if (Enum.TryParse($"Keypad{intValue}", out KeyCode keypadKeyCode))
+                {
+                    if (alphaKeyCode != KeyCode.None)
+                    {
+                        keyCodes[1] = keypadKeyCode;
+                        isValidShortcut = true;
+                    }
+                }
+            }
+            else
+            {
+                if (Enum.TryParse(textHotKey.ToUpperInvariant(), out KeyCode keyCode))
+                {
+                    if (keyCode != KeyCode.None)
+                    {
+                        keyCodes = new[] {keyCode};
+                        isValidShortcut = true;
+                    }
+                }
+
+            }
 
             if (!isValidShortcut)
                 return;
-            
-            displayName = targetDisplayName;
-            callback = targetCallback;
 
             humanReadableHotKey = "";
             if (ctrl)
@@ -45,22 +77,23 @@ namespace BrunoMikoski.DebugTools.Core
             if (shift)
                 humanReadableHotKey += "Shift+";
 
-            humanReadableHotKey += keyCode.ToString();
+            humanReadableHotKey += string.Join(" or ", keyCodes);
         }
 
 
-        private bool IsTriggered()
+        public bool IsTriggered()
         {
             if (!isValidShortcut)
                 return false;
 
-            if (Input.GetKeyDown(keyCode) 
-                && (!alt || alt && (Input.GetKey(KeyCode.AltGr) || Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)))
-                && (!shift || shift && (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))) 
-                && (!ctrl || ctrl && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) 
-                                                                        || Input.GetKey(KeyCode.LeftApple) 
-                                                                        || Input.GetKey(KeyCode.RightApple) 
-                                                                        || Input.GetKey(KeyCode.LeftCommand) 
+            if (IsAnyOfKeyCodesDown()
+                && (!alt || alt && (Input.GetKey(KeyCode.AltGr) || Input.GetKey(KeyCode.LeftAlt) ||
+                                    Input.GetKey(KeyCode.RightAlt)))
+                && (!shift || shift && (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
+                && (!ctrl || ctrl && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)
+                                                                        || Input.GetKey(KeyCode.LeftApple)
+                                                                        || Input.GetKey(KeyCode.RightApple)
+                                                                        || Input.GetKey(KeyCode.LeftCommand)
                                                                         || Input.GetKey(KeyCode.RightCommand))))
             {
                 return true;
@@ -69,12 +102,15 @@ namespace BrunoMikoski.DebugTools.Core
             return false;
         }
 
-        public void TryTrigger()
+        private bool IsAnyOfKeyCodesDown()
         {
-            if (!IsTriggered())
-                return;
-            
-            callback.Invoke();
+            for (int i = 0; i < keyCodes.Length; i++)
+            {
+                if (Input.GetKeyDown(keyCodes[i]))
+                    return true;
+            }
+
+            return false;
         }
     }
 }

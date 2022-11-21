@@ -12,14 +12,14 @@
     </a>
 
   <a href="https://github.com/brunomikoski/Debug-Panel/issues">
-     <img alt="GitHub issues" src ="https://img.shields.io/github/issues/brunomikoski/Animation-Sequencer" />
+     <img alt="GitHub issues" src ="https://img.shields.io/github/issues/brunomikoski/Debug-Panel" />
   </a>
 
   <a href="https://github.com/brunomikoski/Debug-Panel/pulls">
-   <img alt="GitHub pull requests" src ="https://img.shields.io/github/issues-pr/brunomikoski/Animation-Sequencer" />
+   <img alt="GitHub pull requests" src ="https://img.shields.io/github/issues-pr/brunomikoski/Debug-Panel" />
   </a>
   
-  <img alt="GitHub last commit" src ="https://img.shields.io/github/last-commit/brunomikoski/Animation-Sequencer" />
+  <img alt="GitHub last commit" src ="https://img.shields.io/github/last-commit/brunomikoski/Debug-Panel" />
 </p>
 
 <p align="center">
@@ -39,6 +39,8 @@ Debug Panel is a tool to expose methods, fields to be activated/tweaked by the P
 
 
 *This is still in heavy development, please use it carefully*
+
+# DOCUMENTATION IS OUTDATED, A LOT HAVE CHANGED ON 0.2.0
 
 ## Features
 - Not Boatload with a lot of unrelated features.

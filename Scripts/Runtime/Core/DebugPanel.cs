@@ -1,128 +1,478 @@
-﻿using System;
-using BrunoMikoski.DebugTools.Layout;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using BrunoMikoski.DebugPanel.Attributes;
+using BrunoMikoski.DebugPanel.GUI;
+using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace BrunoMikoski.DebugTools.Core
+
+namespace BrunoMikoski.DebugPanel
 {
-    [DefaultExecutionOrder(-1000)]
-    public sealed class DebugPanel : MonoBehaviour
+    public class DebugPanel : MonoBehaviour
     {
-        internal const string DEFAULT_CATEGORY_NAME = "Generic";
-
-        private static DebugPanel instance;
-        private static DebugPanel Instance
-        {
-            get
-            {
-                if (instance == null)
-                    instance = FindObjectOfType<DebugPanel>();
-                return instance;
-            }
-        }
-
-        [Header("Settings")]
-        [SerializeField]
-        private bool dontDestroyOnLoad = true;
-        [SerializeField]
-        private bool refreshActionOnOpen = false;
+        private const string DEFAULT_CATEGORY_NAME = "General";
         
         [Header("References")]
         [SerializeField]
-        private DebugPanelWindow debugPanelWindow;
+        private DebugPanelGUI debugPanelGUI;
+        [SerializeField]
+        private RectTransform root;
+        [SerializeField]
+        private CanvasGroup backdrop;
+        [SerializeField]
+        private Button backdropButton;
+        [SerializeField]
+        private Button closeButton;
+        [SerializeField]
+        private Button backButton;
+        [SerializeField]
+        private TMP_InputField searchInputField;
+        [SerializeField]
+        private ScrollRect scrollRect;
+
+        private bool isVisible = true;
+
+        [Header("Settings")]
+        [SerializeField]
+        private bool hideAfterInvoke;
+        public bool HideAfterInvoke => hideAfterInvoke;
+        [SerializeField] 
+        private DebugPanelTriggerSettings triggerSettings;
 
         [SerializeField] 
-        private HotKeyManager hotKeyManager;
-        public static HotKeyManager HotKeyManager => Instance.hotKeyManager;
-        internal static bool RefreshOnOpen => Instance.refreshActionOnOpen;
+        private bool activeLoadDebuggable;
 
-        [SerializeField]
-        private Button openDebugPanelWindowButton;
+        private Dictionary<string, DebugPage> pathToDebugPage = new Dictionary<string, DebugPage>(100);
+        private List<object> debuggables = new List<object>(1000);
+        private List<DebuggableItemBase> activeDebuggableItems = new List<DebuggableItemBase>();
+        public List<DebuggableItemBase> ActiveDebuggableItems => activeDebuggableItems;
 
+        private List<object> lifeTimeNonMonobehaviour = new List<object>();
+        private List<DebuggableAction> lifeTimeDynamicActions = new List<DebuggableAction>(500);
+
+        private string currentDisplayedPagePath;
+        private DebugPage currentDisplayedPage;
+
+        private DebugPage searchResultsPage;
+        private string previousSearchValue = "";
 
         private void Awake()
         {
-            EventSystem eventSystem = FindObjectOfType<EventSystem>();
-            if (eventSystem == null)
-            {
-                GameObject eventSystemGameObject = new GameObject("Event System");
-                eventSystemGameObject.transform.SetParent(transform);
-                eventSystemGameObject.AddComponent<EventSystem>();
-            }
-
-            openDebugPanelWindowButton.onClick.AddListener(OnClickOpenDebugPanel);
-            debugPanelWindow.Close();
-            openDebugPanelWindowButton.gameObject.SetActive(true);
-            if (dontDestroyOnLoad)
-                DontDestroyOnLoad(gameObject);
-         
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            SetVisible(false, false);
+            backdropButton.onClick.AddListener(Close);
+            closeButton.onClick.AddListener(Close);
+            backButton.onClick.AddListener(OnClickBack);
+            searchInputField.onValueChanged.AddListener(OnSearchValueChanged);
+            if (activeLoadDebuggable)
+                SceneManager.sceneLoaded += OnNewSceneLoaded;
         }
 
+        private IEnumerator Start()
+        {
+            yield return null;
+            if (activeLoadDebuggable)
+                ReloadDebuggables();
+        }
+        
+        private void OnNewSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+        {
+            if (activeLoadDebuggable)
+                ReloadDebuggables();
+        }
+        
         private void OnDestroy()
         {
-            openDebugPanelWindowButton.onClick.RemoveListener(OnClickOpenDebugPanel);
+            backdropButton.onClick.RemoveListener(Close);
+            closeButton.onClick.RemoveListener(Close);
+            backButton.onClick.RemoveListener(OnClickBack);
+            searchInputField.onValueChanged.RemoveListener(OnSearchValueChanged);
+            SceneManager.sceneLoaded -= OnNewSceneLoaded;
+        }
+
+
+        private void OnSearchValueChanged(string searchValue)
+        {
+            if (previousSearchValue.Length > 0 && searchValue.Length == 0)
+            {
+                DisplayPage(DEFAULT_CATEGORY_NAME);
+                return;
+            }
             
-            SceneManager.sceneLoaded -= OnSceneLoaded;
+            if (debugPanelGUI.CurrentDebugPage == null || debugPanelGUI.CurrentDebugPage != searchResultsPage)
+                DisplayPage(searchResultsPage);
+            
+            searchResultsPage.SetTitle($"Searching: {searchValue}");
+            debugPanelGUI.ShowOnlyMatches(searchValue);
+            debugPanelGUI.UpdateTitle();
+            previousSearchValue = searchValue;
+        }
+
+        private void Close()
+        {
+            searchInputField.text = "";
+            SetVisible(false);
         }
         
-        private void OnSceneLoaded(Scene targetScene, LoadSceneMode targetLoadMode)
+        
+        private void OnClickBack()
         {
-            debugPanelWindow.RegisterDebuggables();
+            if (pathToDebugPage.TryGetValue(currentDisplayedPagePath, out DebugPage currentPage))
+            {
+                if (currentPage.HasParentPage())
+                    DisplayPage(currentPage.ParentPage);
+                else
+                    DisplayGeneralPage();
+            }
+            else
+            {
+                if (currentDisplayedPage != null)
+                {
+                    if(currentDisplayedPage.HasParentPage())
+                        DisplayPage(currentDisplayedPage.ParentPage);
+                    else
+                        DisplayGeneralPage();
+                }
+            }
+
+            searchInputField.text = "";
+
+            StartCoroutine(WaitToUpdateScrollPositionEnumerator());
         }
 
-        private void OnClickOpenDebugPanel()
+        private IEnumerator WaitToUpdateScrollPositionEnumerator()
         {
-            debugPanelWindow.Open();
-            openDebugPanelWindowButton.gameObject.SetActive(false);
+            yield return null;
+            if (currentDisplayedPage != null && currentDisplayedPage.LastScrollHeight.HasValue)
+                scrollRect.verticalNormalizedPosition = currentDisplayedPage.LastScrollHeight.Value;
         }
 
-        public static void CloseWindow()
+        private void SetVisible(bool visible, bool animated = true)
         {
-            if (!Application.isPlaying)
+            if (visible == isVisible)
                 return;
 
-            if (Instance == null)
-                return;
+            bool wasVisible = isVisible;
             
-            Instance.debugPanelWindow.Close();
-            Instance.openDebugPanelWindowButton.gameObject.SetActive(true);
+            root.gameObject.SetActive(visible);
+            backdrop.gameObject.SetActive(visible);
+            isVisible = visible;
 
+            if (!wasVisible && isVisible)
+                PrepareToDisplay();
         }
 
-        public static void RegisterDebuggableObject(object targetObject)
+        private void PrepareToDisplay()
         {
-            if (!Application.isPlaying)
-                return;
+            ReloadDebuggables();
 
-            if (Instance == null)
-                return;
-
-            Instance.debugPanelWindow.RegisterDebuggableObject(targetObject);
+            if (string.IsNullOrEmpty(currentDisplayedPagePath) || !pathToDebugPage.ContainsKey(currentDisplayedPagePath))
+                currentDisplayedPagePath = $"{DEFAULT_CATEGORY_NAME}";
+            DisplayPage(currentDisplayedPagePath);
         }
 
-        public static void UnregisterDebuggableObject(object targetObject)
+        private void DisplayGeneralPage()
         {
-            if (!Application.isPlaying)
-                return;
-            
-            if (Instance == null)
-                return;
-
-            Instance.debugPanelWindow.UnregisterDebuggableObject(targetObject);
-
+            DisplayPage(DEFAULT_CATEGORY_NAME);
         }
         
-        public static void AddAction(string targetLabel, Action targetCallback)
+        private void DisplayPage(string pagePath)
         {
-            AddAction(targetLabel, DEFAULT_CATEGORY_NAME, targetCallback);
+            if (!pagePath.EndsWith("/"))
+                pagePath = $"{pagePath}/";
+            
+            if (!pathToDebugPage.TryGetValue(pagePath, out DebugPage targetDebugPage))
+                return;
+
+            DisplayPage(targetDebugPage);
         }
 
-        public static void AddAction(string targetLabel, string groupName, Action targetCallback)
+        public void DisplayPage(DebugPage debugPage)
         {
-            Instance.debugPanelWindow.AddDirectCallback(targetLabel, groupName, targetCallback);
+            if (currentDisplayedPage != null)
+                currentDisplayedPage.SetLastKnowHeight(scrollRect.verticalNormalizedPosition);
+            
+            currentDisplayedPagePath = debugPage.PagePath;
+            currentDisplayedPage = debugPage;
+            debugPanelGUI.DisplayDebugPage(debugPage);
+
+            backButton.gameObject.SetActive(debugPage.HasParentPage());
+        }
+        
+        public void RegisterDebuggable(object targetDebuggable)
+        {
+            lifeTimeNonMonobehaviour.Add(targetDebuggable);
+        }
+
+        public void UnregisterDebuggable(object targetDebuggable)
+        {
+            lifeTimeNonMonobehaviour.Remove(targetDebuggable);
+        }
+
+        public void AddAction(string path, Action targetAction)
+        {
+            AddDynamicAction(new DebuggableAction(path, targetAction));
+        }
+
+        public void AddAction(string path, string subTitle, Action targetAction)
+        {
+            AddDynamicAction(new DebuggableAction(path, subTitle, targetAction));
+        }
+
+        private void AddDynamicAction(DebuggableAction targetAction)
+        {
+            for (int i = 0; i < lifeTimeDynamicActions.Count; i++)
+            {
+                DebuggableAction dynamicAction = lifeTimeDynamicActions[i];
+                if (dynamicAction.Path.Equals(targetAction.Path, StringComparison.Ordinal))
+                    return;
+            }
+            lifeTimeDynamicActions.Add(targetAction);
+        }
+
+        public void ReloadDebuggables()
+        {
+            pathToDebugPage.Clear();
+            debuggables.Clear();
+            activeDebuggableItems.Clear();
+
+            searchResultsPage = new DebugPage("Search Result", "", "", "");
+            
+            debuggables.AddRange(GetDebuggableMonoBehaviours());
+            debuggables.AddRange(lifeTimeNonMonobehaviour);
+
+            for (int i = 0; i < debuggables.Count; i++)
+            {
+                object debuggableMonoBehaviour = debuggables[i];
+
+                DebuggableClassAttribute debuggableClassAttribute = GetDebuggableClassAttribute(debuggableMonoBehaviour);
+
+                string pagePath = debuggableClassAttribute.Path;
+                if (string.IsNullOrEmpty(pagePath))
+                    pagePath = debuggableMonoBehaviour.GetType().Name;
+
+                DebugPage categoryPage = GetOrCreatePathByPath(pagePath, debuggableClassAttribute.SubTitle);
+                
+                List<DebuggableMethod> debuggableMethods =
+                    GetDebuggableMethodsFromObject(debuggableMonoBehaviour, debuggableClassAttribute);
+
+                for (int j = 0; j < debuggableMethods.Count; j++)
+                    AddDebuggableToAppropriatedPath(debuggableMethods[j], categoryPage);
+
+                List<DebuggableField> debuggableFields =
+                    GetDebuggableFieldsFromObject(debuggableMonoBehaviour, debuggableClassAttribute);
+
+                for (int j = 0; j < debuggableFields.Count; j++)
+                    AddDebuggableToAppropriatedPath(debuggableFields[j], categoryPage);
+            }
+
+            for (int i = 0; i < lifeTimeDynamicActions.Count; i++)
+                AddDebuggableToAppropriatedPath(lifeTimeDynamicActions[i], null);
+
+            if (pathToDebugPage.TryGetValue($"{DEFAULT_CATEGORY_NAME}/", out DebugPage generalPage))
+                searchResultsPage.SetParentPage(generalPage);
+        }
+
+        public void AddDebuggableToAppropriatedPath(DebuggableItemBase targetDebuggableBase, DebugPage parentPage)
+        {
+            int lastIndexOfPath = targetDebuggableBase.Path.LastIndexOf("/", StringComparison.Ordinal);
+            if (lastIndexOfPath == -1)
+            {
+                if (parentPage == null)
+                {
+                    DebugPage generalPage = GetOrCreatePathByPath($"{DEFAULT_CATEGORY_NAME}/");
+                    generalPage.AddItem(targetDebuggableBase);
+                }
+                else
+                {
+                    parentPage.AddItem(targetDebuggableBase);
+                }
+            }
+            else
+            {
+                if (parentPage == null)
+                {
+                    string clearPath = targetDebuggableBase.Path.Substring(0, lastIndexOfPath);
+                    DebugPage categoryPage = GetOrCreatePathByPath(clearPath);
+                    categoryPage.AddItem(targetDebuggableBase);
+                }
+                else
+                {
+                    string clearPath = $"{parentPage.PagePath}/{targetDebuggableBase.Path.Substring(0, lastIndexOfPath)}";
+                    DebugPage resultPage = GetOrCreatePathByPath(clearPath);
+                    resultPage.AddItem(targetDebuggableBase);
+                }
+            }
+
+            activeDebuggableItems.Add(targetDebuggableBase);
+            searchResultsPage.AddItem(targetDebuggableBase);
+        }
+
+        private List<DebuggableField> GetDebuggableFieldsFromObject(object debuggableMonoBehaviours, DebuggableClassAttribute debuggableClassAttribute)
+        {
+            List<DebuggableField> dynamicFields = new List<DebuggableField>();
+            Type type = debuggableMonoBehaviours.GetType();
+            while (type != null)
+            {
+                FieldInfo[] fieldInfos = type.GetFields(
+                    BindingFlags.Public
+                    | BindingFlags.NonPublic
+                    | BindingFlags.Instance
+                    | BindingFlags.DeclaredOnly
+                );
+                
+                for (int j = 0; j < fieldInfos.Length; j++)
+                {
+                    FieldInfo fieldInfo = fieldInfos[j];
+
+                    if (!fieldInfo.TryGetAttribute(out DebuggableFieldAttribute attribute))
+                        continue;
+
+                    string path = attribute.Title;
+                    if (string.IsNullOrEmpty(path))
+                        path = $"{debuggableClassAttribute.Path}/{fieldInfo.Name}";
+                    
+                    dynamicFields.Add(new DebuggableField(path, fieldInfo, debuggableMonoBehaviours, debuggableClassAttribute, attribute));
+                }
+
+                type = type.BaseType;
+            }
+
+            return dynamicFields;
+        }
+
+        private DebugPage GetOrCreatePathByPath(string pagePath, string subTitle = "", string spriteName = "")
+        {
+            if (!pagePath.StartsWith($"{DEFAULT_CATEGORY_NAME}/"))
+                pagePath = $"{DEFAULT_CATEGORY_NAME}/{pagePath}";
+            
+            string[] folders = pagePath.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+
+            string pageFinalPath = "";
+            DebugPage parentPage = null;
+            DebugPage targetPage = null;
+            for (int i = 0; i < folders.Length; i++)
+            {
+                string folder = folders[i];
+                pageFinalPath += $"{folder}/";
+
+                if (!pathToDebugPage.TryGetValue(pageFinalPath, out DebugPage resultPage))
+                {
+                    resultPage = new DebugPage(pageFinalPath, folder, "", "");
+                    if (parentPage != null)
+                        parentPage.AddChildPage(resultPage);
+
+                    pathToDebugPage.Add(pageFinalPath, resultPage);
+                }
+
+                parentPage = resultPage;
+
+                if (i == folders.Length - 1)
+                {
+                    resultPage.UpdateData(subTitle, spriteName);
+                    targetPage = resultPage;
+                }
+            }
+
+            return targetPage;
+        }
+
+        private List<DebuggableMethod> GetDebuggableMethodsFromObject(object debuggableMonoBehaviours, DebuggableClassAttribute debuggableClassAttribute)
+        {
+            List<DebuggableMethod> dynamicMethods = new List<DebuggableMethod>();
+            Type type = debuggableMonoBehaviours.GetType();
+            while (type != null)
+            {
+                MethodInfo[] methods = type.GetMethods(
+                    BindingFlags.Public
+                    | BindingFlags.NonPublic
+                    | BindingFlags.Instance
+                    | BindingFlags.DeclaredOnly
+                );
+                
+                for (int j = 0; j < methods.Length; j++)
+                {
+                    MethodInfo method = methods[j];
+                    object[] attributes = method.GetCustomAttributes(typeof(DebuggableMethodAttribute), false);
+                    if (attributes.Length <= 0)
+                        continue;
+                    
+                    DebuggableMethodAttribute attribute = (DebuggableMethodAttribute) attributes[0];
+
+                    string path = attribute.Path;
+                    if (string.IsNullOrEmpty(path))
+                        path = $"{debuggableClassAttribute.Path}/{method.Name}";
+
+                    DebuggableMethod debuggableMethod = new DebuggableMethod(path, attribute.SubTitle, method, debuggableMonoBehaviours, debuggableClassAttribute, attribute);
+                    debuggableMethod.AssignHotkey(attribute.Hotkey);
+                    dynamicMethods.Add(debuggableMethod);
+                }
+
+                type = type.BaseType;
+            }
+
+            return dynamicMethods;
+        }
+
+        private DebuggableClassAttribute GetDebuggableClassAttribute(object target)
+        {
+            target.GetType()
+                .GetCustomAttribute(typeof(DebuggableClassAttribute), true);
+
+            object[] attributes = target.GetType().GetCustomAttributes(typeof(DebuggableClassAttribute), true);
+
+            if (attributes.Length == 0)
+                return null;
+        
+            DebuggableClassAttribute debuggableClassAttribute =
+                (DebuggableClassAttribute) attributes[0];
+
+            return debuggableClassAttribute;
+        }
+        
+        private List<object> GetDebuggableMonoBehaviours()
+        {
+            List<object> debuggableMonoBehaviours = new List<object>();
+            MonoBehaviour[] behavioursInScene = FindObjectsOfType<MonoBehaviour>();
+
+            for (int i = 0; i < behavioursInScene.Length; ++i)
+            {
+                MonoBehaviour behaviour = behavioursInScene[i];
+                if (behaviour.hideFlags == HideFlags.None)
+                {
+                    object[] attributes = behaviour.GetType().GetCustomAttributes(typeof(DebuggableClassAttribute), true);
+
+                    if (attributes.Length > 0)
+                        debuggableMonoBehaviours.Add(behaviour);
+                }
+            }
+
+            return debuggableMonoBehaviours;
+        }
+
+
+        private void Update()
+        {
+            if (triggerSettings.IsTriggered())
+            {
+                if (!isVisible)
+                    Show();
+                else
+                    Hide();
+            }
+        }
+
+        public void Hide()
+        {
+            SetVisible(false);
+        }
+
+        public void Show()
+        {
+            SetVisible(true);
         }
     }
 }
