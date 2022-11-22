@@ -15,10 +15,6 @@ namespace BrunoMikoski.DebugPanel
         [Header("Keyboard")] 
         [SerializeField]
         private string hotkey = "&0";
-
-        [Header("Favourite")] 
-        private float heldTimeToFavorite = 2;
-        
         
         private bool hotkeyCreated;
         private DebuggableActionHotKeyData cachedHotKeyData;

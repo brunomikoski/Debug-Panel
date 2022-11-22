@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using BrunoMikoski.DebugPanel.Attributes;
 using BrunoMikoski.DebugPanel.GUI;
@@ -8,7 +9,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
 
 namespace BrunoMikoski.DebugPanel
 {
@@ -37,13 +37,13 @@ namespace BrunoMikoski.DebugPanel
         private bool isVisible = true;
 
         [Header("Settings")]
-        [SerializeField]
+        [SerializeField, Tooltip("After calling a Method, close the Debug Panel automatically")]
         private bool hideAfterInvoke;
         public bool HideAfterInvoke => hideAfterInvoke;
         [SerializeField] 
         private DebugPanelTriggerSettings triggerSettings;
 
-        [SerializeField] 
+        [SerializeField, Tooltip("Try to load new Debuggables after each new scene is loaded")] 
         private bool activeLoadDebuggable;
 
         private Dictionary<string, DebugPage> pathToDebugPage = new Dictionary<string, DebugPage>(100);
@@ -62,11 +62,17 @@ namespace BrunoMikoski.DebugPanel
 
         private void Awake()
         {
-            SetVisible(false, false);
+            SetVisible(false);
             backdropButton.onClick.AddListener(Close);
             closeButton.onClick.AddListener(Close);
             backButton.onClick.AddListener(OnClickBack);
             searchInputField.onValueChanged.AddListener(OnSearchValueChanged);
+            scrollRect.onValueChanged.AddListener(OnScrollRectValueChanged);
+
+#if !UNITY_EDITOR
+            activeLoadDebuggable = false;
+#endif
+            
             if (activeLoadDebuggable)
                 SceneManager.sceneLoaded += OnNewSceneLoaded;
         }
@@ -78,21 +84,27 @@ namespace BrunoMikoski.DebugPanel
                 ReloadDebuggables();
         }
         
-        private void OnNewSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
-        {
-            if (activeLoadDebuggable)
-                ReloadDebuggables();
-        }
-        
         private void OnDestroy()
         {
             backdropButton.onClick.RemoveListener(Close);
             closeButton.onClick.RemoveListener(Close);
             backButton.onClick.RemoveListener(OnClickBack);
             searchInputField.onValueChanged.RemoveListener(OnSearchValueChanged);
+            scrollRect.onValueChanged.AddListener(OnScrollRectValueChanged);
             SceneManager.sceneLoaded -= OnNewSceneLoaded;
         }
-
+        
+        private void OnScrollRectValueChanged(Vector2 normalizedPosition)
+        {
+            if (currentDisplayedPage != null)
+                currentDisplayedPage.SetLastKnowHeight(normalizedPosition.y);
+        }
+      
+        private void OnNewSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+        {
+            if (activeLoadDebuggable)
+                ReloadDebuggables();
+        }
 
         private void OnSearchValueChanged(string searchValue)
         {
@@ -117,7 +129,6 @@ namespace BrunoMikoski.DebugPanel
             SetVisible(false);
         }
         
-        
         private void OnClickBack()
         {
             if (pathToDebugPage.TryGetValue(currentDisplayedPagePath, out DebugPage currentPage))
@@ -139,18 +150,15 @@ namespace BrunoMikoski.DebugPanel
             }
 
             searchInputField.text = "";
-
-            StartCoroutine(WaitToUpdateScrollPositionEnumerator());
         }
 
         private IEnumerator WaitToUpdateScrollPositionEnumerator()
         {
             yield return null;
-            if (currentDisplayedPage != null && currentDisplayedPage.LastScrollHeight.HasValue)
-                scrollRect.verticalNormalizedPosition = currentDisplayedPage.LastScrollHeight.Value;
+            scrollRect.verticalNormalizedPosition = currentDisplayedPage.LastScrollHeight;
         }
 
-        private void SetVisible(bool visible, bool animated = true)
+        private void SetVisible(bool visible)
         {
             if (visible == isVisible)
                 return;
@@ -192,14 +200,12 @@ namespace BrunoMikoski.DebugPanel
 
         public void DisplayPage(DebugPage debugPage)
         {
-            if (currentDisplayedPage != null)
-                currentDisplayedPage.SetLastKnowHeight(scrollRect.verticalNormalizedPosition);
-            
             currentDisplayedPagePath = debugPage.PagePath;
             currentDisplayedPage = debugPage;
             debugPanelGUI.DisplayDebugPage(debugPage);
 
             backButton.gameObject.SetActive(debugPage.HasParentPage());
+            StartCoroutine(WaitToUpdateScrollPositionEnumerator());
         }
         
         public void RegisterDebuggable(object targetDebuggable)
@@ -276,7 +282,7 @@ namespace BrunoMikoski.DebugPanel
                 searchResultsPage.SetParentPage(generalPage);
         }
 
-        public void AddDebuggableToAppropriatedPath(DebuggableItemBase targetDebuggableBase, DebugPage parentPage)
+        private void AddDebuggableToAppropriatedPath(DebuggableItemBase targetDebuggableBase, DebugPage parentPage)
         {
             int lastIndexOfPath = targetDebuggableBase.Path.LastIndexOf("/", StringComparison.Ordinal);
             if (lastIndexOfPath == -1)
@@ -331,9 +337,9 @@ namespace BrunoMikoski.DebugPanel
                     if (!fieldInfo.TryGetAttribute(out DebuggableFieldAttribute attribute))
                         continue;
 
-                    string path = attribute.Title;
+                    string path = attribute.Path;
                     if (string.IsNullOrEmpty(path))
-                        path = $"{debuggableClassAttribute.Path}/{fieldInfo.Name}";
+                        path = $"{fieldInfo.Name}";
                     
                     dynamicFields.Add(new DebuggableField(path, fieldInfo, debuggableMonoBehaviours, debuggableClassAttribute, attribute));
                 }
@@ -357,6 +363,9 @@ namespace BrunoMikoski.DebugPanel
             for (int i = 0; i < folders.Length; i++)
             {
                 string folder = folders[i];
+                if (pageFinalPath.EndsWith($"{folder}/"))
+                    continue;
+                
                 pageFinalPath += $"{folder}/";
 
                 if (!pathToDebugPage.TryGetValue(pageFinalPath, out DebugPage resultPage))
@@ -404,7 +413,7 @@ namespace BrunoMikoski.DebugPanel
 
                     string path = attribute.Path;
                     if (string.IsNullOrEmpty(path))
-                        path = $"{debuggableClassAttribute.Path}/{method.Name}";
+                        path = $"{method.Name}";
 
                     DebuggableMethod debuggableMethod = new DebuggableMethod(path, attribute.SubTitle, method, debuggableMonoBehaviours, debuggableClassAttribute, attribute);
                     debuggableMethod.AssignHotkey(attribute.Hotkey);
@@ -453,16 +462,22 @@ namespace BrunoMikoski.DebugPanel
             return debuggableMonoBehaviours;
         }
 
-
+#if UNITY_EDITOR
         private void Update()
         {
-            if (triggerSettings.IsTriggered())
-            {
-                if (!isVisible)
-                    Show();
-                else
-                    Hide();
-            }
+            CheckForHotkey();
+        }
+#endif
+        
+        private void CheckForHotkey()
+        {
+            if (!triggerSettings.IsTriggered()) 
+                return;
+            
+            if (!isVisible)
+                Show();
+            else
+                Hide();
         }
 
         public void Hide()

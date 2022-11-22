@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    public abstract class DebuggableGUIBase : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+    public abstract class DebuggableGUIBase : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
     {
         private const int TIME_TO_FAVORITE = 2;
 
@@ -75,9 +75,19 @@ namespace BrunoMikoski.DebugPanel.GUI
             if (toggledFavorite)
             {
                 eventData.Use();
+                return;
             }
         }
-        
+        void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.used)
+                return;
+            
+            OnClick();
+        }
+
+        protected virtual void OnClick(){}
+
         protected virtual void Update()
         {
             if (isPointerDown)

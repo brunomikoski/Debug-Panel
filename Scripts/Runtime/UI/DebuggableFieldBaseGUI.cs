@@ -19,8 +19,9 @@ namespace BrunoMikoski.DebugPanel.GUI
 
         protected abstract void UpdateDisplayValue();
 
-        protected virtual void Update()
+        protected override void Update()
         {
+            base.Update();
             if (debuggableField.FieldAttribute.UpdateEveryFrame)
                 UpdateDisplayValue();
         }

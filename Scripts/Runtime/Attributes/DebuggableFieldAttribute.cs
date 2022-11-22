@@ -6,7 +6,7 @@ namespace BrunoMikoski.DebugPanel.Attributes
     [AttributeUsage(AttributeTargets.Field)]
     public class DebuggableFieldAttribute : PreserveAttribute
     {
-        public string Title  { get; set; }
+        public string Path  { get; set; }
         
         public string SubTitle  { get; set; }
 

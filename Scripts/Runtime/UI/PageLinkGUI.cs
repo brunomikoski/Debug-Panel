@@ -1,6 +1,4 @@
 ﻿using System;
-using UnityEngine;
-using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
@@ -8,21 +6,8 @@ namespace BrunoMikoski.DebugPanel.GUI
     {
         public override Type[] DisplayTypes => new[] { typeof(PageLink) };
         
-        [SerializeField]
-        private Button button;
-
         private PageLink pageLink;
 
-
-        private void Awake()
-        {
-            button.onClick.AddListener(OnButtonClick);
-        }
-
-        private void OnDestroy()
-        {
-            button.onClick.RemoveListener(OnButtonClick);
-        }
         
         public override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
         {
@@ -30,8 +15,9 @@ namespace BrunoMikoski.DebugPanel.GUI
             pageLink = (PageLink)targetDebuggableItem;
         }
 
-        private void OnButtonClick()
+        protected override void OnClick()
         {
+            base.OnClick();
             DebugPanel.DisplayPage(pageLink.ToDebugPage);
         }
     }

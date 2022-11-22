@@ -26,8 +26,8 @@ namespace BrunoMikoski.DebugPanel
         private DebugPage parentPage;
         public DebugPage ParentPage => parentPage;
 
-        private float? lastScrollHeight;
-        public float? LastScrollHeight => lastScrollHeight;
+        private float lastScrollHeight = 1;
+        public float LastScrollHeight => lastScrollHeight;
 
         public DebugPage(string targetPath, string targetTitle, string targetSubTitle, string targetSpriteName)
         {
