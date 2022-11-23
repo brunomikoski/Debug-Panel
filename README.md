@@ -31,9 +31,10 @@
 	</a>
 </p>
 
-<p align="center">
-  <img alt="Example" src="https://user-images.githubusercontent.com/600419/121535785-5f21f500-c9fa-11eb-8660-c56e891f1eec.gif">
-</p>
+
+https://user-images.githubusercontent.com/600419/203599890-43fefa18-0189-4cba-8102-068b276abd93.mp4
+
+
 
 Debug Panel is a tool to expose methods, fields to be activated/tweaked by the Panel, this is useful for the development process where you can expose hacks and tools to be easily accessible.
 
@@ -74,7 +75,6 @@ public class ExampleExposingMethod : MonoBehaviour
     }
 }
 ```
-![exposed-method-example](https://user-images.githubusercontent.com/600419/121535865-719c2e80-c9fa-11eb-9b80-38f387b662be.gif)
 
 
 
@@ -88,8 +88,6 @@ public sealed class ExampleExposedField : MonoBehaviour
     private Vector3 playerVelocity = Vector3.one;
 }
 ```
-
-![exposed-field](https://user-images.githubusercontent.com/600419/121535880-7660e280-c9fa-11eb-864c-8c53f602e99c.gif)
 
 
 #### Supported fields:
@@ -160,12 +158,19 @@ You can define hotkeys for specific actions, following [Unity hotkey standard](h
 ### How does the Favorite Feature work?
 If you hold any Debuggable for more than 2 seconds, you should se a star ⭐, this will make sure next time you see this item, will be at the begining.
 
+
+https://user-images.githubusercontent.com/600419/203599816-cabe5250-dea1-4188-9441-1d55ddc7222b.mp4
+
+
+
 ### Its showing errors when using with the new Unity Input Manager.
 Make sure you have Both selected on your player settings, since the DebugPanel still uses the legacy input system.
 
 ### Updating shortcuts for opening / closing debug panel
 By default the keyboard shortcut for toggle the DebugPanel is (Alt+0) or 3 touches on the screen for more than 2 seconds.
 You can change those settings on the DebugPanel/Trigger Settings
+
+![trigger-settings](https://user-images.githubusercontent.com/600419/203600070-e143374d-3e36-4dcf-b3fe-cfea66d1482d.png)
 
 ### Active Load Debuggables
 In order to expose Debuggable Methods that contains shortcut to be available even before the DebugPanel is enabled, you can active this setting on the DebugPanel prefab.
