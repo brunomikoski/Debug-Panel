@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    public sealed class DebuggableInputFieldGUI : DebuggableFieldBaseGUI
+    internal sealed class DebuggableInputFieldGUI : DebuggableFieldBaseGUI
     {
         private static Type[] DisplayableFieldInfoTypes => new[]
         {
@@ -28,7 +28,7 @@ namespace BrunoMikoski.DebugPanel.GUI
             cultureInfo.NumberFormat.CurrencyDecimalSeparator = ".";
         }
 
-        public override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
+        internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
         {
             base.Initialize(targetDebuggableItem, targetDebugPage);
             inputField.onSubmit.AddListener(OnInputFieldSubmit);

@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    public abstract class DebuggableFieldBaseGUI : DebuggableGUIBase
+    internal abstract class DebuggableFieldBaseGUI : DebuggableGUIBase
     {
         protected DebuggableField debuggableField;
         public override Type[] DisplayTypes => new[] { typeof(DebuggableField) };
 
 
-        public override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
+        internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
         {
             base.Initialize(targetDebuggableItem, targetDebugPage);
             debuggableField = (DebuggableField)targetDebuggableItem;

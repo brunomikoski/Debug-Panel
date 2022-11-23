@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace BrunoMikoski.DebugPanel
 {
-    public abstract class DebuggableItemBase
+    internal abstract class DebuggableItemBase
     {
         public bool IsFavorite
         {
@@ -14,17 +14,15 @@ namespace BrunoMikoski.DebugPanel
         private string path;
         public string Path => path;
 
-        private string parentPath;
-
         private string title;
         public string Title => title;
 
         private string subTitle;
         public string SubTitle => subTitle;
 
-        private string spriteName;
+        private string fullPath;
+        public string FullPath => fullPath;
 
-        
 
         protected DebuggableItemBase(string path)
         {
@@ -32,7 +30,6 @@ namespace BrunoMikoski.DebugPanel
 
             string[] split = path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             title = split[split.Length - 1];
-            parentPath = path.Replace(title, "");
         }
 
         protected DebuggableItemBase(string path, string subTitle) : this(path)
@@ -40,14 +37,14 @@ namespace BrunoMikoski.DebugPanel
             this.subTitle = subTitle;
         }
 
-        protected DebuggableItemBase(string path, string subTitle, string spriteName) : this(path, subTitle)
-        {
-            this.spriteName = spriteName;
-        }
-
         public void SetIsFavorite(bool isFavorite)
         {
             IsFavorite = isFavorite;
+        }
+
+        public void SetFinalFullPath(string targetFullPath)
+        {
+            this.fullPath = targetFullPath;
         }
     }
 }

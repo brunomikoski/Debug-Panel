@@ -5,7 +5,7 @@ using BrunoMikoski.ScriptableObjectCollections;
 
 namespace BrunoMikoski.DebugPanel
 {
-    public class DebuggableSOCItem : DebuggableField
+    internal class DebuggableSOCItem : DebuggableField
     {
         private ScriptableObjectCollectionItem collectionItem;
 

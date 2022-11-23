@@ -1,6 +1,6 @@
 ﻿namespace BrunoMikoski.DebugPanel
 {
-    public abstract class DebuggableInvokableBase : DebuggableItemBase
+    internal abstract class DebuggableInvokableBase : DebuggableItemBase
     {
         private string hotkey;
         public string Hotkey => hotkey;
@@ -24,7 +24,7 @@
         {
         }
 
-        protected DebuggableInvokableBase(string path, string subTitle, string spriteName) : base(path, subTitle, spriteName)
+        protected DebuggableInvokableBase(string path, string subTitle, string spriteName) : base(path, subTitle)
         {
         }
 

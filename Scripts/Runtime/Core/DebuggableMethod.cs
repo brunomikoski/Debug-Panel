@@ -3,7 +3,7 @@ using BrunoMikoski.DebugPanel.Attributes;
 
 namespace BrunoMikoski.DebugPanel
 {
-    public class DebuggableMethod : DebuggableInvokableBase
+    internal class DebuggableMethod : DebuggableInvokableBase
     {
         private MethodInfo method;
         private object owner;

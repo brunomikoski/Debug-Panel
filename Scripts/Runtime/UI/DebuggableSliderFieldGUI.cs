@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    public sealed class DebuggableSliderFieldGUI : DebuggableFieldBaseGUI
+    internal sealed class DebuggableSliderFieldGUI : DebuggableFieldBaseGUI
     {
         [SerializeField]
         private TMP_InputField inputField;
@@ -15,7 +15,7 @@ namespace BrunoMikoski.DebugPanel.GUI
 
         private RangeAttribute rangeAttribute;
 
-        public override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
+        internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
         {
             debuggableField = (DebuggableField)targetDebuggableItem;
             debuggableField.FieldInfo.TryGetAttribute(out rangeAttribute);

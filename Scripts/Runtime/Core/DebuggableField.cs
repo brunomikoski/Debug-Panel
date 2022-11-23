@@ -3,7 +3,7 @@ using BrunoMikoski.DebugPanel.Attributes;
 
 namespace BrunoMikoski.DebugPanel
 {
-    public class DebuggableField : DebuggableItemBase
+    internal class DebuggableField : DebuggableItemBase
     {
         private readonly FieldInfo fieldInfo;
         public FieldInfo FieldInfo => fieldInfo;
@@ -38,8 +38,7 @@ namespace BrunoMikoski.DebugPanel
         }
 
         public DebuggableField(string path, string subTitle, string spriteName, FieldInfo fieldInfo, object owner,
-            DebuggableClassAttribute classAttribute, DebuggableFieldAttribute fieldAttribute) : base(path, subTitle,
-            spriteName)
+            DebuggableClassAttribute classAttribute, DebuggableFieldAttribute fieldAttribute) : base(path, subTitle)
         {
             this.fieldInfo = fieldInfo;
             this.owner = owner;

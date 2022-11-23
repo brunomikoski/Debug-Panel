@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    public abstract class PickerFieldGUIBase : DebuggableFieldBaseGUI
+    internal abstract class PickerFieldGUIBase : DebuggableFieldBaseGUI
     {
         [SerializeField] 
         protected Toggle toggle;
@@ -40,7 +40,7 @@ namespace BrunoMikoski.DebugPanel.GUI
 
         protected abstract void OnToggleValueChanged(bool isSelected);
 
-        public override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
+        internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
         {
             toggle.group = ToggleGroup;
             toggle.group.allowSwitchOff = AllowToggleGroupToBeOff;

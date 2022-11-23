@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    public class DebugPanelGUI : MonoBehaviour
+    internal class DebugPanelGUI : MonoBehaviour
     {
         [SerializeField] 
         private TMP_Text title;
 
-        
+
         private List<DebuggableGUIBase> displayingItems = new List<DebuggableGUIBase>();
         private DebugPage currentDebugPage;
 
@@ -113,20 +114,23 @@ namespace BrunoMikoski.DebugPanel.GUI
             displayingItems.Clear();
         }
 
-        public void ShowOnlyMatches(string searchValue)
+        public void ShowOnlyMatches(string searchValue, DebugPage parentPage)
         {
             for (int i = 0; i < displayingItems.Count; i++)
             {
                 DebuggableGUIBase displayingItem = displayingItems[i];
 
-                displayingItem.gameObject.SetActive(MatchSearch(displayingItem, searchValue));
+                displayingItem.gameObject.SetActive(MatchSearch(parentPage, displayingItem, searchValue));
             }
         }
         
-        private bool MatchSearch(DebuggableGUIBase displayingItem, string searchValue)
+        private bool MatchSearch(DebugPage parentPage, DebuggableGUIBase displayingItem, string searchValue)
         {
             if (string.IsNullOrEmpty(searchValue))
                 return true;
+
+            if (displayingItem.DebuggableItem.FullPath.IndexOf(parentPage.PagePath, StringComparison.OrdinalIgnoreCase) == -1)
+                return false;
 
             if (displayingItem.DebuggableItem.Path.IndexOf(searchValue, StringComparison.OrdinalIgnoreCase) > -1)
                 return true;

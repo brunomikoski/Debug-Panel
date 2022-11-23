@@ -9,6 +9,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 namespace BrunoMikoski.DebugPanel
 {
@@ -49,7 +50,7 @@ namespace BrunoMikoski.DebugPanel
         private Dictionary<string, DebugPage> pathToDebugPage = new Dictionary<string, DebugPage>(100);
         private List<object> debuggables = new List<object>(1000);
         private List<DebuggableItemBase> activeDebuggableItems = new List<DebuggableItemBase>();
-        public List<DebuggableItemBase> ActiveDebuggableItems => activeDebuggableItems;
+        internal List<DebuggableItemBase> ActiveDebuggableItems => activeDebuggableItems;
 
         private List<object> lifeTimeNonMonobehaviour = new List<object>();
         private List<DebuggableAction> lifeTimeDynamicActions = new List<DebuggableAction>(500);
@@ -59,6 +60,7 @@ namespace BrunoMikoski.DebugPanel
 
         private DebugPage searchResultsPage;
         private string previousSearchValue = "";
+        private DebugPage activePageBeforeSearch;
 
         private void Awake()
         {
@@ -108,9 +110,17 @@ namespace BrunoMikoski.DebugPanel
 
         private void OnSearchValueChanged(string searchValue)
         {
+            if (currentDisplayedPage != null && currentDisplayedPage != searchResultsPage)
+                activePageBeforeSearch = currentDisplayedPage;
+                
             if (previousSearchValue.Length > 0 && searchValue.Length == 0)
             {
-                DisplayPage(DEFAULT_CATEGORY_NAME);
+                if (activePageBeforeSearch != null)
+                    DisplayPage(activePageBeforeSearch);
+                else
+                    DisplayPage(DEFAULT_CATEGORY_NAME);
+                    
+                activePageBeforeSearch = null;
                 return;
             }
             
@@ -118,7 +128,7 @@ namespace BrunoMikoski.DebugPanel
                 DisplayPage(searchResultsPage);
             
             searchResultsPage.SetTitle($"Searching: {searchValue}");
-            debugPanelGUI.ShowOnlyMatches(searchValue);
+            debugPanelGUI.ShowOnlyMatches(searchValue, activePageBeforeSearch);
             debugPanelGUI.UpdateTitle();
             previousSearchValue = searchValue;
         }
@@ -198,7 +208,7 @@ namespace BrunoMikoski.DebugPanel
             DisplayPage(targetDebugPage);
         }
 
-        public void DisplayPage(DebugPage debugPage)
+        internal void DisplayPage(DebugPage debugPage)
         {
             currentDisplayedPagePath = debugPage.PagePath;
             currentDisplayedPage = debugPage;
@@ -256,6 +266,12 @@ namespace BrunoMikoski.DebugPanel
 
                 DebuggableClassAttribute debuggableClassAttribute = GetDebuggableClassAttribute(debuggableMonoBehaviour);
 
+                if (debuggableClassAttribute == null)
+                {
+                    Debug.LogError($"Object {debuggableMonoBehaviour} is registered as a Debuggable but doesn't contains the [DebuggableClass] attribute, ignoring it");
+                    continue;
+                }
+
                 string pagePath = debuggableClassAttribute.Path;
                 if (string.IsNullOrEmpty(pagePath))
                     pagePath = debuggableMonoBehaviour.GetType().Name;
@@ -284,35 +300,37 @@ namespace BrunoMikoski.DebugPanel
 
         private void AddDebuggableToAppropriatedPath(DebuggableItemBase targetDebuggableBase, DebugPage parentPage)
         {
+            DebugPage finalPage;
+            
             int lastIndexOfPath = targetDebuggableBase.Path.LastIndexOf("/", StringComparison.Ordinal);
             if (lastIndexOfPath == -1)
             {
                 if (parentPage == null)
-                {
-                    DebugPage generalPage = GetOrCreatePathByPath($"{DEFAULT_CATEGORY_NAME}/");
-                    generalPage.AddItem(targetDebuggableBase);
-                }
+                    finalPage = GetOrCreatePathByPath($"{DEFAULT_CATEGORY_NAME}/");
                 else
-                {
-                    parentPage.AddItem(targetDebuggableBase);
-                }
+                    finalPage = parentPage;
+                
+                finalPage.AddItem(targetDebuggableBase);
             }
             else
             {
                 if (parentPage == null)
                 {
                     string clearPath = targetDebuggableBase.Path.Substring(0, lastIndexOfPath);
-                    DebugPage categoryPage = GetOrCreatePathByPath(clearPath);
-                    categoryPage.AddItem(targetDebuggableBase);
+                    finalPage = GetOrCreatePathByPath(clearPath);
                 }
                 else
                 {
                     string clearPath = $"{parentPage.PagePath}/{targetDebuggableBase.Path.Substring(0, lastIndexOfPath)}";
-                    DebugPage resultPage = GetOrCreatePathByPath(clearPath);
-                    resultPage.AddItem(targetDebuggableBase);
+                    finalPage = GetOrCreatePathByPath(clearPath);
                 }
+                finalPage.AddItem(targetDebuggableBase);
+
             }
 
+            string fullPath = $"{finalPage.PagePath}{targetDebuggableBase.Path}".Replace("//", "/");
+            targetDebuggableBase.SetFinalFullPath(fullPath);
+                
             activeDebuggableItems.Add(targetDebuggableBase);
             searchResultsPage.AddItem(targetDebuggableBase);
         }

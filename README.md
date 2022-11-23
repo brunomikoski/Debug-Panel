@@ -18,7 +18,7 @@
   <a href="https://github.com/brunomikoski/Debug-Panel/pulls">
    <img alt="GitHub pull requests" src ="https://img.shields.io/github/issues-pr/brunomikoski/Debug-Panel" />
   </a>
-  
+
   <img alt="GitHub last commit" src ="https://img.shields.io/github/last-commit/brunomikoski/Debug-Panel" />
 </p>
 
@@ -37,34 +37,37 @@
 
 Debug Panel is a tool to expose methods, fields to be activated/tweaked by the Panel, this is useful for the development process where you can expose hacks and tools to be easily accessible.
 
+After seeing the awesome [DebugSheet package](https://github.com/Haruma-K/UnityDebugSheet), I refactored my system to use his visuals that are far better but keep the usability code based, and avoid prefab creation/resources usage
 
-*This is still in heavy development, please use it carefully*
 
-# DOCUMENTATION IS OUTDATED, A LOT HAVE CHANGED ON 0.2.0
 
 ## Features
 - Not Boatload with a lot of unrelated features.
-- No extra assets, the whole Debug Panel is build using default `TextMeshPro` font and no additional sprites, so nothing to worry about extra binary size
-- Easily expose methods to be accessed by the Debug Panel by simple adding a `[DebuggableAction]` attribute 
-- Works with any `MonoBehaviours`, `Scriptable Objects` or `object`
-- Support shortcuts for any exposed method.  
-- Stores the expanded and previous search on player prefs, so anyone will always have his panel as he needs at that moment.
+- Code based
+- Easily expose methods to be accessed by the Debug Panel by simple adding a `[DebuggableAction]` attribute
+- Works with any `MonoBehaviours`, `Scriptable Objects` or any `object`
+- Support shortcuts for method.
+- Favorites
+- UI for generic fields
 
 
-## How it works? 
-- When you open the Debug Panel, will try to load any active `MonoBehaviours` or pre-registered `object` that contains the attribute `[DebuggableClass]` them will look for any exposed object by the attributes `[DebuggableAction]` `[DebuggableField]` or `[DebuggableTextArea]` and expose all of this inside the Debug Panel.
+## How it works?
+- When you open the Debug Panel, will try to load any active `MonoBehaviours` or pre-registered `object` that contains the attribute `[DebuggableClass]` them will look for any exposed
+  object by the attributes `[DebuggableAction]` `[DebuggableField]` and expose all of this inside the Debug Panel.
+- You can also add any dynamic action by sending it directly to the `debugPanel.AddAction("Folder/Method Name", ()=>{Debug.Log("Dynamic Method");`
 
 ## How to use?
 - Simple drag the `Debug Panel` prefab inside your boot scene
+- The DebugPane doesn't come with any Singleton or any static access solution by default, this is intentionally since some developers prefer to work with other solutions like ServiceLocator/Dy and so on. But should be fairly simple to implement the ones you need, like a singleton by just extending the `DebugPanel` class.
 
 ### Exposing Methods
-To expose a method from a class, you just need to add the `[DebuggableClass("GROU_NAME")]` to the class and also add the `[DebuggableAction]` to the method.
+To expose a method from a class, you just need to add the `[DebuggableClass("PATH_TO_THIS_CLASS")]` to the class and also add the `[DebuggableAction]` to the method.
 
 ```c#
-[DebuggableClass("Examples")]
+[DebuggableClass(Path = "Examples")]
 public class ExampleExposingMethod : MonoBehaviour
 {
-    [DebuggableAction("Try this method")]
+    [DebuggableAction(Path = "Try this method")]
     private void ExampleMethod()
     {
         Debug.Log("This has been called by the debug panel!");
@@ -78,7 +81,7 @@ public class ExampleExposingMethod : MonoBehaviour
 ### Tweaking Fields
 To expose one field to be tweaked by the Panel you have to add `[DebuggableClass]` and the `[DebuggableField]` to the field, when submitting the changes on the keyboard will try to parse the value and apply back to the field
 ```c#
-[DebuggableClass("Examples")]
+[DebuggableClass(Path = "Examples")]
 public sealed class ExampleExposedField : MonoBehaviour
 {
     [SerializeField, DebuggableField]
@@ -99,16 +102,16 @@ public sealed class ExampleExposedField : MonoBehaviour
 - Vector4
 - Quaternion
 - Enums
-- ScriptableObjectCollectionItem 
+- ScriptableObjectCollectionItem
 - bool
 
 ### Debug Text Area
-Sometimes you want to expose a big chunk of text on the panel as well, so you can expose any string on the panel like this:
+Sometimes you want to expose a big chunk of text on the panel as well, so you can expose any string like this and adding the `[Multiline]` attribute to it:
 ```c#
-[DebuggableClass("Examples")]
+[DebuggableClass(Path = "Examples")]
 public sealed class ExampleExposingTextArea : MonoBehaviour
 {
-    [DebuggableTextArea]
+    [DebuggableField, Multiline]
     private string debugString;
 
     private void Awake()
@@ -120,11 +123,28 @@ public sealed class ExampleExposingTextArea : MonoBehaviour
 }
 ```
 
+You can also use the callbacks to do something when a specific field value changed, for instance:
+```c#
+[DebuggableClass(Path = "Examples")]
+public sealed class ExampleExposingTextArea : MonoBehaviour
+{
+    [DebuggableField(OnAfterSetValueMethodName = nameof(OnInputTypeChanbged))]
+    private enum InputType inputType;
+
+
+    private void OnInputTypeChanbged()
+    {
+        Debug.Log($"Input Type Changed: {inputType}");
+    }
+}
+```
+
+
 ## Shortcuts
-You can define hotkeys for specific actions, following Unity hotkey standard, so this method would be triggered by <kbd>Ctrl/Command</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd>
+You can define hotkeys for specific actions, following [Unity hotkey standard](https://docs.unity3d.com/ScriptReference/MenuItem.html), so this method would be triggered by <kbd>Ctrl/Command</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd>
 
 ```c#
-    [DebuggableAction("One More Test", "%#a")]
+    [DebuggableAction(Path = "One More Test", "%#a")]
     private void OneMoreTest()
     {
         Debug.Log("Called from hotkey");
@@ -136,6 +156,23 @@ You can define hotkeys for specific actions, following Unity hotkey standard, so
 ```
 
 
+# FAQ
+### How does the Favorite Feature work?
+If you hold any Debuggable for more than 2 seconds, you should se a star ⭐, this will make sure next time you see this item, will be at the begining.
+
+### Its showing errors when using with the new Unity Input Manager.
+Make sure you have Both selected on your player settings, since the DebugPanel still uses the legacy input system.
+
+### Updating shortcuts for opening / closing debug panel
+By default the keyboard shortcut for toggle the DebugPanel is (Alt+0) or 3 touches on the screen for more than 2 seconds.
+You can change those settings on the DebugPanel/Trigger Settings
+
+### Active Load Debuggables
+In order to expose Debuggable Methods that contains shortcut to be available even before the DebugPanel is enabled, you can active this setting on the DebugPanel prefab.
+This will try to load all available debuggables as soon as a new scene is loaded.
+This is expensive, and automatically disabled for mobile. 
+
+### Favorites
 
 ## System Requirements
 Unity 2018.4.0 or later versions

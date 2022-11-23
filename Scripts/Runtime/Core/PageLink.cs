@@ -1,6 +1,6 @@
 ﻿namespace BrunoMikoski.DebugPanel
 {
-    public class PageLink : DebuggableItemBase
+    internal class PageLink : DebuggableItemBase
     {
         private readonly DebugPage fromDebugPage;
         private readonly DebugPage toDebugPage;
@@ -18,7 +18,7 @@
             this.toDebugPage = toDebugPage;
         }
 
-        public PageLink(string path, string subTitle, string spriteName, DebugPage fromDebugPage, DebugPage toDebugPage) : base(path, subTitle, spriteName)
+        public PageLink(string path, string subTitle, string spriteName, DebugPage fromDebugPage, DebugPage toDebugPage) : base(path, subTitle)
         {
             this.fromDebugPage = fromDebugPage;
             this.toDebugPage = toDebugPage;

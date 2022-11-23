@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    public sealed class DebuggableToggleFieldGUI : DebuggableFieldBaseGUI
+    internal sealed class DebuggableToggleFieldGUI : DebuggableFieldBaseGUI
     {
         [SerializeField]
         private LayoutElement layoutElement;
@@ -18,26 +18,21 @@ namespace BrunoMikoski.DebugPanel.GUI
 
         private static Type[] DisplayableFieldInfoTypes => new[] { typeof(bool) };
 
-        public override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
+        internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
         {
             base.Initialize(targetDebuggableItem, targetDebugPage);
 
-            // _contentsCanvasGroup.alpha = model.Interactable ? 1.0f : 0.3f;
-
-            // Toggle
-            // toggle.interactable = model.Interactable;
             toggle.onValueChanged.RemoveAllListeners();
             toggle.onValueChanged.AddListener(OnToggleValueChanged);
 
             int height = 76;
-            // if (!string.IsNullOrEmpty(targetDebuggableItem.SubTitle) || targetDebuggableItem.Icon != null)
             if (!string.IsNullOrEmpty(targetDebuggableItem.SubTitle))
                 height = 42;
             
-            height += 36; // Padding
-            height += 1; // Border
+            height += 36;
+            height += 1;
             contents.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
-            layoutElement.preferredHeight = height; // Set the preferred height for the recycler view.
+            layoutElement.preferredHeight = height;
         }
 
         private void OnToggleValueChanged(bool newValue)

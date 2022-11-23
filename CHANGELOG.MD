@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.0]
 ### Changed
+- 
+- 
+## [0.2.0]
+### Changed
 - Refactored the whole system
 - Implemented new UI based on this [UnityDebugSheet Package](https://github.com/Haruma-K/UnityDebugSheet) 
 
@@ -36,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### [Unreleased]
 
+[0.2.1]: https://github.com/brunomikoski/Debug-Panel/releases/tag/v0.2.1
 [0.2.0]: https://github.com/brunomikoski/Debug-Panel/releases/tag/v0.2.0
 [0.1.3]: https://github.com/brunomikoski/Debug-Panel/releases/tag/v0.1.3
 [0.1.2]: https://github.com/brunomikoski/Debug-Panel/releases/tag/v0.1.2

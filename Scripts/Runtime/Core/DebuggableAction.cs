@@ -2,7 +2,7 @@ using System;
 
 namespace BrunoMikoski.DebugPanel
 {
-    public class DebuggableAction : DebuggableInvokableBase
+    internal class DebuggableAction : DebuggableInvokableBase
     {
         private readonly Action action;
 

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    public sealed class PickerFieldGUI : DebuggableFieldBaseGUI
+    internal sealed class PickerFieldGUI : DebuggableFieldBaseGUI
     {
         [SerializeField]
         private Button button;
@@ -48,7 +48,7 @@ namespace BrunoMikoski.DebugPanel.GUI
             DebugPanel.DisplayPage(pickerOptionsDebugPage);
         }
 
-        public override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
+        internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
         {
             debuggableField = (DebuggableField)targetDebuggableItem;
             selectableType = debuggableField.FieldInfo.FieldType;

@@ -19,10 +19,10 @@ namespace BrunoMikoski.DebugPanel.GUI
         [SerializeField]
         protected TMP_Text subTitle;
 
-        protected DebugPage DebugPage;
+        internal DebugPage DebugPage;
         
         private DebuggableItemBase debuggableItem;
-        public DebuggableItemBase DebuggableItem => debuggableItem;
+        internal DebuggableItemBase DebuggableItem => debuggableItem;
 
         private bool isPointerDown;
         private float heldTime;
@@ -40,7 +40,18 @@ namespace BrunoMikoski.DebugPanel.GUI
             }
         }
 
-        public virtual void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
+        private DebugPanelGUI cachedDebugPanelGUI;
+        internal DebugPanelGUI DebugPanelGUI
+        {
+            get
+            {
+                if (cachedDebugPanelGUI == null)
+                    cachedDebugPanelGUI = GetComponentInParent<DebugPanelGUI>();
+                return cachedDebugPanelGUI;
+            }
+        }
+
+        internal virtual void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
         {
             debuggableItem = targetDebuggableItem;
             DebugPage = targetDebugPage;
@@ -73,10 +84,8 @@ namespace BrunoMikoski.DebugPanel.GUI
         {
             isPointerDown = false;
             if (toggledFavorite)
-            {
                 eventData.Use();
-                return;
-            }
+                
         }
         void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
         {
@@ -108,5 +117,16 @@ namespace BrunoMikoski.DebugPanel.GUI
             }
         }
 
+        internal bool IsInside(DebugPage targetDebugPage)
+        {
+            DebugPage currentPage = DebugPage;
+            while (currentPage != null)
+            {
+                if(currentPage == targetDebugPage)
+                    return true;
+                currentPage = currentPage.ParentPage;
+            }
+            return false;
+        }
     }
 }

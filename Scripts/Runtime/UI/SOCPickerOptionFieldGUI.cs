@@ -7,7 +7,7 @@ using BrunoMikoski.ScriptableObjectCollections;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    public sealed class SOCPickerOptionFieldGUI : PickerFieldGUIBase
+    internal sealed class SOCPickerOptionFieldGUI : PickerFieldGUIBase
     {
         private DebuggableSOCItem debuggableSOCItem;
 
@@ -27,7 +27,7 @@ namespace BrunoMikoski.DebugPanel.GUI
                 SetValue(debuggableSOCItem.CollectionItem);
         }
 
-        public override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
+        internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
         {
             debuggableSOCItem = (DebuggableSOCItem) targetDebuggableItem;
             base.Initialize(targetDebuggableItem, targetDebugPage);

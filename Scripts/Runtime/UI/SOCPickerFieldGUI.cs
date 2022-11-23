@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    public sealed class SOCPickerFieldGUI : DebuggableFieldBaseGUI
+    internal sealed class SOCPickerFieldGUI : DebuggableFieldBaseGUI
     {
         [SerializeField]
         private Button button;
@@ -32,7 +32,7 @@ namespace BrunoMikoski.DebugPanel.GUI
             button.onClick.RemoveListener(OnButtonClick);
         }
 
-        public override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
+        internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
         {
             base.Initialize(targetDebuggableItem, targetDebugPage);
             selectableType = debuggableField.FieldInfo.FieldType;

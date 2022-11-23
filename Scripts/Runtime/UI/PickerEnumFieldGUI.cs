@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    public sealed class PickerEnumFieldGUI : PickerFieldGUIBase
+    internal sealed class PickerEnumFieldGUI : PickerFieldGUIBase
     {
         private Type enumType;
         private Enum enumValue;
@@ -31,7 +31,7 @@ namespace BrunoMikoski.DebugPanel.GUI
             SetValue(value);
         }
 
-        public override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
+        internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
         {
             debuggableEnumItem = (DebuggableEnumItem) targetDebuggableItem;
             enumType = debuggableEnumItem.FieldInfo.FieldType;

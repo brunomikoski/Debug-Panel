@@ -2,7 +2,7 @@
 
 namespace BrunoMikoski.DebugPanel
 {
-    public class HotKeyManager : MonoBehaviour
+    internal class HotKeyManager : MonoBehaviour
     {
         [SerializeField]
         private DebugPanel debugPanel;

@@ -3,7 +3,7 @@ using BrunoMikoski.DebugPanel.Attributes;
 
 namespace BrunoMikoski.DebugPanel
 {
-    public class DebuggableEnumItem : DebuggableField
+    internal class DebuggableEnumItem : DebuggableField
     {
         public DebuggableEnumItem(string path, FieldInfo fieldInfo, object owner, DebuggableClassAttribute classAttribute, DebuggableFieldAttribute fieldAttribute) : base(path, fieldInfo, owner, classAttribute, fieldAttribute)
         {

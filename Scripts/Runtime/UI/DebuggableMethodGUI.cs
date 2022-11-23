@@ -2,7 +2,7 @@ using System;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    public class DebuggableMethodGUI : DebuggableGUIBase
+    internal class DebuggableMethodGUI : DebuggableGUIBase
     {
         public override Type[] DisplayTypes => new[] { typeof(DebuggableMethod), typeof(DebuggableAction) };
 
@@ -10,7 +10,7 @@ namespace BrunoMikoski.DebugPanel.GUI
         private DebuggableAction debuggableAction;
         
 
-        public override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
+        internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
         {
             base.Initialize(targetDebuggableItem, targetDebugPage);
             if (targetDebuggableItem is DebuggableMethod targetDebuggableMethod)

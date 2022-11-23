@@ -4,7 +4,7 @@ using UnityEngine;
 namespace BrunoMikoski.DebugPanel
 {
     [Serializable]
-    public class DebuggableActionHotKeyData
+    internal class DebuggableActionHotKeyData
     {
         [SerializeField]
         private string hotKey;

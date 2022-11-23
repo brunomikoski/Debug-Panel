@@ -9,9 +9,28 @@ namespace BrunoMikoski.DebugPanel.Attributes
     [MeansImplicitUse(ImplicitUseKindFlags.Access)]
     public class DebuggableMethodAttribute : PreserveAttribute
     {
+        /// <summary>
+        /// Used to define the Path to this object, you can create a full path using /
+        /// <example>Path = "Level Design/Player Tweaks/Hero"</example>
+        /// </summary>
         public string Path  { get; set; }
+        /// <summary>
+        /// Use this to display useful information about this class, this is also used for searching so you could add tags here to simplify search
+        /// </summary>
         public string SubTitle  { get; set; }
+
+        /// <summary>
+        /// Hotkey used to trigger this method after is loaded into the DebugPanel
+        /// <example>Hotkey = "%#a" (Cmd/Ctrl+Shift+a)</example>
+        /// <see>
+        ///     <cref>https://docs.unity3d.com/ScriptReference/MenuItem.html</cref>
+        /// </see>
+        /// </summary>
         public string Hotkey  { get; set; }
+        
+        /// <summary>
+        /// Specific Platforms where this method should be available or not
+        /// </summary>
         public RuntimePlatform[] Platforms { get; set; }
     }
 }

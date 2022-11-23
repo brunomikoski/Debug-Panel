@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace BrunoMikoski.DebugPanel
 {
-    public class DebugPage
+    internal class DebugPage
     {
         private readonly string pagePath;
         public string PagePath => pagePath;
