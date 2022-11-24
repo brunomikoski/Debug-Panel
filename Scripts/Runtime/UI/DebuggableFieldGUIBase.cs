@@ -29,7 +29,10 @@ namespace BrunoMikoski.DebugPanel.GUI
         protected T GetValue<T>()
         {
             TryExecuteBeforeGetValueMethod();
-            return (T)debuggableField.FieldInfo.GetValue(debuggableField.Owner);
+            object value = debuggableField.FieldInfo.GetValue(debuggableField.Owner);
+            if (value == null)
+                return default;
+            return (T)value;
         }
 
         private void TryExecuteBeforeGetValueMethod()

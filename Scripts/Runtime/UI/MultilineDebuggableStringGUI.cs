@@ -17,7 +17,7 @@ namespace BrunoMikoski.DebugPanel.GUI
         protected override void UpdateDisplayValue()
         {
             string displayTextText = GetValue<string>();
-            if (displayTextText.Length != displayText.text.Length)
+            if (!string.IsNullOrEmpty(displayTextText) && displayTextText.Length != displayText.text.Length))
             {
                 displayText.text = displayTextText;
                 DebugPanelGUI.StartCoroutine(ToggleLayoutGroupEnumerator());
