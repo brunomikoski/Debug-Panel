@@ -43,7 +43,7 @@ namespace BrunoMikoski.DebugPanel.GUI
 #else
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    public sealed class SOCPickerOptionFieldGUI : PickerFieldGUIBase
+    internal sealed class SOCPickerOptionFieldGUI : PickerFieldGUIBase
     {
         protected override bool AllowToggleGroupToBeOff => true;
 

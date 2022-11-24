@@ -85,7 +85,7 @@ namespace BrunoMikoski.DebugPanel.GUI
 #else
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    public sealed class SOCPickerFieldGUI : DebuggableFieldBaseGUI
+    internal sealed class SOCPickerFieldGUI : DebuggableFieldBaseGUI
     {
         [SerializeField] 
         private TMP_Text displayField;
