@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 using BrunoMikoski.DebugPanel.Attributes;
 using BrunoMikoski.DebugPanel.GUI;
@@ -11,8 +10,15 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
+#if SL_ENABLED
+using BrunoMikoski.ServicesLocation;
+#endif
+
 namespace BrunoMikoski.DebugPanel
 {
+#if SL_ENABLED
+    [ServiceImplementation]
+#endif
     public class DebugPanel : MonoBehaviour
     {
         private const string DEFAULT_CATEGORY_NAME = "General";
