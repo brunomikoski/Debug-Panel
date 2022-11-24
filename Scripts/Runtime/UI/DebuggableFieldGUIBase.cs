@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    internal abstract class DebuggableFieldBaseGUI : DebuggableGUIBase
+    internal abstract class DebuggableFieldGUIBase : DebuggableGUIBase
     {
         protected DebuggableField debuggableField;
         public override Type[] DisplayTypes => new[] { typeof(DebuggableField) };

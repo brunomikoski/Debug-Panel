@@ -89,7 +89,7 @@ namespace BrunoMikoski.DebugPanel.GUI
                     for (int i = 0; i < possibleDisplays.Count; i++)
                     {
                         DebuggableGUIBase possibleDisplay = possibleDisplays[i];
-                        if (possibleDisplay is DebuggableFieldBaseGUI debuggableFieldGUI)
+                        if (possibleDisplay is DebuggableFieldGUIBase debuggableFieldGUI)
                         {
                             if (!debuggableFieldGUI.CanBeUsedForField(debuggableField.FieldInfo))
                                 continue;

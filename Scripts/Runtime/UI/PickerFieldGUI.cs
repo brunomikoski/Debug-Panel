@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    internal sealed class PickerFieldGUI : DebuggableFieldBaseGUI
+    internal sealed class PickerFieldGUI : DebuggableFieldGUIBase
     {
         [SerializeField]
         private Button button;

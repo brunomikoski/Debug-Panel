@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    internal sealed class DebuggableSliderFieldGUI : DebuggableFieldBaseGUI
+    internal sealed class DebuggableSliderFieldGUI : DebuggableFieldGUIBase
     {
         [SerializeField]
         private TMP_InputField inputField;

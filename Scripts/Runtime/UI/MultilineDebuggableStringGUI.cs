@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    internal class MultilineDebuggableStringGUI : DebuggableFieldBaseGUI
+    internal class MultilineDebuggableStringGUI : DebuggableFieldGUIBase
     {
         [SerializeField]
         private TMP_Text displayText;

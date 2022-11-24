@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    internal sealed class DebuggableInputFieldGUI : DebuggableFieldBaseGUI
+    internal sealed class DebuggableInputFieldGUI : DebuggableFieldGUIBase
     {
         private static Type[] DisplayableFieldInfoTypes => new[]
         {
