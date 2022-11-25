@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [Unreleased]
+
+
+## [0.2.2]
+### Changed
+- Fixed SOC Support not working correctly
+- Added support for [ServiceLocator](https://github.com/brunomikoski/ServiceLocator)
+- Refactored Favorite functionality
+- Renamed some files to keep consistent
+- Cleanup of some classes
+- Fixed possible NullReference when trying to display `GetValue<>` 
+- Changed Favorite Icon
+
+### Added
+- New Favorites folder that shows everything saved as favorite
+- 
+
 ## [0.2.1]
 ### Changed
 - Convert most of the classes to internal, so avoids appearing on code completion in other places
@@ -39,8 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial working version
 
 
-### [Unreleased]
-
+[0.2.2]: https://github.com/brunomikoski/Debug-Panel/releases/tag/v0.2.2
 [0.2.1]: https://github.com/brunomikoski/Debug-Panel/releases/tag/v0.2.1
 [0.2.0]: https://github.com/brunomikoski/Debug-Panel/releases/tag/v0.2.0
 [0.1.3]: https://github.com/brunomikoski/Debug-Panel/releases/tag/v0.1.3

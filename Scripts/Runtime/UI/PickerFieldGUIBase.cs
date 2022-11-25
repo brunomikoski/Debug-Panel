@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    internal abstract class PickerFieldGUIBase : DebuggableFieldBaseGUI
+    internal abstract class PickerFieldGUIBase : DebuggableFieldGUIBase
     {
         [SerializeField] 
         protected Toggle toggle;

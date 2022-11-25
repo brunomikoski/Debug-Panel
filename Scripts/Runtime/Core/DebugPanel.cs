@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 using BrunoMikoski.DebugPanel.Attributes;
 using BrunoMikoski.DebugPanel.GUI;
@@ -11,8 +10,15 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
+#if SL_ENABLED
+using BrunoMikoski.ServicesLocation;
+#endif
+
 namespace BrunoMikoski.DebugPanel
 {
+#if SL_ENABLED
+    [ServiceImplementation]
+#endif
     public class DebugPanel : MonoBehaviour
     {
         private const string DEFAULT_CATEGORY_NAME = "General";
@@ -34,6 +40,9 @@ namespace BrunoMikoski.DebugPanel
         private TMP_InputField searchInputField;
         [SerializeField]
         private ScrollRect scrollRect;
+
+        [SerializeField]
+        private FavoritesPageLinkGUI favoritesPageLink;
 
         private bool isVisible = true;
 
@@ -58,15 +67,17 @@ namespace BrunoMikoski.DebugPanel
         private string currentDisplayedPagePath;
         private DebugPage currentDisplayedPage;
 
+        private DebugPage generalPage;
         private DebugPage searchResultsPage;
         private string previousSearchValue = "";
         private DebugPage activePageBeforeSearch;
+        private DebugPage favoritesDebugPage;
 
         private void Awake()
         {
             SetVisible(false);
-            backdropButton.onClick.AddListener(Close);
-            closeButton.onClick.AddListener(Close);
+            backdropButton.onClick.AddListener(Hide);
+            closeButton.onClick.AddListener(Hide);
             backButton.onClick.AddListener(OnClickBack);
             searchInputField.onValueChanged.AddListener(OnSearchValueChanged);
             scrollRect.onValueChanged.AddListener(OnScrollRectValueChanged);
@@ -88,8 +99,8 @@ namespace BrunoMikoski.DebugPanel
         
         private void OnDestroy()
         {
-            backdropButton.onClick.RemoveListener(Close);
-            closeButton.onClick.RemoveListener(Close);
+            backdropButton.onClick.RemoveListener(Hide);
+            closeButton.onClick.RemoveListener(Hide);
             backButton.onClick.RemoveListener(OnClickBack);
             searchInputField.onValueChanged.RemoveListener(OnSearchValueChanged);
             scrollRect.onValueChanged.AddListener(OnScrollRectValueChanged);
@@ -131,12 +142,6 @@ namespace BrunoMikoski.DebugPanel
             debugPanelGUI.ShowOnlyMatches(searchValue, activePageBeforeSearch);
             debugPanelGUI.UpdateTitle();
             previousSearchValue = searchValue;
-        }
-
-        private void Close()
-        {
-            searchInputField.text = "";
-            SetVisible(false);
         }
         
         private void OnClickBack()
@@ -208,16 +213,28 @@ namespace BrunoMikoski.DebugPanel
             DisplayPage(targetDebugPage);
         }
 
-        internal void DisplayPage(DebugPage debugPage)
+        internal void DisplayPage(DebugPage targetDebugPage)
         {
-            currentDisplayedPagePath = debugPage.PagePath;
-            currentDisplayedPage = debugPage;
-            debugPanelGUI.DisplayDebugPage(debugPage);
+            currentDisplayedPagePath = targetDebugPage.PagePath;
+            currentDisplayedPage = targetDebugPage;
+            
+            SetFavoritesButtonEnabled(currentDisplayedPage == generalPage);
+            
+            debugPanelGUI.DisplayDebugPage(targetDebugPage);
 
-            backButton.gameObject.SetActive(debugPage.HasParentPage());
+
+            backButton.gameObject.SetActive(targetDebugPage.HasParentPage());
             StartCoroutine(WaitToUpdateScrollPositionEnumerator());
         }
-        
+
+        private void SetFavoritesButtonEnabled(bool isEnabled)
+        {
+            if (!favoritesDebugPage.HasContent)
+                isEnabled = false;
+            
+            favoritesPageLink.gameObject.SetActive(isEnabled);
+        }
+
         public void RegisterDebuggable(object targetDebuggable)
         {
             lifeTimeNonMonobehaviour.Add(targetDebuggable);
@@ -255,7 +272,8 @@ namespace BrunoMikoski.DebugPanel
             debuggables.Clear();
             activeDebuggableItems.Clear();
 
-            searchResultsPage = new DebugPage("Search Result", "", "", "");
+            searchResultsPage = new DebugPage("Search Result", "", "");
+            favoritesDebugPage = new DebugPage("Favorites", "Favorites", "List with all debuggables saved as favorites");
             
             debuggables.AddRange(GetDebuggableMonoBehaviours());
             debuggables.AddRange(lifeTimeNonMonobehaviour);
@@ -282,20 +300,34 @@ namespace BrunoMikoski.DebugPanel
                     GetDebuggableMethodsFromObject(debuggableMonoBehaviour, debuggableClassAttribute);
 
                 for (int j = 0; j < debuggableMethods.Count; j++)
-                    AddDebuggableToAppropriatedPath(debuggableMethods[j], categoryPage);
+                {
+                    DebuggableMethod debuggableMethod = debuggableMethods[j];
+                    AddDebuggableToAppropriatedPath(debuggableMethod, categoryPage);
+                    if (debuggableMethod.IsFavorite)
+                        favoritesDebugPage.AddItem(debuggableMethod);
+                }
 
                 List<DebuggableField> debuggableFields =
                     GetDebuggableFieldsFromObject(debuggableMonoBehaviour, debuggableClassAttribute);
 
                 for (int j = 0; j < debuggableFields.Count; j++)
-                    AddDebuggableToAppropriatedPath(debuggableFields[j], categoryPage);
+                {
+                    DebuggableField debuggableField = debuggableFields[j];
+                    AddDebuggableToAppropriatedPath(debuggableField, categoryPage);
+                    if (debuggableField.IsFavorite)
+                        favoritesDebugPage.AddItem(debuggableField);
+                }
             }
 
             for (int i = 0; i < lifeTimeDynamicActions.Count; i++)
                 AddDebuggableToAppropriatedPath(lifeTimeDynamicActions[i], null);
 
-            if (pathToDebugPage.TryGetValue($"{DEFAULT_CATEGORY_NAME}/", out DebugPage generalPage))
+            if (pathToDebugPage.TryGetValue($"{DEFAULT_CATEGORY_NAME}/", out generalPage))
+            {
                 searchResultsPage.SetParentPage(generalPage);
+                favoritesDebugPage.SetParentPage(generalPage);
+                favoritesPageLink.Initialize(new DebuggablePageLink("Favorites","List with all debuggables saved as favorites", favoritesDebugPage), generalPage);
+            }
         }
 
         private void AddDebuggableToAppropriatedPath(DebuggableItemBase targetDebuggableBase, DebugPage parentPage)
@@ -330,6 +362,9 @@ namespace BrunoMikoski.DebugPanel
 
             string fullPath = $"{finalPage.PagePath}{targetDebuggableBase.Path}".Replace("//", "/");
             targetDebuggableBase.SetFinalFullPath(fullPath);
+
+            if (finalPage.IsFavorite)
+                favoritesDebugPage.AddChildPage(finalPage);
                 
             activeDebuggableItems.Add(targetDebuggableBase);
             searchResultsPage.AddItem(targetDebuggableBase);
@@ -388,7 +423,7 @@ namespace BrunoMikoski.DebugPanel
 
                 if (!pathToDebugPage.TryGetValue(pageFinalPath, out DebugPage resultPage))
                 {
-                    resultPage = new DebugPage(pageFinalPath, folder, "", "");
+                    resultPage = new DebugPage(pageFinalPath, folder, "");
                     if (parentPage != null)
                         parentPage.AddChildPage(resultPage);
 
@@ -399,7 +434,7 @@ namespace BrunoMikoski.DebugPanel
 
                 if (i == folders.Length - 1)
                 {
-                    resultPage.UpdateData(subTitle, spriteName);
+                    resultPage.UpdateData(subTitle);
                     targetPage = resultPage;
                 }
             }
@@ -501,11 +536,34 @@ namespace BrunoMikoski.DebugPanel
         public void Hide()
         {
             SetVisible(false);
+            searchInputField.text = "";
         }
 
         public void Show()
         {
             SetVisible(true);
+        }
+
+        internal void UpdateDebuggableFavorite(DebuggableItemBase debuggableItem)
+        {
+            if (debuggableItem is DebuggablePageLink pageLink)
+            {
+                if (pageLink.IsFavorite)
+                    favoritesDebugPage.AddChildPage(pageLink.ToDebugPage, false);
+                else
+                    favoritesDebugPage.RemoveChildPage(pageLink.ToDebugPage);
+                
+                return;
+            }
+            
+            if (debuggableItem.IsFavorite)
+            {
+                favoritesDebugPage.AddItem(debuggableItem);
+            }
+            else
+            {
+                favoritesDebugPage.RemoveItem(debuggableItem);
+            }
         }
     }
 }

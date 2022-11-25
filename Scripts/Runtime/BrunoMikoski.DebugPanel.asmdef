@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Unity.TextMeshPro",
-        "BrunoMikoski.ScriptableObjectCollection"
+        "BrunoMikoski.ScriptableObjectCollection",
+        "BrunoMikoski.ServiceLocator"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -17,6 +18,11 @@
             "name": "com.brunomikoski.scriptableobjectcollection",
             "expression": "",
             "define": "SOC_ENABLED"
+        },
+        {
+            "name": "com.brunomikoski.servicelocator",
+            "expression": "",
+            "define": "SL_ENABLED"
         }
     ],
     "noEngineReferences": false

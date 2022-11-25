@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    internal sealed class DebuggableToggleFieldGUI : DebuggableFieldBaseGUI
+    internal sealed class DebuggableToggleFieldGUI : DebuggableFieldGUIBase
     {
         [SerializeField]
         private LayoutElement layoutElement;

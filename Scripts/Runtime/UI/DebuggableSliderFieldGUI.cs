@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    internal sealed class DebuggableSliderFieldGUI : DebuggableFieldBaseGUI
+    internal sealed class DebuggableSliderFieldGUI : DebuggableFieldGUIBase
     {
         [SerializeField]
         private TMP_InputField inputField;
@@ -72,7 +72,11 @@ namespace BrunoMikoski.DebugPanel.GUI
 
         protected override void UpdateDisplayValue()
         {
-            inputField.text = GetValue<object>().ToString();
+            string stringValue = GetValue<object>().ToString();
+            if (string.IsNullOrEmpty(stringValue))
+                return;
+                
+            inputField.text = stringValue;
 
             if (debuggableField.FieldInfo.FieldType == typeof(float))
             {

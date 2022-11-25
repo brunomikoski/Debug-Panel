@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    internal sealed class SOCPickerFieldGUI : DebuggableFieldBaseGUI
+    internal sealed class SOCPickerFieldGUI : DebuggableFieldGUIBase
     {
         [SerializeField]
         private Button button;
@@ -85,7 +85,7 @@ namespace BrunoMikoski.DebugPanel.GUI
 #else
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    public sealed class SOCPickerFieldGUI : DebuggableFieldBaseGUI
+    internal sealed class SOCPickerFieldGUI : DebuggableFieldGUIBase
     {
         [SerializeField] 
         private TMP_Text displayField;

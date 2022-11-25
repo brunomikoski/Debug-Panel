@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    internal sealed class DebuggableInputFieldGUI : DebuggableFieldBaseGUI
+    internal sealed class DebuggableInputFieldGUI : DebuggableFieldGUIBase
     {
         private static Type[] DisplayableFieldInfoTypes => new[]
         {
@@ -48,8 +48,11 @@ namespace BrunoMikoski.DebugPanel.GUI
         protected override void UpdateDisplayValue()
         {
             string stringValue = GetValue<object>().ToString();
-            inputField.text = stringValue;
-            cachedValidValue = stringValue;
+            if (!string.IsNullOrEmpty(stringValue))
+            {
+                inputField.text = stringValue;
+                cachedValidValue = stringValue;
+            }
         }
 
         protected override void Update()

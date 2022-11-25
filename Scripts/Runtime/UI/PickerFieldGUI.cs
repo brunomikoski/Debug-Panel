@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    internal sealed class PickerFieldGUI : DebuggableFieldBaseGUI
+    internal sealed class PickerFieldGUI : DebuggableFieldGUIBase
     {
         [SerializeField]
         private Button button;
@@ -30,7 +30,7 @@ namespace BrunoMikoski.DebugPanel.GUI
         private void OnButtonClick()
         {
             DebugPage pickerOptionsDebugPage = new DebugPage($"{DebugPage.PagePath}{displayField.text}",
-                $"{selectableType.Name} Options", "", "");
+                $"{selectableType.Name} Options", "");
             
             pickerOptionsDebugPage.SetParentPage(DebugPage);
 

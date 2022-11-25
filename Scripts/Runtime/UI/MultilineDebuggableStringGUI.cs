@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
-    internal class MultilineDebuggableStringGUI : DebuggableFieldBaseGUI
+    internal class MultilineDebuggableStringGUI : DebuggableFieldGUIBase
     {
         [SerializeField]
         private TMP_Text displayText;
@@ -17,7 +17,7 @@ namespace BrunoMikoski.DebugPanel.GUI
         protected override void UpdateDisplayValue()
         {
             string displayTextText = GetValue<string>();
-            if (displayTextText.Length != displayText.text.Length)
+            if (!string.IsNullOrEmpty(displayTextText) && displayTextText.Length != displayText.text.Length)
             {
                 displayText.text = displayTextText;
                 DebugPanelGUI.StartCoroutine(ToggleLayoutGroupEnumerator());
