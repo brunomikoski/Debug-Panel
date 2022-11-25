@@ -30,7 +30,7 @@ namespace BrunoMikoski.DebugPanel.GUI
         private void OnButtonClick()
         {
             DebugPage pickerOptionsDebugPage = new DebugPage($"{DebugPage.PagePath}{displayField.text}",
-                $"{selectableType.Name} Options", "", "");
+                $"{selectableType.Name} Options", "");
             
             pickerOptionsDebugPage.SetParentPage(DebugPage);
 

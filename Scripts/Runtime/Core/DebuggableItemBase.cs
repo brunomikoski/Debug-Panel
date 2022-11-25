@@ -5,10 +5,15 @@ namespace BrunoMikoski.DebugPanel
 {
     internal abstract class DebuggableItemBase
     {
-        public bool IsFavorite
+        public virtual bool IsFavorite
         {
-            get => PlayerPrefs.GetInt(Path, 0) == 1;
-            private set => PlayerPrefs.SetInt(Path, value ? 1 : 0);
+            get
+            {
+                if (string.IsNullOrEmpty(fullPath))
+                    return false;
+                
+                return PlayerPrefs.GetInt(fullPath, 0) == 1;
+            }
         }
 
         private string path;
@@ -37,12 +42,12 @@ namespace BrunoMikoski.DebugPanel
             this.subTitle = subTitle;
         }
 
-        public void SetIsFavorite(bool isFavorite)
+        internal virtual void SetIsFavorite(bool isFavorite)
         {
-            IsFavorite = isFavorite;
+            PlayerPrefs.SetInt(fullPath, isFavorite ? 1 : 0);
         }
 
-        public void SetFinalFullPath(string targetFullPath)
+        internal void SetFinalFullPath(string targetFullPath)
         {
             this.fullPath = targetFullPath;
         }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
@@ -14,6 +13,7 @@ namespace BrunoMikoski.DebugPanel.GUI
 
 
         private List<DebuggableGUIBase> displayingItems = new List<DebuggableGUIBase>();
+
         private DebugPage currentDebugPage;
 
         public DebugPage CurrentDebugPage => currentDebugPage;
@@ -46,14 +46,15 @@ namespace BrunoMikoski.DebugPanel.GUI
         {
             List<DebuggableItemBase> displayItems = new List<DebuggableItemBase>(currentDebugPage.Items);
 
-            for (int i = 0; i < currentDebugPage.ChildPages.Count; i++)
+            foreach (DebugPage childPage in currentDebugPage.ChildPages)
             {
-                DebugPage childPage = currentDebugPage.ChildPages[i];
-                displayItems.Add(new PageLink(childPage.Title, childPage.SubTitle, childPage.SpriteName, currentDebugPage, childPage));
+                DebuggablePageLink debuggableItemBase = new DebuggablePageLink(childPage.Title, childPage.SubTitle, childPage);
+                debuggableItemBase.SetFinalFullPath($"{currentDebugPage.PagePath}{debuggableItemBase.Title}");
+                displayItems.Add(debuggableItemBase);
             }
 
             displayItems = displayItems.OrderBy(baseItem => !baseItem.IsFavorite)
-                .ThenBy(baseItem => !(baseItem is PageLink)).ThenBy(baseItem => baseItem.Title).ToList();
+                .ThenBy(baseItem => !(baseItem is DebuggablePageLink)).ThenBy(baseItem => baseItem.Title).ToList();
             
             for (int i = 0; i < displayItems.Count; i++)
             {

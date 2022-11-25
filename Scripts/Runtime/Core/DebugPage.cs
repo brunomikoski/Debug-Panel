@@ -1,9 +1,23 @@
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace BrunoMikoski.DebugPanel
 {
     internal class DebugPage
     {
+        public bool IsFavorite
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(PagePath))
+                    return false;
+                
+                return PlayerPrefs.GetInt(PagePath, 0) == 1;
+            }
+        }
+
+        
         private readonly string pagePath;
         public string PagePath => pagePath;
 
@@ -12,9 +26,6 @@ namespace BrunoMikoski.DebugPanel
         
         private string subTitle;
         public string SubTitle => subTitle;
-
-        private string spriteName;
-        public string SpriteName => spriteName;
 
 
         private List<DebuggableItemBase> items = new List<DebuggableItemBase>();
@@ -29,42 +40,85 @@ namespace BrunoMikoski.DebugPanel
         private float lastScrollHeight = 1;
         public float LastScrollHeight => lastScrollHeight;
 
-        public DebugPage(string targetPath, string targetTitle, string targetSubTitle, string targetSpriteName)
+        public bool HasContent => items.Count > 0 || childPages.Count > 0;
+
+        public DebugPage(string targetPath, string targetTitle, string targetSubTitle)
         {
             pagePath = targetPath;
             title = targetTitle;
             subTitle = targetSubTitle;
-            spriteName = targetSpriteName;
         }
 
         public void AddItem(params DebuggableItemBase[] debuggables)
         {
-            items.AddRange(debuggables);
+            for (int i = 0; i < debuggables.Length; i++)
+            {
+                DebuggableItemBase debuggableItemBase = debuggables[i];
 
+                if (AlreadyContains(debuggableItemBase))
+                    continue;
+
+                items.Add(debuggableItemBase);
+            }
         }
+
+        private bool AlreadyContains(DebuggableItemBase debuggableItemBase)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                DebuggableItemBase itemBase = items[i];
+                if (itemBase.FullPath.Equals(debuggableItemBase.FullPath, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+
+            return false;
+        }
+
         public void AddItem(params DebuggableMethod[] debuggableMethods)
         {
-            items.AddRange(debuggableMethods);
+            for (int i = 0; i < debuggableMethods.Length; i++)
+            {
+                DebuggableMethod debuggableMethod = debuggableMethods[i];
+
+                if (AlreadyContains(debuggableMethod))
+                    continue;
+
+                items.Add(debuggableMethod);
+            }
+        }
+        
+        public void RemoveItem(params DebuggableItemBase[] debuggables)
+        {
+            for (int i = 0; i < debuggables.Length; i++)
+            {
+                items.Remove(debuggables[i]);
+            }
         }
         
         public void AddItem(params DebuggableField[] debuggableFields)
         {
-            items.AddRange(debuggableFields);
+            for (int i = 0; i < debuggableFields.Length; i++)
+            {
+                items.Add(debuggableFields[i]);
+            }
         }
 
-        public void AddChildPage(DebugPage childPage)
+        public void AddChildPage(DebugPage childPage, bool setParent = true)
         {
             childPages.Add(childPage);
-            childPage.SetParentPage(this);
+            if (setParent)
+                childPage.SetParentPage(this);
         }
 
-        public void UpdateData(string targetSubTitle, string targetSpriteName)
+        public void RemoveChildPage(DebugPage targetDebugPage)
+        {
+            childPages.Remove(targetDebugPage);
+        }
+
+        public void UpdateData(string targetSubTitle)
         {
             if (!string.IsNullOrEmpty(targetSubTitle))
                 subTitle = targetSubTitle;
-
-            if (!string.IsNullOrEmpty(targetSpriteName))
-                spriteName = targetSpriteName;
         }
 
         public void SetParentPage(DebugPage parentPage)
@@ -85,6 +139,11 @@ namespace BrunoMikoski.DebugPanel
         public void SetLastKnowHeight(float normPosition)
         {
             lastScrollHeight = normPosition;
+        }
+
+        public void SetIsFavorite(bool favorite)
+        {
+            PlayerPrefs.SetInt(PagePath, favorite ? 1 : 0);
         }
     }
 }

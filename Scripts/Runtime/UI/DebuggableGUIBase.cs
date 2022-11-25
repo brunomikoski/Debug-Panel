@@ -65,7 +65,7 @@ namespace BrunoMikoski.DebugPanel.GUI
                 subTitle.gameObject.SetActive(false);
         }
 
-        private void UpdateFavorite()
+        protected virtual void UpdateFavorite()
         {
             if (favIconImage == null)
                 return;
@@ -106,27 +106,22 @@ namespace BrunoMikoski.DebugPanel.GUI
                 if (heldTime > TIME_TO_FAVORITE)
                 {
                     heldTime = 0;
-                    if (favIconImage != null)
-                    {
-                        debuggableItem.SetIsFavorite(!debuggableItem.IsFavorite);
-                        UpdateFavorite();
-                    }
+                    ToggleFavorite();
+                    
 
                     toggledFavorite = true;
                 }
             }
         }
 
-        internal bool IsInside(DebugPage targetDebugPage)
+        protected virtual void ToggleFavorite()
         {
-            DebugPage currentPage = DebugPage;
-            while (currentPage != null)
-            {
-                if(currentPage == targetDebugPage)
-                    return true;
-                currentPage = currentPage.ParentPage;
-            }
-            return false;
+            if (favIconImage == null)
+                return;
+            
+            debuggableItem.SetIsFavorite(!debuggableItem.IsFavorite);
+            DebugPanel.UpdateDebuggableFavorite(debuggableItem);
+            UpdateFavorite();
         }
     }
 }
