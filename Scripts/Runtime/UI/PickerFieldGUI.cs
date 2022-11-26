@@ -27,6 +27,12 @@ namespace BrunoMikoski.DebugPanel.GUI
             button.onClick.RemoveListener(OnButtonClick);
         }
 
+        protected override void SetAsReadOnly()
+        {
+            base.SetAsReadOnly();
+            button.interactable = false;
+        }
+
         private void OnButtonClick()
         {
             DebugPage pickerOptionsDebugPage = new DebugPage($"{DebugPage.PagePath}{displayField.text}",

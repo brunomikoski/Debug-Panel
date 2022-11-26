@@ -34,6 +34,12 @@ namespace BrunoMikoski.DebugPanel.GUI
             inputField.onSubmit.AddListener(OnInputFieldSubmit);
         }
 
+        protected override void SetAsReadOnly()
+        {
+            base.SetAsReadOnly();
+            inputField.interactable = favIconImage;
+        }
+
         private void OnDestroy()
         {
             inputField.onSubmit.RemoveListener(OnInputFieldSubmit);

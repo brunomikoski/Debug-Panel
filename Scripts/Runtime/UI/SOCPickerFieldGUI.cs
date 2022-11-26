@@ -32,6 +32,12 @@ namespace BrunoMikoski.DebugPanel.GUI
             button.onClick.RemoveListener(OnButtonClick);
         }
 
+        protected override void SetAsReadOnly()
+        {
+            base.SetAsReadOnly();
+            button.enabled = false;
+        }
+
         internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
         {
             base.Initialize(targetDebuggableItem, targetDebugPage);

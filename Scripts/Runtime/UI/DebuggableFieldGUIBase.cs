@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using BrunoMikoski.DebugPanel.Attributes;
 using UnityEngine;
 
 namespace BrunoMikoski.DebugPanel.GUI
@@ -14,8 +15,14 @@ namespace BrunoMikoski.DebugPanel.GUI
         {
             base.Initialize(targetDebuggableItem, targetDebugPage);
             debuggableField = (DebuggableField)targetDebuggableItem;
+            
+            if (debuggableField.FieldInfo.HasAttribute<ReadOnlyFieldAttribute>())
+                SetAsReadOnly();
+
             UpdateDisplayValue();
         }
+
+        protected virtual void SetAsReadOnly(){}
 
         protected abstract void UpdateDisplayValue();
 

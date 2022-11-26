@@ -40,6 +40,12 @@ namespace BrunoMikoski.DebugPanel.GUI
             SetValue(newValue);
         }
 
+        protected override void SetAsReadOnly()
+        {
+            base.SetAsReadOnly();
+            toggle.interactable = false;
+        }
+
         protected override void UpdateDisplayValue()
         {
             toggle.SetIsOnWithoutNotify(GetValue<bool>());

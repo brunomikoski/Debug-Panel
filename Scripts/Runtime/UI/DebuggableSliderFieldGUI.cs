@@ -22,7 +22,7 @@ namespace BrunoMikoski.DebugPanel.GUI
             slider.minValue = rangeAttribute.min;
             slider.maxValue = rangeAttribute.max;
             slider.onValueChanged.AddListener(OnSliderValueChanged);
-            inputField.onSubmit.AddListener(OnInputSubmited);
+            inputField.onSubmit.AddListener(OnInputSubmitted);
             
             if (debuggableField.FieldInfo.FieldType == typeof(float))
                 inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
@@ -35,10 +35,17 @@ namespace BrunoMikoski.DebugPanel.GUI
         private void OnDestroy()
         {
             slider.onValueChanged.RemoveListener(OnSliderValueChanged);
-            inputField.onSubmit.RemoveListener(OnInputSubmited);
+            inputField.onSubmit.RemoveListener(OnInputSubmitted);
         }
-        
-        private void OnInputSubmited(string stringValue)
+
+        protected override void SetAsReadOnly()
+        {
+            base.SetAsReadOnly();
+            slider.interactable = false;
+            inputField.interactable = false;
+        }
+
+        private void OnInputSubmitted(string stringValue)
         {
             if (debuggableField.FieldInfo.FieldType == typeof(float))
             {
