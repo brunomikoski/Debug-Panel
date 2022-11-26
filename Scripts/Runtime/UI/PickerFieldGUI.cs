@@ -51,7 +51,7 @@ namespace BrunoMikoski.DebugPanel.GUI
                 pickerOptionsDebugPage.AddItem(debuggableEnumItem);
             }
             
-            DebugPanel.DisplayPage(pickerOptionsDebugPage);
+            DebugPanelService.DisplayPage(pickerOptionsDebugPage);
         }
 
         internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)

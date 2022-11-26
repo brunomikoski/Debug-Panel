@@ -68,7 +68,7 @@ namespace BrunoMikoski.DebugPanel.GUI
                 }
             }
             
-            DebugPanel.DisplayPage(pickerOptionsDebugPage);
+            DebugPanelService.DisplayPage(pickerOptionsDebugPage);
         }
 
         protected override void UpdateDisplayValue()

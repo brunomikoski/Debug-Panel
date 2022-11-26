@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Fixed SOC wrong usage when not enabled
 - Fixed Prefab started disabled
+- Renamed `DebugPanel` to `DebugPanelService` for consistency 
 
 ### Added 
 - Added `ReadOnlyFieldAttribute` to make fields only readable

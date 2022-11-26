@@ -26,8 +26,8 @@ namespace BrunoMikoski.DebugPanel.GUI
             else if(debuggableAction != null)
                 debuggableAction.Invoke();
 
-            if (DebugPanel.HideAfterInvoke)
-                DebugPanel.Hide();
+            if (DebugPanelService.HideAfterInvoke)
+                DebugPanelService.Hide();
         }
     }
 }
