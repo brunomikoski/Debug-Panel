@@ -2,11 +2,26 @@
 
 namespace BrunoMikoski.DebugPanel
 {
+    [RequireComponent(typeof(DebugPanelService))]
     internal class HotKeyManager : MonoBehaviour
     {
-        [SerializeField]
-        private DebugPanelService debugPanelService;
-        
+        private bool hasCachedDebugPanel;
+        private DebugPanelService cachedDebugPanelService;
+
+        private DebugPanelService debugPanelService
+        {
+            get
+            {
+                if (!hasCachedDebugPanel)
+                {
+                    cachedDebugPanelService = GetComponent<DebugPanelService>();
+                    hasCachedDebugPanel = true;
+                }
+
+                return cachedDebugPanelService;
+            }
+       }
+
 #if UNITY_EDITOR
         private void Update()
         {
