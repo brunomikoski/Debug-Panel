@@ -2245,7 +2245,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b2e87a23a694e9c8d542c5896889c28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugPanel: {fileID: 1487645930743574805}
 --- !u!1 &622399359803848272
 GameObject:
   m_ObjectHideFlags: 0
@@ -12222,7 +12221,7 @@ MonoBehaviour:
   favIconImage: {fileID: 6545965379195312980}
   display: {fileID: 6288704754682735426}
   subTitle: {fileID: 4719790096820441757}
-  button: {fileID: 0}
+  button: {fileID: 7308062564887563361}
   displayField: {fileID: 3538242474145733560}
 --- !u!114 &7308062564887563361
 MonoBehaviour:
