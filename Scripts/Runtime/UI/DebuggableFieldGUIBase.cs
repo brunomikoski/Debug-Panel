@@ -37,8 +37,6 @@ namespace BrunoMikoski.DebugPanel.GUI
         {
             TryExecuteBeforeGetValueMethod();
             object value = debuggableField.FieldInfo.GetValue(debuggableField.Owner);
-            if (value == null)
-                return default;
             return (T)value;
         }
 

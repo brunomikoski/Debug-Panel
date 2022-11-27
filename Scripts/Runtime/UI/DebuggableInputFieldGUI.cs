@@ -1,17 +1,26 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
     internal sealed class DebuggableInputFieldGUI : DebuggableFieldGUIBase
     {
-        private static Type[] DisplayableFieldInfoTypes => new[]
+        private static Dictionary<Type, bool> DisplayableTypeToEditable => new Dictionary<Type, bool>
         {
-            typeof(float), typeof(string), typeof(int), typeof(double), typeof(Vector3), typeof(Vector2),
-            typeof(Vector4), typeof(Quaternion)
+            {typeof(float), true},
+            {typeof(string), true},
+            {typeof(int), true},
+            {typeof(double), true},
+            {typeof(Vector2), true},
+            {typeof(Vector3), true},
+            {typeof(Vector4), true},
+            {typeof(Quaternion), true},
+            {typeof(Object), false}
         };
 
         [SerializeField]
@@ -32,33 +41,9 @@ namespace BrunoMikoski.DebugPanel.GUI
         {
             base.Initialize(targetDebuggableItem, targetDebugPage);
             inputField.onSubmit.AddListener(OnInputFieldSubmit);
-        }
-
-        protected override void SetAsReadOnly()
-        {
-            base.SetAsReadOnly();
-            inputField.interactable = favIconImage;
-        }
-
-        private void OnDestroy()
-        {
-            inputField.onSubmit.RemoveListener(OnInputFieldSubmit);
-        }
-
-        private void OnInputFieldSubmit(string newValue)
-        {
-            ProcessNewValue(newValue);
-        }
-
-
-        protected override void UpdateDisplayValue()
-        {
-            string stringValue = GetValue<object>().ToString();
-            if (!string.IsNullOrEmpty(stringValue))
-            {
-                inputField.text = stringValue;
-                cachedValidValue = stringValue;
-            }
+            
+            if(!IsEditable(debuggableField.FieldInfo.FieldType))
+                SetAsReadOnly();
         }
 
         protected override void Update()
@@ -67,6 +52,44 @@ namespace BrunoMikoski.DebugPanel.GUI
                 UpdateDisplayValue();
         }
 
+        private void OnDestroy()
+        {
+            inputField.onSubmit.RemoveListener(OnInputFieldSubmit);
+        }
+        
+        private void OnInputFieldSubmit(string newValue)
+        {
+            ProcessNewValue(newValue);
+        }
+
+        protected override void UpdateDisplayValue()
+        {
+            string stringValue = GetValue<object>().ToString();
+            if (string.IsNullOrEmpty(stringValue))
+                stringValue = "Null";
+            
+            inputField.text = stringValue;
+            cachedValidValue = stringValue;
+
+        }
+
+        private bool IsEditable(Type fieldInfoFieldType)
+        {
+            foreach (var typeToEditable in DisplayableTypeToEditable)
+            {
+                if (typeToEditable.Key.IsAssignableFrom(fieldInfoFieldType))
+                    return typeToEditable.Value;
+            }
+
+            return false;
+        }
+
+        protected override void SetAsReadOnly()
+        {
+            base.SetAsReadOnly();
+            inputField.interactable = false;
+        }
+        
         private void ProcessNewValue(string newValue)
         {
             if (!TrySetValueForField(newValue))
@@ -231,9 +254,12 @@ namespace BrunoMikoski.DebugPanel.GUI
             if (targetFieldInfo.FieldType == typeof(float) || targetFieldInfo.FieldType == typeof(int))
                 if (targetFieldInfo.HasAttribute<RangeAttribute>())
                     return false;
-            
-            if (Array.IndexOf(DisplayableFieldInfoTypes, targetFieldInfo.FieldType) > -1)
-                return true;
+
+            foreach (var typeToEditable in DisplayableTypeToEditable)
+            {
+                if(typeToEditable.Key.IsAssignableFrom(targetFieldInfo.FieldType))
+                    return true;
+            }
 
             return false;
         }
