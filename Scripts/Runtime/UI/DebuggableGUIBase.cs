@@ -29,14 +29,14 @@ namespace BrunoMikoski.DebugPanel.GUI
         private bool toggledFavorite;
 
         
-        private DebugPanel cachedDebugPanel;
-        protected DebugPanel DebugPanel
+        private DebugPanelService cachedDebugPanelService;
+        protected DebugPanelService DebugPanelService
         {
             get
             {
-                if (cachedDebugPanel == null)
-                    cachedDebugPanel = GetComponentInParent<DebugPanel>();
-                return cachedDebugPanel;
+                if (cachedDebugPanelService == null)
+                    cachedDebugPanelService = GetComponentInParent<DebugPanelService>();
+                return cachedDebugPanelService;
             }
         }
 
@@ -120,7 +120,7 @@ namespace BrunoMikoski.DebugPanel.GUI
                 return;
             
             debuggableItem.SetIsFavorite(!debuggableItem.IsFavorite);
-            DebugPanel.UpdateDebuggableFavorite(debuggableItem);
+            DebugPanelService.UpdateDebuggableFavorite(debuggableItem);
             UpdateFavorite();
         }
     }

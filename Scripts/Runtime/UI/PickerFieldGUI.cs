@@ -27,6 +27,12 @@ namespace BrunoMikoski.DebugPanel.GUI
             button.onClick.RemoveListener(OnButtonClick);
         }
 
+        protected override void SetAsReadOnly()
+        {
+            base.SetAsReadOnly();
+            button.interactable = false;
+        }
+
         private void OnButtonClick()
         {
             DebugPage pickerOptionsDebugPage = new DebugPage($"{DebugPage.PagePath}{displayField.text}",
@@ -45,7 +51,7 @@ namespace BrunoMikoski.DebugPanel.GUI
                 pickerOptionsDebugPage.AddItem(debuggableEnumItem);
             }
             
-            DebugPanel.DisplayPage(pickerOptionsDebugPage);
+            DebugPanelService.DisplayPage(pickerOptionsDebugPage);
         }
 
         internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)

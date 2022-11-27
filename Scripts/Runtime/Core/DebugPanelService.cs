@@ -19,7 +19,7 @@ namespace BrunoMikoski.DebugPanel
 #if SL_ENABLED
     [ServiceImplementation]
 #endif
-    public class DebugPanel : MonoBehaviour
+    public class DebugPanelService : MonoBehaviour
     {
         private const string DEFAULT_CATEGORY_NAME = "General";
         

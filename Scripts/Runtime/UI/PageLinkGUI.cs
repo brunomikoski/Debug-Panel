@@ -18,7 +18,7 @@ namespace BrunoMikoski.DebugPanel.GUI
         protected override void OnClick()
         {
             base.OnClick();
-            DebugPanel.DisplayPage(pageLink.ToDebugPage);
+            DebugPanelService.DisplayPage(pageLink.ToDebugPage);
         }
 
         protected override void UpdateFavorite()
@@ -36,7 +36,7 @@ namespace BrunoMikoski.DebugPanel.GUI
                 return;
 
             pageLink.ToDebugPage.SetIsFavorite(!pageLink.ToDebugPage.IsFavorite);
-            DebugPanel.UpdateDebuggableFavorite(pageLink);
+            DebugPanelService.UpdateDebuggableFavorite(pageLink);
             UpdateFavorite();
         }
     }
