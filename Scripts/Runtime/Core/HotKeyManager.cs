@@ -1,34 +1,33 @@
 ﻿using UnityEngine;
 
-namespace BrunoMikoski.DebugPanel
+namespace BrunoMikoski.DebugTools
 {
-    [RequireComponent(typeof(DebugPanelService))]
     internal class HotKeyManager : MonoBehaviour
     {
         private bool hasCachedDebugPanel;
-        private DebugPanelService cachedDebugPanelService;
+        private DebugPanel cachedDebugPanel;
 
-        private DebugPanelService debugPanelService
+        private DebugPanel DebugPanel
         {
             get
             {
                 if (!hasCachedDebugPanel)
                 {
-                    cachedDebugPanelService = GetComponent<DebugPanelService>();
+                    cachedDebugPanel = GetComponent<DebugPanel>();
                     hasCachedDebugPanel = true;
                 }
 
-                return cachedDebugPanelService;
+                return cachedDebugPanel;
             }
        }
 
 #if UNITY_EDITOR
         private void Update()
         {
-            int count = debugPanelService.ActiveDebuggableItems.Count;
+            int count = DebugPanel.ActiveDebuggableItems.Count;
             for (int i = 0; i < count; i++)
             {
-                DebuggableItemBase debuggable = debugPanelService.ActiveDebuggableItems[i];
+                DebuggableItemBase debuggable = DebugPanel.ActiveDebuggableItems[i];
                 if (debuggable is DebuggableInvokableBase invokableBase)
                 {
                     if (string.IsNullOrEmpty(invokableBase.Hotkey))

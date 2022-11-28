@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace BrunoMikoski.DebugPanel
+namespace BrunoMikoski.DebugTools
 {
     internal abstract class DebuggableItemBase
     {

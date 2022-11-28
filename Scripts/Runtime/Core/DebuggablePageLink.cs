@@ -1,4 +1,4 @@
-﻿namespace BrunoMikoski.DebugPanel
+﻿namespace BrunoMikoski.DebugTools
 {
     internal class DebuggablePageLink : DebuggableItemBase
     {

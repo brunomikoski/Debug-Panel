@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace BrunoMikoski.DebugPanel
+namespace BrunoMikoski.DebugTools
 {
     public static class FieldInfoExtensions
     {

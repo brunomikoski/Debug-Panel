@@ -1,6 +1,6 @@
 using System;
 
-namespace BrunoMikoski.DebugPanel
+namespace BrunoMikoski.DebugTools
 {
     internal class DebuggableAction : DebuggableInvokableBase
     {

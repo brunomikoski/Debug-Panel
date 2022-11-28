@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BrunoMikoski.DebugPanel.GUI
+namespace BrunoMikoski.DebugTools.GUI
 {
     internal class PageLinkGUI : DebuggableGUIBase
     {
@@ -18,7 +18,7 @@ namespace BrunoMikoski.DebugPanel.GUI
         protected override void OnClick()
         {
             base.OnClick();
-            DebugPanelService.DisplayPage(pageLink.ToDebugPage);
+            DebugPanel.DisplayPage(pageLink.ToDebugPage);
         }
 
         protected override void UpdateFavorite()
@@ -36,7 +36,7 @@ namespace BrunoMikoski.DebugPanel.GUI
                 return;
 
             pageLink.ToDebugPage.SetIsFavorite(!pageLink.ToDebugPage.IsFavorite);
-            DebugPanelService.UpdateDebuggableFavorite(pageLink);
+            DebugPanel.UpdateDebuggableFavorite(pageLink);
             UpdateFavorite();
         }
     }

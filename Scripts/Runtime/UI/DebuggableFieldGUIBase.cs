@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reflection;
-using BrunoMikoski.DebugPanel.Attributes;
+using BrunoMikoski.DebugTools;
 using UnityEngine;
 
-namespace BrunoMikoski.DebugPanel.GUI
+namespace BrunoMikoski.DebugTools.GUI
 {
     internal abstract class DebuggableFieldGUIBase : DebuggableGUIBase
     {
@@ -16,7 +16,7 @@ namespace BrunoMikoski.DebugPanel.GUI
             base.Initialize(targetDebuggableItem, targetDebugPage);
             debuggableField = (DebuggableField)targetDebuggableItem;
             
-            if (debuggableField.FieldInfo.HasAttribute<ReadOnlyFieldAttribute>())
+            if (debuggableField.FieldAttribute.ReadOnly)
                 SetAsReadOnly();
 
             UpdateDisplayValue();

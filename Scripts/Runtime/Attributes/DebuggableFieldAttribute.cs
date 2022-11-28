@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.Scripting;
 
-namespace BrunoMikoski.DebugPanel.Attributes
+namespace BrunoMikoski.DebugTools
 {
     [AttributeUsage(AttributeTargets.Field)]
     public class DebuggableFieldAttribute : PreserveAttribute
@@ -16,6 +16,11 @@ namespace BrunoMikoski.DebugPanel.Attributes
         /// Use this to display useful information about this class, this is also used for searching so you could add tags here to simplify search
         /// </summary>
         public string SubTitle  { get; set; }
+        
+        /// <summary>
+        /// Useful for fields that you only want to display information and not allow changes
+        /// </summary>
+        public bool ReadOnly { get; set; }
 
         /// <summary>
         /// If the value of this field should be updated on every frame.
