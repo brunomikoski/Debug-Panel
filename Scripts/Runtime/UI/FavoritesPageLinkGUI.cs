@@ -1,6 +1,6 @@
 using System;
 
-namespace BrunoMikoski.DebugPanel.GUI
+namespace BrunoMikoski.DebugTools.GUI
 {
     internal class FavoritesPageLinkGUI : PageLinkGUI
     {

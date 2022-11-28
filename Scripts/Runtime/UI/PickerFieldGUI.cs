@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace BrunoMikoski.DebugPanel.GUI
+namespace BrunoMikoski.DebugTools.GUI
 {
     internal sealed class PickerFieldGUI : DebuggableFieldGUIBase
     {
@@ -51,7 +51,7 @@ namespace BrunoMikoski.DebugPanel.GUI
                 pickerOptionsDebugPage.AddItem(debuggableEnumItem);
             }
             
-            DebugPanelService.DisplayPage(pickerOptionsDebugPage);
+            DebugPanel.DisplayPage(pickerOptionsDebugPage);
         }
 
         internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)

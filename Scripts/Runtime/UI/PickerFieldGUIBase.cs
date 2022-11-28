@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace BrunoMikoski.DebugPanel.GUI
+namespace BrunoMikoski.DebugTools.GUI
 {
     internal abstract class PickerFieldGUIBase : DebuggableFieldGUIBase
     {

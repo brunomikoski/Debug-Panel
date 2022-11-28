@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.Scripting;
 
-namespace BrunoMikoski.DebugPanel.Attributes
+namespace BrunoMikoski.DebugTools
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class DebuggableClassAttribute : PreserveAttribute

@@ -1,9 +1,8 @@
 using System;
 using JetBrains.Annotations;
-using UnityEngine;
 using UnityEngine.Scripting;
 
-namespace BrunoMikoski.DebugPanel.Attributes
+namespace BrunoMikoski.DebugTools
 {
     [AttributeUsage(AttributeTargets.Method)]
     [MeansImplicitUse(ImplicitUseKindFlags.Access)]
@@ -27,10 +26,5 @@ namespace BrunoMikoski.DebugPanel.Attributes
         /// </see>
         /// </summary>
         public string Hotkey  { get; set; }
-        
-        /// <summary>
-        /// Specific Platforms where this method should be available or not
-        /// </summary>
-        public RuntimePlatform[] Platforms { get; set; }
     }
 }

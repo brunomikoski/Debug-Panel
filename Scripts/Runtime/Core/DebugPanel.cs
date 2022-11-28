@@ -2,25 +2,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using BrunoMikoski.DebugPanel.Attributes;
-using BrunoMikoski.DebugPanel.GUI;
+using BrunoMikoski.DebugTools.GUI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
-#if SL_ENABLED
-using BrunoMikoski.ServicesLocation;
-#endif
-
-namespace BrunoMikoski.DebugPanel
+namespace BrunoMikoski.DebugTools
 {
-#if SL_ENABLED
-    [ServiceImplementation]
-#endif
-    public class DebugPanelService : MonoBehaviour
+    public class DebugPanel : MonoBehaviour
     {
+        private static List<object> LIFE_TIME_NON_MONOBEHAVIOUR = new List<object>(50);
+        private static List<DebuggableAction> LIFE_TIME_DYNAMIC_ACTIONS = new List<DebuggableAction>(100);
         private const string DEFAULT_CATEGORY_NAME = "General";
         
         [Header("References")]
@@ -40,19 +34,31 @@ namespace BrunoMikoski.DebugPanel
         private TMP_InputField searchInputField;
         [SerializeField]
         private ScrollRect scrollRect;
-
         [SerializeField]
         private FavoritesPageLinkGUI favoritesPageLink;
-
-        private bool isVisible = true;
 
         [Header("Settings")]
         [SerializeField, Tooltip("After calling a Method, close the Debug Panel automatically")]
         private bool hideAfterInvoke;
-        public bool HideAfterInvoke => hideAfterInvoke;
+        public static bool HideAfterInvoke
+        {
+            get
+            {
+                if (!TryGetInstance())
+                {
+#if UNITY_EDITOR
+                    Debug.LogWarning("DebugPanel is not available anywhere, make sure you add the prefab");
+#endif
+                    return false; 
+                }
+                return Instance.hideAfterInvoke;
+            }
+        }
+
         [SerializeField] 
         private DebugPanelTriggerSettings triggerSettings;
-
+        [SerializeField]
+        private bool keepAlive;
         [SerializeField, Tooltip("Try to load new Debuggables after each new scene is loaded")] 
         private bool activeLoadDebuggable;
 
@@ -61,17 +67,25 @@ namespace BrunoMikoski.DebugPanel
         private List<DebuggableItemBase> activeDebuggableItems = new List<DebuggableItemBase>();
         internal List<DebuggableItemBase> ActiveDebuggableItems => activeDebuggableItems;
 
-        private List<object> lifeTimeNonMonobehaviour = new List<object>();
-        private List<DebuggableAction> lifeTimeDynamicActions = new List<DebuggableAction>(500);
-
         private string currentDisplayedPagePath;
         private DebugPage currentDisplayedPage;
-
         private DebugPage generalPage;
         private DebugPage searchResultsPage;
         private string previousSearchValue = "";
         private DebugPage activePageBeforeSearch;
         private DebugPage favoritesDebugPage;
+        private bool isVisible = true;
+        
+        private static bool hasCachedInstance;
+        private static DebugPanel cachedInstance;
+        private static DebugPanel Instance
+        {
+            get
+            {
+                TryGetInstance();
+                return cachedInstance;
+            }
+        }
 
         private void Awake()
         {
@@ -85,9 +99,11 @@ namespace BrunoMikoski.DebugPanel
 #if !UNITY_EDITOR
             activeLoadDebuggable = false;
 #endif
-            
             if (activeLoadDebuggable)
                 SceneManager.sceneLoaded += OnNewSceneLoaded;
+
+            if (keepAlive)
+                DontDestroyOnLoad(this.gameObject);
         }
 
         private IEnumerator Start()
@@ -105,6 +121,78 @@ namespace BrunoMikoski.DebugPanel
             searchInputField.onValueChanged.RemoveListener(OnSearchValueChanged);
             scrollRect.onValueChanged.AddListener(OnScrollRectValueChanged);
             SceneManager.sceneLoaded -= OnNewSceneLoaded;
+        }
+
+        private static bool TryGetInstance()
+        {
+            if (hasCachedInstance) 
+                return true;
+            
+            cachedInstance = FindObjectOfType<DebugPanel>();
+            if (cachedInstance != null)
+                hasCachedInstance = true;
+
+            return hasCachedInstance;
+        }
+        
+        public static void RegisterDebuggable(object targetDebuggable)
+        {
+            LIFE_TIME_NON_MONOBEHAVIOUR.Add(targetDebuggable);
+        }
+
+        public static void UnregisterDebuggable(object targetDebuggable)
+        {
+            LIFE_TIME_NON_MONOBEHAVIOUR.Remove(targetDebuggable);
+        }
+
+        public static void AddAction(string path, Action targetAction)
+        {
+            AddDynamicAction(new DebuggableAction(path, targetAction));
+        }
+
+        public static void AddAction(string path, string subTitle, Action targetAction)
+        {
+            AddDynamicAction(new DebuggableAction(path, subTitle, targetAction));
+        }
+        
+        public static void Hide()
+        {
+            if (!TryGetInstance())
+            {
+#if UNITY_EDITOR
+                Debug.LogWarning("DebugPanel is not available anywhere, make sure you add the prefab");
+#endif
+                return;
+            }
+            
+            Instance.SetVisible(false);
+            Instance.searchInputField.text = "";
+        }
+
+        public static void Show()
+        {
+            if (!TryGetInstance())
+            {
+#if UNITY_EDITOR
+                Debug.LogWarning("DebugPanel is not available anywhere, make sure you add the prefab");
+#endif
+                return;
+            }
+            
+            Instance.SetVisible(true);
+        }
+        
+        public static void ReloadDebuggables()
+        {
+            if (!TryGetInstance())
+            {
+#if UNITY_EDITOR
+                Debug.LogWarning("DebugPanel is not available anywhere, make sure you add the prefab");
+#endif
+                return;
+            }
+            
+            Instance.ReloadDebuggablesInternal();
         }
         
         private void OnScrollRectValueChanged(Vector2 normalizedPosition)
@@ -210,18 +298,32 @@ namespace BrunoMikoski.DebugPanel
             if (!pathToDebugPage.TryGetValue(pagePath, out DebugPage targetDebugPage))
                 return;
 
-            DisplayPage(targetDebugPage);
+            DisplayPageInternal(targetDebugPage);
         }
 
-        internal void DisplayPage(DebugPage targetDebugPage)
+        internal static void DisplayPage(DebugPage targetDebugPage)
         {
+            if (!TryGetInstance())
+            {
+#if UNITY_EDITOR
+                Debug.LogWarning("DebugPanel is not available anywhere, make sure you add the prefab");
+#endif
+                return;
+            }
+
+            Instance.DisplayPageInternal(targetDebugPage);
+        }
+
+        private void DisplayPageInternal(DebugPage targetDebugPage)
+        {
+            OnScrollRectValueChanged(scrollRect.normalizedPosition);
+            
             currentDisplayedPagePath = targetDebugPage.PagePath;
             currentDisplayedPage = targetDebugPage;
             
             SetFavoritesButtonEnabled(currentDisplayedPage == generalPage);
             
             debugPanelGUI.DisplayDebugPage(targetDebugPage);
-
 
             backButton.gameObject.SetActive(targetDebugPage.HasParentPage());
             StartCoroutine(WaitToUpdateScrollPositionEnumerator());
@@ -235,38 +337,18 @@ namespace BrunoMikoski.DebugPanel
             favoritesPageLink.gameObject.SetActive(isEnabled);
         }
 
-        public void RegisterDebuggable(object targetDebuggable)
+        private static void AddDynamicAction(DebuggableAction targetAction)
         {
-            lifeTimeNonMonobehaviour.Add(targetDebuggable);
-        }
-
-        public void UnregisterDebuggable(object targetDebuggable)
-        {
-            lifeTimeNonMonobehaviour.Remove(targetDebuggable);
-        }
-
-        public void AddAction(string path, Action targetAction)
-        {
-            AddDynamicAction(new DebuggableAction(path, targetAction));
-        }
-
-        public void AddAction(string path, string subTitle, Action targetAction)
-        {
-            AddDynamicAction(new DebuggableAction(path, subTitle, targetAction));
-        }
-
-        private void AddDynamicAction(DebuggableAction targetAction)
-        {
-            for (int i = 0; i < lifeTimeDynamicActions.Count; i++)
+            for (int i = 0; i < LIFE_TIME_DYNAMIC_ACTIONS.Count; i++)
             {
-                DebuggableAction dynamicAction = lifeTimeDynamicActions[i];
+                DebuggableAction dynamicAction = LIFE_TIME_DYNAMIC_ACTIONS[i];
                 if (dynamicAction.Path.Equals(targetAction.Path, StringComparison.Ordinal))
                     return;
             }
-            lifeTimeDynamicActions.Add(targetAction);
+            LIFE_TIME_DYNAMIC_ACTIONS.Add(targetAction);
         }
 
-        public void ReloadDebuggables()
+        private void ReloadDebuggablesInternal()
         {
             pathToDebugPage.Clear();
             debuggables.Clear();
@@ -276,7 +358,7 @@ namespace BrunoMikoski.DebugPanel
             favoritesDebugPage = new DebugPage("Favorites", "Favorites", "List with all debuggables saved as favorites");
             
             debuggables.AddRange(GetDebuggableMonoBehaviours());
-            debuggables.AddRange(lifeTimeNonMonobehaviour);
+            debuggables.AddRange(LIFE_TIME_NON_MONOBEHAVIOUR);
 
             for (int i = 0; i < debuggables.Count; i++)
             {
@@ -319,8 +401,8 @@ namespace BrunoMikoski.DebugPanel
                 }
             }
 
-            for (int i = 0; i < lifeTimeDynamicActions.Count; i++)
-                AddDebuggableToAppropriatedPath(lifeTimeDynamicActions[i], null);
+            for (int i = 0; i < LIFE_TIME_DYNAMIC_ACTIONS.Count; i++)
+                AddDebuggableToAppropriatedPath(LIFE_TIME_DYNAMIC_ACTIONS[i], null);
 
             if (pathToDebugPage.TryGetValue($"{DEFAULT_CATEGORY_NAME}/", out generalPage))
             {
@@ -533,36 +615,33 @@ namespace BrunoMikoski.DebugPanel
                 Hide();
         }
 
-        public void Hide()
+        internal static void UpdateDebuggableFavorite(DebuggableItemBase debuggableItem)
         {
-            SetVisible(false);
-            searchInputField.text = "";
-        }
-
-        public void Show()
-        {
-            SetVisible(true);
-        }
-
-        internal void UpdateDebuggableFavorite(DebuggableItemBase debuggableItem)
-        {
+            if (!TryGetInstance())
+            {
+#if UNITY_EDITOR
+                Debug.LogWarning("DebugPanel is not available anywhere, make sure you add the prefab");
+#endif
+                return;
+            }
+            
             if (debuggableItem is DebuggablePageLink pageLink)
             {
                 if (pageLink.IsFavorite)
-                    favoritesDebugPage.AddChildPage(pageLink.ToDebugPage, false);
+                    Instance.favoritesDebugPage.AddChildPage(pageLink.ToDebugPage, false);
                 else
-                    favoritesDebugPage.RemoveChildPage(pageLink.ToDebugPage);
+                    Instance.favoritesDebugPage.RemoveChildPage(pageLink.ToDebugPage);
                 
                 return;
             }
             
             if (debuggableItem.IsFavorite)
             {
-                favoritesDebugPage.AddItem(debuggableItem);
+                Instance.favoritesDebugPage.AddItem(debuggableItem);
             }
             else
             {
-                favoritesDebugPage.RemoveItem(debuggableItem);
+                Instance.favoritesDebugPage.RemoveItem(debuggableItem);
             }
         }
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace BrunoMikoski.DebugPanel.GUI
+namespace BrunoMikoski.DebugTools.GUI
 {
     public abstract class DebuggableGUIBase : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
     {
@@ -27,18 +27,6 @@ namespace BrunoMikoski.DebugPanel.GUI
         private bool isPointerDown;
         private float heldTime;
         private bool toggledFavorite;
-
-        
-        private DebugPanelService cachedDebugPanelService;
-        protected DebugPanelService DebugPanelService
-        {
-            get
-            {
-                if (cachedDebugPanelService == null)
-                    cachedDebugPanelService = GetComponentInParent<DebugPanelService>();
-                return cachedDebugPanelService;
-            }
-        }
 
         private DebugPanelGUI cachedDebugPanelGUI;
         internal DebugPanelGUI DebugPanelGUI
@@ -120,7 +108,7 @@ namespace BrunoMikoski.DebugPanel.GUI
                 return;
             
             debuggableItem.SetIsFavorite(!debuggableItem.IsFavorite);
-            DebugPanelService.UpdateDebuggableFavorite(debuggableItem);
+            DebugPanel.UpdateDebuggableFavorite(debuggableItem);
             UpdateFavorite();
         }
     }

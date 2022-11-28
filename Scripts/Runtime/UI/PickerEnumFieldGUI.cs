@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace BrunoMikoski.DebugPanel.GUI
+namespace BrunoMikoski.DebugTools.GUI
 {
     internal sealed class PickerEnumFieldGUI : PickerFieldGUIBase
     {

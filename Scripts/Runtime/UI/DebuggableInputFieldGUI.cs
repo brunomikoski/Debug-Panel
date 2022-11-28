@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace BrunoMikoski.DebugPanel.GUI
+namespace BrunoMikoski.DebugTools.GUI
 {
     internal sealed class DebuggableInputFieldGUI : DebuggableFieldGUIBase
     {

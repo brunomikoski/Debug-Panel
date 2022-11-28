@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BrunoMikoski.DebugPanel
+namespace BrunoMikoski.DebugTools
 {
     internal class DebugPage
     {

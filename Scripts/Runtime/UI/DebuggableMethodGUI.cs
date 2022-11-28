@@ -1,33 +1,33 @@
 using System;
+using TMPro;
+using UnityEngine;
 
-namespace BrunoMikoski.DebugPanel.GUI
+namespace BrunoMikoski.DebugTools.GUI
 {
     internal class DebuggableMethodGUI : DebuggableGUIBase
     {
+        [SerializeField]
+        private TMP_Text hotKeyText;
+        
         public override Type[] DisplayTypes => new[] { typeof(DebuggableMethod), typeof(DebuggableAction) };
 
-        private DebuggableMethod debuggableMethod;
-        private DebuggableAction debuggableAction;
-        
+        private DebuggableInvokableBase debuggableInvokable;
 
         internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
         {
             base.Initialize(targetDebuggableItem, targetDebugPage);
-            if (targetDebuggableItem is DebuggableMethod targetDebuggableMethod)
-                debuggableMethod = targetDebuggableMethod;
-            else if (targetDebuggableItem is DebuggableAction targetDebuggableAction)
-                debuggableAction = targetDebuggableAction;
+
+            debuggableInvokable = (DebuggableInvokableBase)targetDebuggableItem; 
+            if (debuggableInvokable.HotkeyData != null && !string.IsNullOrEmpty(debuggableInvokable.HotkeyData.HumanReadableHotKey))
+                hotKeyText.text = debuggableInvokable.HotkeyData.HumanReadableHotKey;
         }
 
         protected override void OnClick()
         {
-            if (debuggableMethod != null)
-                debuggableMethod.Invoke();
-            else if(debuggableAction != null)
-                debuggableAction.Invoke();
+            debuggableInvokable.Invoke();
 
-            if (DebugPanelService.HideAfterInvoke)
-                DebugPanelService.Hide();
+            if (DebugPanel.HideAfterInvoke)
+                DebugPanel.Hide();
         }
     }
 }

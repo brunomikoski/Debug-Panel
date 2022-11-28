@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
-using BrunoMikoski.DebugPanel.Attributes;
+using BrunoMikoski.DebugTools;
 
-namespace BrunoMikoski.DebugPanel
+namespace BrunoMikoski.DebugTools
 {
     internal class DebuggableEnumItem : DebuggableField
     {

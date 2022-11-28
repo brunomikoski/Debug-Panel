@@ -3,17 +3,22 @@
 using System.Reflection;
 using TMPro;
 using UnityEngine;
-
-#if SOC_ENABLED
 using System;
 using System.Collections.Generic;
-using BrunoMikoski.ScriptableObjectCollections;
+using BrunoMikoski.DebugTools;
+using BrunoMikoski.DebugTools.GUI;
 using UnityEngine.UI;
+
+#if SOC_ENABLED
+using BrunoMikoski.ScriptableObjectCollections;
+#endif
+
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
     internal sealed class SOCPickerFieldGUI : DebuggableFieldGUIBase
     {
+#if SOC_ENABLED
         [SerializeField]
         private Button button;
 
@@ -86,16 +91,7 @@ namespace BrunoMikoski.DebugPanel.GUI
         {
             return typeof(ScriptableObjectCollectionItem).IsAssignableFrom(targetFieldInfo.FieldType);
         }
-    }
-}
 #else
-namespace BrunoMikoski.DebugPanel.GUI
-{
-    internal sealed class SOCPickerFieldGUI : DebuggableFieldGUIBase
-    {
-        [SerializeField] 
-        private TMP_Text displayField;
-
         protected override void UpdateDisplayValue()
         {
             
@@ -105,6 +101,6 @@ namespace BrunoMikoski.DebugPanel.GUI
         {
             return false;
         }
+#endif
     }
 }
-#endif

@@ -1,14 +1,18 @@
 ﻿// #undef SOC_ENABLED
 
 using System.Reflection;
+using BrunoMikoski.DebugTools;
+using BrunoMikoski.DebugTools.GUI;
 
 #if SOC_ENABLED
 using BrunoMikoski.ScriptableObjectCollections;
+#endif
 
 namespace BrunoMikoski.DebugPanel.GUI
 {
     internal sealed class SOCPickerOptionFieldGUI : PickerFieldGUIBase
     {
+#if SOC_ENABLED
         private DebuggableSOCItem debuggableSOCItem;
 
         protected override bool AllowToggleGroupToBeOff => true;
@@ -38,13 +42,7 @@ namespace BrunoMikoski.DebugPanel.GUI
         {
             return typeof(ScriptableObjectCollectionItem).IsAssignableFrom(targetFieldInfo.FieldType);
         }
-    }
-}
 #else
-namespace BrunoMikoski.DebugPanel.GUI
-{
-    internal sealed class SOCPickerOptionFieldGUI : PickerFieldGUIBase
-    {
         protected override bool AllowToggleGroupToBeOff => true;
 
         protected override void UpdateDisplayValue()
@@ -59,6 +57,6 @@ namespace BrunoMikoski.DebugPanel.GUI
         {
             return false;
         }
+#endif
     }
 }
-#endif
