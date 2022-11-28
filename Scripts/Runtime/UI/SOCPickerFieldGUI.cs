@@ -14,7 +14,7 @@ using BrunoMikoski.ScriptableObjectCollections;
 #endif
 
 
-namespace BrunoMikoski.DebugPanel.GUI
+namespace BrunoMikoski.DebugTools.GUI
 {
     internal sealed class SOCPickerFieldGUI : DebuggableFieldGUIBase
     {
@@ -73,7 +73,7 @@ namespace BrunoMikoski.DebugPanel.GUI
                 }
             }
             
-            DebugPanelService.DisplayPage(pickerOptionsDebugPage);
+            DebugPanel.DisplayPage(pickerOptionsDebugPage);
         }
 
         protected override void UpdateDisplayValue()

@@ -1,9 +1,8 @@
 ﻿#if SOC_ENABLED
 using System.Reflection;
-using BrunoMikoski.DebugPanel.Attributes;
 using BrunoMikoski.ScriptableObjectCollections;
 
-namespace BrunoMikoski.DebugPanel
+namespace BrunoMikoski.DebugTools
 {
     internal class DebuggableSOCItem : DebuggableField
     {
