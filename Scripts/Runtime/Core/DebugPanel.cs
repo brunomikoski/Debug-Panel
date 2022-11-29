@@ -443,6 +443,9 @@ namespace BrunoMikoski.DebugTools
             }
 
             string fullPath = $"{finalPage.PagePath}{targetDebuggableBase.Path}".Replace("//", "/");
+            if (targetDebuggableBase is DebuggableAction debuggableAction)
+                fullPath = $"{DEFAULT_CATEGORY_NAME}/{debuggableAction.Path}";
+            
             targetDebuggableBase.SetFinalFullPath(fullPath);
 
             if (finalPage.IsFavorite)

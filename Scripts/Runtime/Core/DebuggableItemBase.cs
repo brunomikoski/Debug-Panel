@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace BrunoMikoski.DebugTools
@@ -9,10 +10,10 @@ namespace BrunoMikoski.DebugTools
         {
             get
             {
-                if (string.IsNullOrEmpty(fullPath))
+                if (string.IsNullOrEmpty(FullPath))
                     return false;
                 
-                return PlayerPrefs.GetInt(fullPath, 0) == 1;
+                return PlayerPrefs.GetInt(FullPath, 0) == 1;
             }
         }
 
@@ -27,6 +28,9 @@ namespace BrunoMikoski.DebugTools
 
         private string fullPath;
         public string FullPath => fullPath;
+
+        private string parentPath;
+        public string ParentPath => parentPath;
 
 
         protected DebuggableItemBase(string path)
@@ -44,12 +48,14 @@ namespace BrunoMikoski.DebugTools
 
         internal virtual void SetIsFavorite(bool isFavorite)
         {
-            PlayerPrefs.SetInt(fullPath, isFavorite ? 1 : 0);
+            PlayerPrefs.SetInt(FullPath, isFavorite ? 1 : 0);
         }
 
         internal void SetFinalFullPath(string targetFullPath)
         {
-            this.fullPath = targetFullPath;
+            fullPath = targetFullPath;
+
+            parentPath = System.IO.Path.GetDirectoryName(targetFullPath)?.Replace("\\", "/");
         }
     }
 }

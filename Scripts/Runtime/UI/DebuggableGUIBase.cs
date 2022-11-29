@@ -47,10 +47,7 @@ namespace BrunoMikoski.DebugTools.GUI
 
             UpdateFavorite();
 
-            if (!string.IsNullOrEmpty(debuggableItem.SubTitle))
-                subTitle.text = debuggableItem.SubTitle;
-            else
-                subTitle.gameObject.SetActive(false);
+            SetSubtitle(debuggableItem.SubTitle);
         }
 
         protected virtual void UpdateFavorite()
@@ -110,6 +107,22 @@ namespace BrunoMikoski.DebugTools.GUI
             debuggableItem.SetIsFavorite(!debuggableItem.IsFavorite);
             DebugPanel.UpdateDebuggableFavorite(debuggableItem);
             UpdateFavorite();
+        }
+
+        public void ShowPathAsSubtitle()
+        {
+            SetSubtitle(debuggableItem.ParentPath);
+        }
+
+        private void SetSubtitle(string targetSubtitle)
+        {
+            if (string.IsNullOrEmpty(targetSubtitle))
+            {
+                subTitle.gameObject.SetActive(false);
+                return;
+            }
+            subTitle.gameObject.SetActive(true);
+            subTitle.text = targetSubtitle;
         }
     }
 }
