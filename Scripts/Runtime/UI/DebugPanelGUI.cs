@@ -121,7 +121,10 @@ namespace BrunoMikoski.DebugTools.GUI
             {
                 DebuggableGUIBase displayingItem = displayingItems[i];
 
-                displayingItem.gameObject.SetActive(MatchSearch(parentPage, displayingItem, searchValue));
+                bool matchSearch = MatchSearch(parentPage, displayingItem, searchValue);
+                displayingItem.gameObject.SetActive(matchSearch);
+                if (matchSearch)
+                    displayingItem.ShowPathAsSubtitle();
             }
         }
         
@@ -133,9 +136,10 @@ namespace BrunoMikoski.DebugTools.GUI
             if (displayingItem.DebuggableItem.FullPath.IndexOf(parentPage.PagePath, StringComparison.OrdinalIgnoreCase) == -1)
                 return false;
 
-            if (displayingItem.DebuggableItem.Path.IndexOf(searchValue, StringComparison.OrdinalIgnoreCase) > -1)
+            if (displayingItem.DebuggableItem.FullPath.IndexOf(searchValue, StringComparison.OrdinalIgnoreCase) > -1)
                 return true;
-            if (searchValue.IndexOf(displayingItem.DebuggableItem.Path, StringComparison.OrdinalIgnoreCase) > -1)
+            
+            if (searchValue.IndexOf(displayingItem.DebuggableItem.FullPath, StringComparison.OrdinalIgnoreCase) > -1)
                 return true;
 
             if (!string.IsNullOrEmpty(displayingItem.DebuggableItem.SubTitle))

@@ -8,7 +8,7 @@ using BrunoMikoski.DebugTools.GUI;
 using BrunoMikoski.ScriptableObjectCollections;
 #endif
 
-namespace BrunoMikoski.DebugPanel.GUI
+namespace BrunoMikoski.DebugTools.GUI
 {
     internal sealed class SOCPickerOptionFieldGUI : PickerFieldGUIBase
     {
