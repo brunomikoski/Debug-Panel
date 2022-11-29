@@ -600,14 +600,12 @@ namespace BrunoMikoski.DebugTools
             return debuggableMonoBehaviours;
         }
 
-#if UNITY_EDITOR
         private void Update()
         {
-            CheckForHotkey();
+            CheckForToggle();
         }
-#endif
         
-        private void CheckForHotkey()
+        private void CheckForToggle()
         {
             if (!triggerSettings.IsTriggered()) 
                 return;
