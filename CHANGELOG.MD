@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.3.1]
+### Added
+- Added support for [Yasirkula Native Share](https://github.com/yasirkula/UnityNativeShare) on mobile devices for `Multiline` debuggable field
+- Multiline texts are not using the InputField to allow copy
+
 ### Changed
 - Fixed search using full path
 - Fixed SOC integration
