@@ -55,6 +55,11 @@ namespace BrunoMikoski.DebugTools
             }
         }
 
+        [SerializeField]
+        private bool showOverlayWhenOpen = true;
+        [SerializeField]
+        private float timescaleWhileOpen = 1;
+        
         [SerializeField] 
         private DebugPanelTriggerSettings triggerSettings;
         [SerializeField]
@@ -87,6 +92,8 @@ namespace BrunoMikoski.DebugTools
             }
         }
 
+        private float previousTimeScale;
+        
         private void Awake()
         {
             SetVisible(false);
@@ -269,11 +276,26 @@ namespace BrunoMikoski.DebugTools
             bool wasVisible = isVisible;
             
             root.gameObject.SetActive(visible);
-            backdrop.gameObject.SetActive(visible);
+            if (showOverlayWhenOpen)
+                backdrop.gameObject.SetActive(visible);
+            
             isVisible = visible;
 
             if (!wasVisible && isVisible)
+            {
+                if (!Mathf.Approximately(timescaleWhileOpen, 1))
+                {
+                    previousTimeScale = Time.timeScale;
+                    Time.timeScale = timescaleWhileOpen;
+                }
+                
                 PrepareToDisplay();
+            }
+            else if (wasVisible && !isVisible)
+            {
+                if (!Mathf.Approximately(timescaleWhileOpen, 1))
+                    Time.timeScale = previousTimeScale;
+            }
         }
 
         private void PrepareToDisplay()
@@ -282,6 +304,7 @@ namespace BrunoMikoski.DebugTools
 
             if (string.IsNullOrEmpty(currentDisplayedPagePath) || !pathToDebugPage.ContainsKey(currentDisplayedPagePath))
                 currentDisplayedPagePath = $"{DEFAULT_CATEGORY_NAME}";
+            
             DisplayPage(currentDisplayedPagePath);
         }
 
