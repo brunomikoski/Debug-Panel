@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Unity.TextMeshPro",
-        "BrunoMikoski.ScriptableObjectCollection"
+        "BrunoMikoski.ScriptableObjectCollection",
+        "NativeShare.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -17,6 +18,11 @@
             "name": "com.brunomikoski.scriptableobjectcollection",
             "expression": "",
             "define": "SOC_ENABLED"
+        },
+        {
+            "name": "com.yasirkula.nativeshare",
+            "expression": "",
+            "define": "NATIVE_SHARE_ENABLED"
         }
     ],
     "noEngineReferences": false

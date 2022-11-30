@@ -9,10 +9,33 @@ namespace BrunoMikoski.DebugTools.GUI
     internal class MultilineDebuggableStringGUI : DebuggableFieldGUIBase
     {
         [SerializeField]
-        private TMP_Text displayText;
+        private TMP_InputField displayText;
         [SerializeField]
         private LayoutGroup layoutGroup;
+        [SerializeField]
+        private Button shareButton;
 
+        private void Awake()
+        {
+#if NATIVE_SHARE_ENABLED && UNITY_ANDROID || UNITY_IOS
+            shareButton.onClick.AddListener(OnClickShareButton);
+            shareButton.gameObject.SetActive(true);
+#else
+            shareButton.gameObject.SetActive(false);
+#endif
+        }
+
+        private void OnDestroy()
+        {
+            shareButton.onClick.RemoveListener(OnClickShareButton);
+        }
+
+        private void OnClickShareButton()
+        {
+#if NATIVE_SHARE_ENABLED
+            new NativeShare().SetText(displayText.text).SetTitle($"{display.text} content").Share();
+#endif
+        }
 
         protected override void UpdateDisplayValue()
         {
