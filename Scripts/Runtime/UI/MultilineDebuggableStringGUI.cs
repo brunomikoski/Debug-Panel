@@ -17,7 +17,7 @@ namespace BrunoMikoski.DebugTools.GUI
 
         private void Awake()
         {
-#if NATIVE_SHARE_ENABLED && UNITY_ANDROID || UNITY_IOS
+#if !UNITY_EDITOR && NATIVE_SHARE_ENABLED && UNITY_ANDROID || UNITY_IOS
             shareButton.onClick.AddListener(OnClickShareButton);
             shareButton.gameObject.SetActive(true);
 #else
