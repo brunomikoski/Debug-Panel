@@ -6830,7 +6830,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter text...
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc36ccc5f3616874e8e48a48e3f072de, type: 2}
   m_sharedMaterial: {fileID: -5429197136790202295, guid: dc36ccc5f3616874e8e48a48e3f072de,
