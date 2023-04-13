@@ -63,7 +63,7 @@ namespace BrunoMikoski.DebugTools.GUI
                 ScriptableObjectCollection scriptableObjectCollection = collection[i];
                 for (int j = 0; j < scriptableObjectCollection.Items.Count; j++)
                 {
-                    ScriptableObjectCollectionItem scriptableObjectCollectionItem = scriptableObjectCollection.Items[j];
+                    ScriptableObject scriptableObjectCollectionItem = scriptableObjectCollection.Items[j];
                     DebuggableSOCItem debuggableSOCItem = new DebuggableSOCItem(scriptableObjectCollectionItem.name,
                         debuggableField.FieldInfo, debuggableField.Owner, debuggableField.ClassAttribute,
                         debuggableField.FieldAttribute, scriptableObjectCollectionItem);

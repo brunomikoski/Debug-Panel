@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Parent Path will not be displayed on each item while performing search
 - Fixed issue while Toggle Debug panel on Mobile was not working
 
+
 ## [0.3.0]
 ### Changed
 - Refactored to be a single static access point
