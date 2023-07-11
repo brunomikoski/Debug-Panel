@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.2]
+### Changed
+- Fixed SOC integration
+
 ## [0.3.1]
 ### Added
 - Added support for [Yasirkula Native Share](https://github.com/yasirkula/UnityNativeShare) on mobile devices for `Multiline` debuggable field
@@ -90,6 +94,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial working version
 
 
+[0.3.2]: https://github.com/brunomikoski/Debug-Panel/releases/tag/v0.3.2
 [0.3.1]: https://github.com/brunomikoski/Debug-Panel/releases/tag/v0.3.1
 [0.3.0]: https://github.com/brunomikoski/Debug-Panel/releases/tag/v0.3.0
 [0.2.3]: https://github.com/brunomikoski/Debug-Panel/releases/tag/v0.2.3
