@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dusabled Native share on Editor
 - Removed unused text on MultilineInputField
 
+## [0.3.2]
+### Changed
+- Fixed SOC integration
+
 ## [0.3.1]
 ### Added
 - Added support for [Yasirkula Native Share](https://github.com/yasirkula/UnityNativeShare) on mobile devices for `Multiline` debuggable field
@@ -21,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed HotKey display too close to corners
 - Parent Path will not be displayed on each item while performing search
 - Fixed issue while Toggle Debug panel on Mobile was not working
+
 
 ## [0.3.0]
 ### Changed

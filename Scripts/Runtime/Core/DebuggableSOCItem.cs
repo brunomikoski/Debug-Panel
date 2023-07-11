@@ -1,14 +1,15 @@
 ﻿#if SOC_ENABLED
 using System.Reflection;
 using BrunoMikoski.ScriptableObjectCollections;
+using UnityEngine;
 
 namespace BrunoMikoski.DebugTools
 {
     internal class DebuggableSOCItem : DebuggableField
     {
-        private ScriptableObjectCollectionItem collectionItem;
+        private ScriptableObject collectionItem;
 
-        public ScriptableObjectCollectionItem CollectionItem => collectionItem;
+        public ScriptableObject CollectionItem => collectionItem;
 
         public DebuggableSOCItem(string path, FieldInfo fieldInfo, object owner, DebuggableClassAttribute classAttribute, DebuggableFieldAttribute fieldAttribute) : base(path, fieldInfo, owner, classAttribute, fieldAttribute)
         {
@@ -22,7 +23,7 @@ namespace BrunoMikoski.DebugTools
         {
         }
         
-        public DebuggableSOCItem(string path, FieldInfo fieldInfo, object owner, DebuggableClassAttribute classAttribute, DebuggableFieldAttribute fieldAttribute, ScriptableObjectCollectionItem targetSOCItem) : base(path, fieldInfo, owner, classAttribute, fieldAttribute)
+        public DebuggableSOCItem(string path, FieldInfo fieldInfo, object owner, DebuggableClassAttribute classAttribute, DebuggableFieldAttribute fieldAttribute, ScriptableObject targetSOCItem) : base(path, fieldInfo, owner, classAttribute, fieldAttribute)
         {
             collectionItem = targetSOCItem;
         }
