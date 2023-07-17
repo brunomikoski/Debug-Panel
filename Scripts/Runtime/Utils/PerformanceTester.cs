@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BrunoMikoski.Core
+namespace BrunoMikoski.DebugTools
 {
     public static class PerformanceTester
     {

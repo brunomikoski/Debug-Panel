@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using BrunoMikoski.Core;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
