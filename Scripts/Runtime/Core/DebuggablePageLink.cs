@@ -7,7 +7,7 @@
         private readonly DebugPage toDebugPage;
         public DebugPage ToDebugPage => toDebugPage;
 
-        public DebuggablePageLink(string path, string subTitle, DebugPage toDebugPage) : base(path, subTitle)
+        public DebuggablePageLink(string path, string subTitle, DebugPage toDebugPage, int priority) : base(path, subTitle, priority)
         {
             this.toDebugPage = toDebugPage;
         }

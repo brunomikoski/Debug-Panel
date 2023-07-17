@@ -32,6 +32,9 @@ namespace BrunoMikoski.DebugTools
         private string parentPath;
         public string ParentPath => parentPath;
 
+        private int priority;
+        public int Priority => priority;
+
 
         protected DebuggableItemBase(string path)
         {
@@ -44,6 +47,11 @@ namespace BrunoMikoski.DebugTools
         protected DebuggableItemBase(string path, string subTitle) : this(path)
         {
             this.subTitle = subTitle;
+        }
+        
+        protected DebuggableItemBase(string path, string subTitle, int priority) : this(path, subTitle)
+        {
+            this.priority = priority;
         }
 
         internal virtual void SetIsFavorite(bool isFavorite)

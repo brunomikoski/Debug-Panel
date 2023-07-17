@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugTools.GUI
@@ -12,8 +13,9 @@ namespace BrunoMikoski.DebugTools.GUI
 
         public abstract Type[] DisplayTypes { get; }
 
+        [FormerlySerializedAs("favIconImage")]
         [SerializeField]
-        protected Image favIconImage;
+        protected Image iconImage;
         [SerializeField]
         protected TMP_Text display;
         [SerializeField]
@@ -45,17 +47,29 @@ namespace BrunoMikoski.DebugTools.GUI
             DebugPage = targetDebugPage;
             display.text = debuggableItem.Title;
 
-            UpdateFavorite();
+            UpdateIconVisibility();
 
             SetSubtitle(debuggableItem.SubTitle);
         }
 
-        protected virtual void UpdateFavorite()
+        public void SetIcon(Sprite targetIcon)
         {
-            if (favIconImage == null)
+            if (iconImage == null)
                 return;
             
-            favIconImage.gameObject.SetActive(debuggableItem.IsFavorite);
+            iconImage.sprite = targetIcon;
+            UpdateIconVisibility();
+        }
+        
+        protected virtual void UpdateIconVisibility()
+        {
+            if (iconImage == null)
+            { 
+                iconImage.gameObject.SetActive(false);
+                return;
+            }
+            
+            iconImage.gameObject.SetActive(debuggableItem.IsFavorite);
         }
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
@@ -101,12 +115,12 @@ namespace BrunoMikoski.DebugTools.GUI
 
         protected virtual void ToggleFavorite()
         {
-            if (favIconImage == null)
+            if (iconImage == null)
                 return;
             
             debuggableItem.SetIsFavorite(!debuggableItem.IsFavorite);
             DebugPanel.UpdateDebuggableFavorite(debuggableItem);
-            UpdateFavorite();
+            UpdateIconVisibility();
         }
 
         public void ShowPathAsSubtitle()

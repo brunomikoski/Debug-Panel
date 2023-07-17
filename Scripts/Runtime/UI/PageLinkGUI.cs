@@ -12,7 +12,12 @@ namespace BrunoMikoski.DebugTools.GUI
         internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
         {
             pageLink = (DebuggablePageLink)targetDebuggableItem;
+            UpdateIconVisibility();
+
             base.Initialize(targetDebuggableItem, targetDebugPage);
+            SetIcon(pageLink.ToDebugPage.Icon);
+            
+            gameObject.SetActive(pageLink.ToDebugPage.HasContent);
         }
 
         protected override void OnClick()
@@ -21,23 +26,35 @@ namespace BrunoMikoski.DebugTools.GUI
             DebugPanel.DisplayPage(pageLink.ToDebugPage);
         }
 
-        protected override void UpdateFavorite()
+        protected override void UpdateIconVisibility()
         {
-            base.UpdateFavorite();
-            if (favIconImage == null)
+            if (iconImage == null)
                 return;
-                
-            favIconImage.gameObject.SetActive(pageLink.ToDebugPage.IsFavorite);
+            
+            if (iconImage.sprite == null)
+            {
+                iconImage.gameObject.SetActive(false);
+                return;
+            }
+
+            if (iconImage.sprite == pageLink.ToDebugPage.Icon)
+            {
+                iconImage.gameObject.SetActive(true);
+            }
+            else
+            {
+                iconImage.gameObject.SetActive(pageLink.ToDebugPage.IsFavorite);
+            }
         }
 
         protected override void ToggleFavorite()
         {
-            if (favIconImage == null)
+            if (iconImage == null)
                 return;
 
             pageLink.ToDebugPage.SetIsFavorite(!pageLink.ToDebugPage.IsFavorite);
             DebugPanel.UpdateDebuggableFavorite(pageLink);
-            UpdateFavorite();
+            UpdateIconVisibility();
         }
     }
 }

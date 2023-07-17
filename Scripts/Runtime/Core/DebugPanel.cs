@@ -35,8 +35,9 @@ namespace BrunoMikoski.DebugTools
         [SerializeField]
         private ScrollRect scrollRect;
         [SerializeField]
-        private FavoritesPageLinkGUI favoritesPageLink;
+        private Sprite[] knowSprites;
 
+        
         [Header("Settings")]
         [SerializeField, Tooltip("After calling a Method, close the Debug Panel automatically")]
         private bool hideAfterInvoke;
@@ -74,11 +75,11 @@ namespace BrunoMikoski.DebugTools
 
         private string currentDisplayedPagePath;
         private DebugPage currentDisplayedPage;
-        private DebugPage generalPage;
         private DebugPage searchResultsPage;
         private string previousSearchValue = "";
         private DebugPage activePageBeforeSearch;
         private DebugPage favoritesDebugPage;
+        private DebugPage profilablesDebugPage;
         private bool isVisible = true;
         
         private static bool hasCachedInstance;
@@ -344,20 +345,10 @@ namespace BrunoMikoski.DebugTools
             currentDisplayedPagePath = targetDebugPage.PagePath;
             currentDisplayedPage = targetDebugPage;
             
-            SetFavoritesButtonEnabled(currentDisplayedPage == generalPage);
-            
             debugPanelGUI.DisplayDebugPage(targetDebugPage);
 
             backButton.gameObject.SetActive(targetDebugPage.HasParentPage());
             StartCoroutine(WaitToUpdateScrollPositionEnumerator());
-        }
-
-        private void SetFavoritesButtonEnabled(bool isEnabled)
-        {
-            if (!favoritesDebugPage.HasContent)
-                isEnabled = false;
-            
-            favoritesPageLink.gameObject.SetActive(isEnabled);
         }
 
         private static void AddDynamicAction(DebuggableAction targetAction)
@@ -377,8 +368,9 @@ namespace BrunoMikoski.DebugTools
             debuggables.Clear();
             activeDebuggableItems.Clear();
 
-            searchResultsPage = new DebugPage("Search Result", "", "");
-            favoritesDebugPage = new DebugPage("Favorites", "Favorites", "List with all debuggables saved as favorites");
+            searchResultsPage = GetOrCreatePageByPath("Search Result", "", null, false);
+            favoritesDebugPage = GetOrCreatePageByPath("Favorites", "Favorites", GetSpriteByName("favorite"), true, -100);
+            profilablesDebugPage = GetOrCreatePageByPath("Profilables", "Profilable Methods", GetSpriteByName("performance"), true, -90);
             
             debuggables.AddRange(GetDebuggableMonoBehaviours());
             debuggables.AddRange(LIFE_TIME_NON_MONOBEHAVIOUR);
@@ -399,7 +391,7 @@ namespace BrunoMikoski.DebugTools
                 if (string.IsNullOrEmpty(pagePath))
                     pagePath = debuggableMonoBehaviour.GetType().Name;
 
-                DebugPage categoryPage = GetOrCreatePathByPath(pagePath, debuggableClassAttribute.SubTitle);
+                DebugPage categoryPage = GetOrCreatePageByPath(pagePath, debuggableClassAttribute.SubTitle);
                 
                 List<DebuggableMethod> debuggableMethods =
                     GetDebuggableMethodsFromObject(debuggableMonoBehaviour, debuggableClassAttribute);
@@ -422,17 +414,40 @@ namespace BrunoMikoski.DebugTools
                     if (debuggableField.IsFavorite)
                         favoritesDebugPage.AddItem(debuggableField);
                 }
+                
+                
+                List<ProfilableMethod> profilableMethods = GetProfilableMethodsFromObject(debuggableMonoBehaviour, debuggableClassAttribute);
+                if (profilableMethods.Count > 0)
+                {
+                    string profilablePath = $"General/Profilables/{pagePath}";
+                    DebugPage profilableCategoryPage = GetOrCreatePageByPath(profilablePath);
+                    for (int j = 0; j < profilableMethods.Count; j++)
+                    {
+                        ProfilableMethod profilableMethod = profilableMethods[j];
+                        AddDebuggableToAppropriatedPath(profilableMethod, profilableCategoryPage);
+                        if (profilableMethod.IsFavorite)
+                            profilablesDebugPage.AddItem(profilableMethod);
+                    }
+                }
+
             }
 
             for (int i = 0; i < LIFE_TIME_DYNAMIC_ACTIONS.Count; i++)
                 AddDebuggableToAppropriatedPath(LIFE_TIME_DYNAMIC_ACTIONS[i], null);
+        }
 
-            if (pathToDebugPage.TryGetValue($"{DEFAULT_CATEGORY_NAME}/", out generalPage))
+        private Sprite GetSpriteByName(string targetSpriteName)
+        {
+            if (knowSprites == null || knowSprites.Length == 0)
+                return null;
+
+            for (int i = 0; i < knowSprites.Length; i++)
             {
-                searchResultsPage.SetParentPage(generalPage);
-                favoritesDebugPage.SetParentPage(generalPage);
-                favoritesPageLink.Initialize(new DebuggablePageLink("Favorites","List with all debuggables saved as favorites", favoritesDebugPage), generalPage);
+                Sprite sprite = knowSprites[i];
+                if (sprite.name.Equals(targetSpriteName, StringComparison.Ordinal))
+                    return sprite;
             }
+            return null;
         }
 
         private void AddDebuggableToAppropriatedPath(DebuggableItemBase targetDebuggableBase, DebugPage parentPage)
@@ -443,7 +458,7 @@ namespace BrunoMikoski.DebugTools
             if (lastIndexOfPath == -1)
             {
                 if (parentPage == null)
-                    finalPage = GetOrCreatePathByPath($"{DEFAULT_CATEGORY_NAME}/");
+                    finalPage = GetOrCreatePageByPath($"{DEFAULT_CATEGORY_NAME}/");
                 else
                     finalPage = parentPage;
                 
@@ -454,12 +469,12 @@ namespace BrunoMikoski.DebugTools
                 if (parentPage == null)
                 {
                     string clearPath = targetDebuggableBase.Path.Substring(0, lastIndexOfPath);
-                    finalPage = GetOrCreatePathByPath(clearPath);
+                    finalPage = GetOrCreatePageByPath(clearPath);
                 }
                 else
                 {
                     string clearPath = $"{parentPage.PagePath}/{targetDebuggableBase.Path.Substring(0, lastIndexOfPath)}";
-                    finalPage = GetOrCreatePathByPath(clearPath);
+                    finalPage = GetOrCreatePageByPath(clearPath);
                 }
                 finalPage.AddItem(targetDebuggableBase);
 
@@ -511,7 +526,7 @@ namespace BrunoMikoski.DebugTools
             return dynamicFields;
         }
 
-        private DebugPage GetOrCreatePathByPath(string pagePath, string subTitle = "", string spriteName = "")
+        private DebugPage GetOrCreatePageByPath(string pagePath, string subTitle = "", Sprite targetSprite = null, bool visible = true, int priority = 0)
         {
             if (!pagePath.StartsWith($"{DEFAULT_CATEGORY_NAME}/"))
                 pagePath = $"{DEFAULT_CATEGORY_NAME}/{pagePath}";
@@ -531,7 +546,8 @@ namespace BrunoMikoski.DebugTools
 
                 if (!pathToDebugPage.TryGetValue(pageFinalPath, out DebugPage resultPage))
                 {
-                    resultPage = new DebugPage(pageFinalPath, folder, "");
+                    resultPage = new DebugPage(pageFinalPath, folder, subTitle, targetSprite, priority);
+                    resultPage.SetVisibility(visible);
                     if (parentPage != null)
                         parentPage.AddChildPage(resultPage);
 
@@ -548,6 +564,44 @@ namespace BrunoMikoski.DebugTools
             }
 
             return targetPage;
+        }
+
+        private List<ProfilableMethod> GetProfilableMethodsFromObject(object debuggableMonoBehaviours,
+            DebuggableClassAttribute debuggableClassAttribute)
+        {
+            List<ProfilableMethod> profilableMethods = new List<ProfilableMethod>();
+            Type type = debuggableMonoBehaviours.GetType();
+            while (type != null)
+            {
+                MethodInfo[] methods = type.GetMethods(
+                    BindingFlags.Public
+                    | BindingFlags.NonPublic
+                    | BindingFlags.Instance
+                    | BindingFlags.DeclaredOnly
+                );
+                
+                for (int j = 0; j < methods.Length; j++)
+                {
+                    MethodInfo method = methods[j];
+                    object[] attributes = method.GetCustomAttributes(typeof(ProfilableMethodAttribute), false);
+                    if (attributes.Length <= 0)
+                        continue;
+                    
+                    ProfilableMethodAttribute attribute = (ProfilableMethodAttribute) attributes[0];
+
+                    string path = attribute.Path;
+                    if (string.IsNullOrEmpty(path))
+                        path = $"{method.Name}";
+
+                    ProfilableMethod debuggableMethod = new ProfilableMethod(path, attribute.SubTitle, method, debuggableMonoBehaviours, debuggableClassAttribute, attribute, attribute.ExecutionCount);
+                    debuggableMethod.AssignHotkey(attribute.Hotkey);
+                    profilableMethods.Add(debuggableMethod);
+                }
+
+                type = type.BaseType;
+            }
+
+            return profilableMethods;
         }
 
         private List<DebuggableMethod> GetDebuggableMethodsFromObject(object debuggableMonoBehaviours, DebuggableClassAttribute debuggableClassAttribute)

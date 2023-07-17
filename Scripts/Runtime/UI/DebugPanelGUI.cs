@@ -11,7 +11,6 @@ namespace BrunoMikoski.DebugTools.GUI
         [SerializeField] 
         private TMP_Text title;
 
-
         private List<DebuggableGUIBase> displayingItems = new List<DebuggableGUIBase>();
 
         private DebugPage currentDebugPage;
@@ -46,24 +45,29 @@ namespace BrunoMikoski.DebugTools.GUI
         {
             List<DebuggableItemBase> displayItems = new List<DebuggableItemBase>(currentDebugPage.Items);
 
-            foreach (DebugPage childPage in currentDebugPage.ChildPages)
+            for (int i = 0; i < currentDebugPage.ChildPages.Count; i++)
             {
-                DebuggablePageLink debuggableItemBase = new DebuggablePageLink(childPage.Title, childPage.SubTitle, childPage);
+                DebugPage childPage = currentDebugPage.ChildPages[i];
+                if (!childPage.IsVisible)
+                    continue;
+                
+                DebuggablePageLink debuggableItemBase =
+                    new DebuggablePageLink(childPage.Title, childPage.SubTitle, childPage, childPage.Priority);
                 debuggableItemBase.SetFinalFullPath($"{currentDebugPage.PagePath}{debuggableItemBase.Title}");
                 displayItems.Add(debuggableItemBase);
             }
 
             displayItems = displayItems.OrderBy(baseItem => !baseItem.IsFavorite)
-                .ThenBy(baseItem => !(baseItem is DebuggablePageLink)).ThenBy(baseItem => baseItem.Title).ToList();
+                .ThenBy(baseItem => !(baseItem is DebuggablePageLink)).ThenBy(baseItem => baseItem.Priority).ThenBy(baseItem => baseItem.Title).ToList();
             
             for (int i = 0; i < displayItems.Count; i++)
             {
                 DebuggableItemBase debuggableItemBase = displayItems[i];
                 if (!TryGetDisplayForDebugItem(debuggableItemBase, out DebuggableGUIBase debuggableGUI))
                     continue;
-
-                debuggableGUI.Initialize(debuggableItemBase, currentDebugPage);
+                
                 debuggableGUI.gameObject.SetActive(true);
+                debuggableGUI.Initialize(debuggableItemBase, currentDebugPage);
             }
         }
 

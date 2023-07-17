@@ -4,7 +4,8 @@
     "references": [
         "Unity.TextMeshPro",
         "BrunoMikoski.ScriptableObjectCollection",
-        "NativeShare.Runtime"
+        "NativeShare.Runtime",
+        "DataVisualation"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

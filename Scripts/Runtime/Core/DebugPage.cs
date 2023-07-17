@@ -26,7 +26,10 @@ namespace BrunoMikoski.DebugTools
         
         private string subTitle;
         public string SubTitle => subTitle;
-
+        
+        private Sprite icon;
+        public Sprite Icon => icon;
+        
 
         private List<DebuggableItemBase> items = new List<DebuggableItemBase>();
         public List<DebuggableItemBase> Items => items;
@@ -42,11 +45,19 @@ namespace BrunoMikoski.DebugTools
 
         public bool HasContent => items.Count > 0 || childPages.Count > 0;
 
-        public DebugPage(string targetPath, string targetTitle, string targetSubTitle)
+        private bool isVisible;
+        public bool IsVisible => isVisible;
+
+        private int priority = 0;
+        public int Priority => priority;
+
+        public DebugPage(string targetPath, string targetTitle, string targetSubTitle, Sprite targetSprite = null, int targetPriority = 0)
         {
             pagePath = targetPath;
             title = targetTitle;
             subTitle = targetSubTitle;
+            icon = targetSprite;
+            priority = targetPriority;
         }
 
         public void AddItem(params DebuggableItemBase[] debuggables)
@@ -144,6 +155,11 @@ namespace BrunoMikoski.DebugTools
         public void SetIsFavorite(bool favorite)
         {
             PlayerPrefs.SetInt(PagePath, favorite ? 1 : 0);
+        }
+
+        public void SetVisibility(bool visible)
+        {
+            isVisible = visible;
         }
     }
 }
