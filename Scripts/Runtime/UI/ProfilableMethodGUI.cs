@@ -1,14 +1,20 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
+using UnityEngine.UI.Extensions;
 
 namespace BrunoMikoski.DebugTools.GUI
 {
     internal class ProfilableMethodGUI : DebuggableMethodGUI
     {
+        private const float MAX_GRAPH_HEIGHT = 420;
+        private const float MAX_GRAPH_WIDTH = 670;
+        
         [Serializable]
         public class ProfilerHistory
         {
@@ -22,6 +28,20 @@ namespace BrunoMikoski.DebugTools.GUI
                 if (performanceResult.MedianTime > maxMedianTime)
                     maxMedianTime = (float) performanceResult.MedianTime;
             }
+
+            public string AsCSVString()
+            {
+                StringBuilder csvBuilder = new StringBuilder();
+                csvBuilder.AppendLine("MedianTime,MeanTime,MinTime,MaxTime,Range,TotalTime,NumberOfRuns,ExecutionDateTime"); // CSV header
+                for (int i = 0; i < history.Count; i++)
+                {
+                    PerformanceTester.PerformanceResult item = history[i];
+                    csvBuilder.AppendLine(
+                        $"{item.MedianTime},{item.MeanTime},{item.MinTime},{item.MaxTime},{item.Range},{item.TotalTime},{item.NumberOfRuns},{item.ExecutionDateTime}");
+                }
+
+                return csvBuilder.ToString();
+            }
         }
         
         
@@ -31,6 +51,12 @@ namespace BrunoMikoski.DebugTools.GUI
         private LayoutGroup layoutGroup;
         [SerializeField]
         private Button runButton;
+        [SerializeField]
+        private GraphGUI graphGUI;
+        [SerializeField]
+        private Button clearDataButton;
+        [SerializeField]
+        private Button copyDataButton;
         
         private ProfilableMethod profilableMethod;
 
@@ -46,7 +72,6 @@ namespace BrunoMikoski.DebugTools.GUI
             base.Initialize(targetDebuggableItem, targetDebugPage);
             profilableMethod = (ProfilableMethod)targetDebuggableItem;
 
-
             string storedDataJson = PlayerPrefs.GetString(StorageKey, "");
             if (string.IsNullOrEmpty(storedDataJson))
             {
@@ -55,17 +80,40 @@ namespace BrunoMikoski.DebugTools.GUI
             else
             {
                 profilerHistory = JsonUtility.FromJson<ProfilerHistory>(storedDataJson);
+                UpdateGraph();
             }
         }
 
         private void Awake()
         {
             runButton.onClick.AddListener(OnClickRunButton);
+            clearDataButton.onClick.AddListener(OnClickClear);
+            copyDataButton.onClick.AddListener(OnClickCopy);
         }
+
 
         private void OnDestroy()
         {
             runButton.onClick.RemoveListener(OnClickRunButton);
+            clearDataButton.onClick.RemoveListener(OnClickClear);
+            copyDataButton.onClick.RemoveListener(OnClickCopy);
+        }
+
+        private void OnClickCopy()
+        {
+            string json = JsonUtility.ToJson(profilerHistory);
+            GUIUtility.systemCopyBuffer = json;
+            
+            json += profilerHistory.AsCSVString();
+            
+            Debug.Log(json);
+        }
+
+        private void OnClickClear()
+        {
+            profilerHistory.history.Clear();
+            SaveHistory();
+            UpdateGraph();            
         }
 
         private void OnClickRunButton()
@@ -73,19 +121,40 @@ namespace BrunoMikoski.DebugTools.GUI
             if (profilableMethod.Method == null || profilableMethod.Owner == null)
                 return;
 
-
             PerformanceTester.PerformanceResult profileResults = PerformanceTester.RunTest(() =>
             {
                 profilableMethod.Method.Invoke(profilableMethod.Owner, new object[] { });
             }, profilableMethod.ExecutionCount);
             
             
-            SetDisplayText(profileResults.ToString());
             profilerHistory.Add(profileResults);
-            StoreHistory();
+            SaveHistory();
+            
+            UpdateGraph();
+            SetDisplayText(profileResults.ToString());
+            Debug.Log(profileResults.ToString());
+        }
+        
+        private void UpdateGraph()
+        {
+            if (profilerHistory.history.Count < 2)
+            {
+                graphGUI.gameObject.SetActive(false);
+                return;
+            }
+            
+            List<Vector2> points = new List<Vector2>();
+            for (int i = 0; i < profilerHistory.history.Count; i++)
+            {
+                PerformanceTester.PerformanceResult performanceResult = profilerHistory.history[i];
+
+                points.Add(new Vector2(i, (float) performanceResult.MedianTime));
+            }
+            graphGUI.SetPoints(points);
+            graphGUI.gameObject.SetActive(true);
         }
 
-        private void StoreHistory()
+        private void SaveHistory()
         {
             string json = JsonUtility.ToJson(profilerHistory);
             PlayerPrefs.SetString(StorageKey, json);
@@ -93,11 +162,11 @@ namespace BrunoMikoski.DebugTools.GUI
 
         private void SetDisplayText(string targetText)
         {
-            if (!string.IsNullOrEmpty(targetText) && targetText.Length != displayText.text.Length)
-            {
-                displayText.text = targetText;
-                DebugPanelGUI.StartCoroutine(ToggleLayoutGroupEnumerator());
-            }
+            if (string.IsNullOrEmpty(targetText) || targetText.Length == displayText.text.Length) 
+                return;
+            
+            displayText.text = targetText;
+            DebugPanelGUI.StartCoroutine(ToggleLayoutGroupEnumerator());
         }
 
         private IEnumerator ToggleLayoutGroupEnumerator()
