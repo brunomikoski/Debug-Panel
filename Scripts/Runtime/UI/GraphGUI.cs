@@ -78,12 +78,12 @@ namespace BrunoMikoski.DebugTools.GUI
                 lineRenderer.m_points[i] = new Vector2(posX, posY);
             }
 
-            xMediumText.text = string.Format(xFormat, averageX);
-            yMediumText.text = string.Format(yFormat, averageY);
+            yMediumText.text = string.Format(yFormat, averageX);
+            xMediumText.text = string.Format(xFormat, averageY);
 
 
-            xHighText.text = string.Format(xFormat, maxXValue);
-            yHighText.text = string.Format(yFormat, maxYValue);
+            yHighText.text = string.Format(yFormat, maxXValue);
+            xHighText.text = string.Format(xFormat, maxYValue);
             
             lineRenderer.SetAllDirty();
         }

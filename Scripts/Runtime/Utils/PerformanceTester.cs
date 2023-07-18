@@ -33,6 +33,28 @@ namespace BrunoMikoski.DebugTools
                 finalResult.AppendLine($"---------------------------------------------------------");
                 return finalResult.ToString();
             }
+
+            public string StringResultComparedTo(PerformanceResult previous)
+            {
+                PerformanceComparison comparison = ComparePerformance(previous, this);
+                
+                StringBuilder finalResult = new StringBuilder();
+                finalResult.AppendLine($"------------------- {NumberOfRuns} RUNS {DateTime.FromBinary(ExecutionDateTime)}-------------------");
+                finalResult.AppendLine($"Median Time: {MedianTime} ms {GetChangeString(comparison.MedianTimeDifference)}");
+                finalResult.AppendLine($"Mean Time: {MeanTime} ms {GetChangeString(comparison.MeanTimeDifference)}");
+                finalResult.AppendLine($"Min Time: {MinTime} ms {GetChangeString(comparison.MinTimeDifference)}");
+                finalResult.AppendLine($"Max Time: {MaxTime} ms {GetChangeString(comparison.MaxTimeDifference)}");
+                finalResult.AppendLine($"Range: {Range} ms {GetChangeString(comparison.RangeDifference)}");
+                finalResult.AppendLine($"Total Time: {TotalTime} ms {GetChangeString(comparison.TotalTimeDifference)}");
+                finalResult.AppendLine($"---------------------------------------------------------");
+                return finalResult.ToString();
+            }
+
+            private string GetChangeString(double value)
+            {
+                string color = value < 0 ? "green" : "red";
+                return $"<color={color}>[{value:00.00}%]</color>";
+            }
         }
         
         [Serializable]
@@ -100,22 +122,22 @@ namespace BrunoMikoski.DebugTools
                 Range = range,
                 TotalTime = totalDuration,
                 NumberOfRuns = runs,
-                ExecutionDateTime = DateTime.UtcNow.ToBinary()
+                ExecutionDateTime = DateTime.Now.ToBinary()
             };
 
             return result;
         }
         
-        public static PerformanceComparison ComparePerformance(PerformanceResult first, PerformanceResult second)
+        public static PerformanceComparison ComparePerformance(PerformanceResult previousResult, PerformanceResult currentResult)
         {
             PerformanceComparison comparison = new PerformanceComparison
             {
-                MedianTimeDifference = CalculatePercentageDifference(first.MedianTime, second.MedianTime),
-                MeanTimeDifference = CalculatePercentageDifference(first.MeanTime, second.MeanTime),
-                MinTimeDifference = CalculatePercentageDifference(first.MinTime, second.MinTime),
-                MaxTimeDifference = CalculatePercentageDifference(first.MaxTime, second.MaxTime),
-                RangeDifference = CalculatePercentageDifference(first.Range, second.Range),
-                TotalTimeDifference = CalculatePercentageDifference(first.TotalTime, second.TotalTime)
+                MedianTimeDifference = CalculatePercentageDifference(previousResult.MedianTime, currentResult.MedianTime),
+                MeanTimeDifference = CalculatePercentageDifference(previousResult.MeanTime, currentResult.MeanTime),
+                MinTimeDifference = CalculatePercentageDifference(previousResult.MinTime, currentResult.MinTime),
+                MaxTimeDifference = CalculatePercentageDifference(previousResult.MaxTime, currentResult.MaxTime),
+                RangeDifference = CalculatePercentageDifference(previousResult.Range, currentResult.Range),
+                TotalTimeDifference = CalculatePercentageDifference(previousResult.TotalTime, currentResult.TotalTime)
             };
 
             return comparison;

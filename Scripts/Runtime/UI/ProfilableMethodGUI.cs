@@ -37,7 +37,7 @@ namespace BrunoMikoski.DebugTools.GUI
                 {
                     PerformanceTester.PerformanceResult item = history[i];
                     csvBuilder.AppendLine(
-                        $"{item.MedianTime},{item.MeanTime},{item.MinTime},{item.MaxTime},{item.Range},{item.TotalTime},{item.NumberOfRuns},{item.ExecutionDateTime}");
+                        $"{item.MedianTime},{item.MeanTime},{item.MinTime},{item.MaxTime},{item.Range},{item.TotalTime},{item.NumberOfRuns},{DateTime.FromBinary(item.ExecutionDateTime)}");
                 }
 
                 return csvBuilder.ToString();
@@ -80,7 +80,7 @@ namespace BrunoMikoski.DebugTools.GUI
             else
             {
                 profilerHistory = JsonUtility.FromJson<ProfilerHistory>(storedDataJson);
-                UpdateGraph();
+                UpdateDisplay();
             }
         }
 
@@ -101,19 +101,20 @@ namespace BrunoMikoski.DebugTools.GUI
 
         private void OnClickCopy()
         {
-            string json = JsonUtility.ToJson(profilerHistory);
-            GUIUtility.systemCopyBuffer = json;
-            
-            json += profilerHistory.AsCSVString();
-            
-            Debug.Log(json);
+            string finalPrint = "------- JSON -------";
+            finalPrint += "\n" + JsonUtility.ToJson(profilerHistory);
+            Debug.Log(finalPrint);
+            finalPrint += "\n------- CSV -------";
+            finalPrint += "\n" + profilerHistory.AsCSVString();
+
+            GUIUtility.systemCopyBuffer = finalPrint;
         }
 
         private void OnClickClear()
         {
             profilerHistory.history.Clear();
             SaveHistory();
-            UpdateGraph();            
+            UpdateDisplay();            
         }
 
         private void OnClickRunButton()
@@ -126,32 +127,28 @@ namespace BrunoMikoski.DebugTools.GUI
                 profilableMethod.Method.Invoke(profilableMethod.Owner, new object[] { });
             }, profilableMethod.ExecutionCount);
             
-            
             profilerHistory.Add(profileResults);
             SaveHistory();
-            
-            UpdateGraph();
-            SetDisplayText(profileResults.ToString());
+            UpdateDisplay();
             Debug.Log(profileResults.ToString());
         }
         
-        private void UpdateGraph()
+        private void UpdateDisplay()
         {
-            if (profilerHistory.history.Count < 2)
-            {
-                graphGUI.gameObject.SetActive(false);
-                return;
-            }
-            
-            List<Vector2> points = new List<Vector2>();
-            for (int i = 0; i < profilerHistory.history.Count; i++)
-            {
-                PerformanceTester.PerformanceResult performanceResult = profilerHistory.history[i];
+            PerformanceTester.PerformanceResult lastResult = profilerHistory.history[^1];
+            SetDisplayText(lastResult);
 
-                points.Add(new Vector2(i, (float) performanceResult.MedianTime));
+            if (profilerHistory.history.Count > 1)
+            {
+                List<Vector2> points = new List<Vector2>();
+                for (int i = 0; i < profilerHistory.history.Count; i++)
+                {
+                    PerformanceTester.PerformanceResult performanceResult = profilerHistory.history[i];
+
+                    points.Add(new Vector2(i, (float) performanceResult.MedianTime));
+                }
+                graphGUI.SetPoints(points);
             }
-            graphGUI.SetPoints(points);
-            graphGUI.gameObject.SetActive(true);
         }
 
         private void SaveHistory()
@@ -160,11 +157,23 @@ namespace BrunoMikoski.DebugTools.GUI
             PlayerPrefs.SetString(StorageKey, json);
         }
 
+        private void SetDisplayText(PerformanceTester.PerformanceResult performanceResult)
+        {
+            if (profilerHistory.history.Count > 1)
+            {
+                int indexOf = profilerHistory.history.IndexOf(performanceResult);
+                PerformanceTester.PerformanceResult previous = profilerHistory.history[indexOf - 1];
+
+                SetDisplayText(performanceResult.StringResultComparedTo(previous));
+            }
+            else
+            {
+                SetDisplayText(performanceResult.ToString());
+            }
+        }
+        
         private void SetDisplayText(string targetText)
         {
-            if (string.IsNullOrEmpty(targetText) || targetText.Length == displayText.text.Length) 
-                return;
-            
             displayText.text = targetText;
             DebugPanelGUI.StartCoroutine(ToggleLayoutGroupEnumerator());
         }

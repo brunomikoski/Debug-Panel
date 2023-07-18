@@ -419,17 +419,16 @@ namespace BrunoMikoski.DebugTools
                 List<ProfilableMethod> profilableMethods = GetProfilableMethodsFromObject(debuggableMonoBehaviour, debuggableClassAttribute);
                 if (profilableMethods.Count > 0)
                 {
-                    string profilablePath = $"General/Profilables/{pagePath}";
-                    DebugPage profilableCategoryPage = GetOrCreatePageByPath(profilablePath);
+                    DebugPage profilableCategoryPage;
                     for (int j = 0; j < profilableMethods.Count; j++)
                     {
                         ProfilableMethod profilableMethod = profilableMethods[j];
+                        profilableCategoryPage = GetOrCreatePageByPath($"General/Profilables/{pagePath}/{profilableMethod.Title}");
                         AddDebuggableToAppropriatedPath(profilableMethod, profilableCategoryPage);
                         if (profilableMethod.IsFavorite)
                             profilablesDebugPage.AddItem(profilableMethod);
                     }
                 }
-
             }
 
             for (int i = 0; i < LIFE_TIME_DYNAMIC_ACTIONS.Count; i++)
