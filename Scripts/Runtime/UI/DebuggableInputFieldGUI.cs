@@ -10,7 +10,7 @@ namespace BrunoMikoski.DebugTools.GUI
 {
     internal sealed class DebuggableInputFieldGUI : DebuggableFieldGUIBase
     {
-        private static Dictionary<Type, bool> DisplayableTypeToEditable => new Dictionary<Type, bool>
+        private static readonly Dictionary<Type, bool> DisplayableTypeToEditable = new Dictionary<Type, bool>
         {
             {typeof(float), true},
             {typeof(string), true},

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,8 +14,6 @@ namespace BrunoMikoski.DebugTools.GUI
         private CanvasGroup contentsCanvasGroup;
         [SerializeField]
         private Toggle toggle;
-
-        private static Type[] DisplayableFieldInfoTypes => new[] { typeof(bool) };
 
         internal override void Initialize(DebuggableItemBase targetDebuggableItem, DebugPage targetDebugPage)
         {

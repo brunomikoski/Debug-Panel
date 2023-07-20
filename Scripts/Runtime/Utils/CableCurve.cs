@@ -21,7 +21,8 @@ namespace UnityEngine.UI.Extensions
         [SerializeField]
         bool m_regen;
 
-        static Vector2[] emptyCurve = new Vector2[] { new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f) };
+        static readonly Vector2[] emptyCurve = new Vector2[] { new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f) };
+
         [SerializeField]
         Vector2[] points;
 
