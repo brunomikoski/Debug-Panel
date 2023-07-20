@@ -94,7 +94,16 @@ namespace BrunoMikoski.DebugTools
         }
 
         private float previousTimeScale;
-        
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void SupportDomainReload()
+        {
+            LIFE_TIME_NON_MONOBEHAVIOUR = new List<object>(50);
+            LIFE_TIME_DYNAMIC_ACTIONS = new List<DebuggableAction>(100);
+            hasCachedInstance = default;
+            cachedInstance = null;
+        }
+
         private void Awake()
         {
             SetVisible(false);

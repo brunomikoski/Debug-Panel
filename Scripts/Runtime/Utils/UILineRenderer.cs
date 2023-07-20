@@ -141,9 +141,28 @@ namespace UnityEngine.UI.Extensions
 				m_segments = value;
 				SetAllDirty();
 			}
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void SupportDomainReload()
+        {
+
+            UV_TOP_LEFT =
+				UV_BOTTOM_LEFT =
+				UV_TOP_CENTER_LEFT =
+				UV_TOP_CENTER_RIGHT =
+				UV_BOTTOM_CENTER_LEFT =
+				UV_BOTTOM_CENTER_RIGHT =
+				UV_TOP_RIGHT = 
+				UV_BOTTOM_RIGHT = default;
+			
+			startUvs =
+				middleUvs =
+				endUvs =
+				fullUvs = null;
 		}
 
-		private void PopulateMesh(VertexHelper vh, Vector2[] pointsToDraw)
+        private void PopulateMesh(VertexHelper vh, Vector2[] pointsToDraw)
 		{
 			//If Bezier is desired, pick the implementation
 			if (BezierMode != BezierType.None && BezierMode != BezierType.Catenary && pointsToDraw.Length > 3) {

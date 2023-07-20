@@ -46,6 +46,11 @@ namespace UnityEngine.UI.Extensions
             useLegacyMeshGeneration = false;
         }
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void SupportDomainReload()
+        {
+            s_ETC1DefaultUI = null;
+        }
         
         public static bool SetClass<T>(ref T currentValue, T newValue) where T : class
         {
