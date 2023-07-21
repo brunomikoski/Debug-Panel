@@ -132,6 +132,12 @@ namespace BrunoMikoski.DebugTools.GUI
         
         private void UpdateDisplay()
         {
+            if (profilerHistory.history.Count == 0)
+            {
+                SetDisplayText("");
+                graphGUI.Clear();
+                return;
+            }
             PerformanceTester.PerformanceResult lastResult = profilerHistory.history[^1];
             SetDisplayText(lastResult);
 

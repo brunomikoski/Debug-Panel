@@ -36,7 +36,7 @@ namespace BrunoMikoski.DebugTools.GUI
         private string yFormat = "{0} ms";
 
 
-        private void Clear()
+        public void Clear()
         {
             Array.Resize(ref lineRenderer.m_points, 0);
             xMediumText.text = "";
