@@ -12,9 +12,6 @@ namespace BrunoMikoski.DebugTools.GUI
 {
     internal class ProfilableMethodGUI : DebuggableMethodGUI
     {
-        private const float MAX_GRAPH_HEIGHT = 420;
-        private const float MAX_GRAPH_WIDTH = 670;
-        
         [Serializable]
         public class ProfilerHistory
         {
