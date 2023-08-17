@@ -86,7 +86,7 @@ namespace BrunoMikoski.DebugTools
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();
-            long initialMemory = GC.GetTotalMemory(true);
+            long initialMemory = GC.GetTotalMemory(false);
 
             
             for (int i = 0; i < runs; i++)
@@ -119,7 +119,7 @@ namespace BrunoMikoski.DebugTools
                 medianDuration = sortedDurations[sortedDurations.Count / 2];
             }
 
-            long finalMemory = GC.GetTotalMemory(true);
+            long finalMemory = GC.GetTotalMemory(false);
             PerformanceResult result = new PerformanceResult
             {
                 MedianTime = medianDuration,
