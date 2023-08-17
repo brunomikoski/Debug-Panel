@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine.Serialization;
 
 namespace BrunoMikoski.DebugTools
 {
@@ -19,6 +20,7 @@ namespace BrunoMikoski.DebugTools
             public double TotalTime;
             public int NumberOfRuns;
             public long ExecutionDateTime;
+            [FormerlySerializedAs("memoryAllocation")] public long MemoryAllocation;
 
             public override string ToString()
             {
@@ -30,6 +32,7 @@ namespace BrunoMikoski.DebugTools
                 finalResult.AppendLine($"Max Time: {MaxTime} ms");
                 finalResult.AppendLine($"Range: {Range} ms");
                 finalResult.AppendLine($"Total Time: {TotalTime} ms");
+                finalResult.AppendLine($"Total Heap Memory Allocated: {MemoryAllocation} bytes");
                 finalResult.AppendLine($"---------------------------------------------------------");
                 return finalResult.ToString();
             }
@@ -46,6 +49,7 @@ namespace BrunoMikoski.DebugTools
                 finalResult.AppendLine($"Max Time: {MaxTime} ms {GetChangeString(comparison.MaxTimeDifference)}");
                 finalResult.AppendLine($"Range: {Range} ms {GetChangeString(comparison.RangeDifference)}");
                 finalResult.AppendLine($"Total Time: {TotalTime} ms {GetChangeString(comparison.TotalTimeDifference)}");
+                finalResult.AppendLine($"Heap memory Difference: {MemoryAllocation} ms {GetChangeString(comparison.MemoryAllocationDifference)}");
                 finalResult.AppendLine($"---------------------------------------------------------");
                 return finalResult.ToString();
             }
@@ -66,6 +70,7 @@ namespace BrunoMikoski.DebugTools
             public double MaxTimeDifference;
             public double RangeDifference;
             public double TotalTimeDifference;
+            public double MemoryAllocationDifference;
         }
         
 
@@ -81,6 +86,7 @@ namespace BrunoMikoski.DebugTools
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();
+            long initialMemory = GC.GetTotalMemory(true);
 
             
             for (int i = 0; i < runs; i++)
@@ -113,6 +119,7 @@ namespace BrunoMikoski.DebugTools
                 medianDuration = sortedDurations[sortedDurations.Count / 2];
             }
 
+            long finalMemory = GC.GetTotalMemory(true);
             PerformanceResult result = new PerformanceResult
             {
                 MedianTime = medianDuration,
@@ -122,7 +129,8 @@ namespace BrunoMikoski.DebugTools
                 Range = range,
                 TotalTime = totalDuration,
                 NumberOfRuns = runs,
-                ExecutionDateTime = DateTime.Now.ToBinary()
+                ExecutionDateTime = DateTime.Now.ToBinary(),
+                MemoryAllocation = finalMemory-initialMemory
             };
 
             return result;
@@ -137,7 +145,8 @@ namespace BrunoMikoski.DebugTools
                 MinTimeDifference = CalculatePercentageDifference(previousResult.MinTime, currentResult.MinTime),
                 MaxTimeDifference = CalculatePercentageDifference(previousResult.MaxTime, currentResult.MaxTime),
                 RangeDifference = CalculatePercentageDifference(previousResult.Range, currentResult.Range),
-                TotalTimeDifference = CalculatePercentageDifference(previousResult.TotalTime, currentResult.TotalTime)
+                TotalTimeDifference = CalculatePercentageDifference(previousResult.TotalTime, currentResult.TotalTime),
+                MemoryAllocationDifference = CalculatePercentageDifference(previousResult.MemoryAllocation, currentResult.MemoryAllocation)
             };
 
             return comparison;
