@@ -49,7 +49,7 @@ namespace BrunoMikoski.DebugTools
                 finalResult.AppendLine($"Max Time: {MaxTime} ms {GetChangeString(comparison.MaxTimeDifference)}");
                 finalResult.AppendLine($"Range: {Range} ms {GetChangeString(comparison.RangeDifference)}");
                 finalResult.AppendLine($"Total Time: {TotalTime} ms {GetChangeString(comparison.TotalTimeDifference)}");
-                finalResult.AppendLine($"Heap memory Difference: {MemoryAllocation} ms {GetChangeString(comparison.MemoryAllocationDifference)}");
+                finalResult.AppendLine($"Heap memory Difference: {MemoryAllocation} bytes {GetChangeString(comparison.MemoryAllocationDifference)}");
                 finalResult.AppendLine($"---------------------------------------------------------");
                 return finalResult.ToString();
             }
