@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.0.0]
+### Add
+- Profilable methods can be displayed on the Debug Panel, just add the Attribute `[ProfilableMethodttribute]` to any Methoid.
+- Added support for domain reload
+### Changed
+- Cleanup and refactor for release.
+
 ## [0.3.3]
 ### Changed
 - Dusabled Native share on Editor
@@ -98,6 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial working version
 
 
+[1.0.0]: https://github.com/brunomikoski/Debug-Panel/releases/tag/v1.0.0s
 [0.3.2]: https://github.com/brunomikoski/Debug-Panel/releases/tag/v0.3.2
 [0.3.1]: https://github.com/brunomikoski/Debug-Panel/releases/tag/v0.3.1
 [0.3.0]: https://github.com/brunomikoski/Debug-Panel/releases/tag/v0.3.0

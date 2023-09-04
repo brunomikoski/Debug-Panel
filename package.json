@@ -1,8 +1,8 @@
 {
   "name": "com.brunomikoski.debugpanel",
   "displayName": "Debug Panel",
-  "version": "0.3.3",
-  "unity": "2019.1",
+  "version": "1.0.0",
+  "unity": "2021.2",
   "description": "Debug Panel is a runtime tool that enables you to expose fields, methods to be changed/activated by it",
   "keywords": [
     "debug",
