@@ -25,9 +25,6 @@ namespace BrunoMikoski.DebugTools.GUI
         protected override void OnClick()
         {
             debuggableInvokable.Invoke();
-
-            if (DebugPanel.HideAfterInvoke)
-                DebugPanel.Hide();
         }
     }
 }

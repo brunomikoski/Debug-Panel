@@ -26,5 +26,7 @@ namespace BrunoMikoski.DebugTools
         /// </see>
         /// </summary>
         public string Hotkey  { get; set; }
+        
+        public bool CloseDebugPanelAfterExecution { get; set; }
     }
 }

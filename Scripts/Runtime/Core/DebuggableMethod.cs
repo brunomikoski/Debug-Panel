@@ -42,6 +42,11 @@ namespace BrunoMikoski.DebugTools
                 return false;
             
             method.Invoke(owner, new object[] { });
+
+            if (attribute.CloseDebugPanelAfterExecution || DebugPanel.HideAfterInvoke)
+            {
+                DebugPanel.Hide();
+            }
             return true;
         }
     }
