@@ -24,6 +24,6 @@
   },
   "type": "tool",
   "dependencies": {
-    "com.unity.textmeshpro": ""
+    "com.unity.textmeshpro": "1.0.0"
   }
 }
