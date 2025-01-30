@@ -104,7 +104,7 @@ namespace BrunoMikoski.DebugTools
             cachedInstance = null;
         }
 
-        private void Awake()
+        protected virtual void Awake()
         {
             SetVisible(false);
             backdropButton.onClick.AddListener(Hide);
@@ -284,7 +284,7 @@ namespace BrunoMikoski.DebugTools
             scrollRect.verticalNormalizedPosition = currentDisplayedPage.LastScrollHeight;
         }
 
-        private void SetVisible(bool visible)
+        protected virtual void SetVisible(bool visible)
         {
             if (visible == isVisible)
                 return;
@@ -314,7 +314,7 @@ namespace BrunoMikoski.DebugTools
             }
         }
 
-        private void PrepareToDisplay()
+        protected virtual void PrepareToDisplay()
         {
             ReloadDebuggables();
 

@@ -20,6 +20,8 @@ namespace BrunoMikoski.DebugTools.GUI
         protected TMP_Text display;
         [SerializeField]
         protected TMP_Text subTitle;
+        [SerializeField]
+        protected Button button;
 
         internal DebugPage DebugPage;
         

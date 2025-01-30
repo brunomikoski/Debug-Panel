@@ -20,9 +20,6 @@ namespace BrunoMikoski.DebugTools.GUI
     {
 #if SOC_ENABLED
         [SerializeField]
-        private Button button;
-
-        [SerializeField] 
         private TMP_Text displayField;
 
         private Type selectableType;

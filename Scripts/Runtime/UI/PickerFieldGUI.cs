@@ -9,9 +9,6 @@ namespace BrunoMikoski.DebugTools.GUI
     internal sealed class PickerFieldGUI : DebuggableFieldGUIBase
     {
         [SerializeField]
-        private Button button;
-
-        [SerializeField] 
         private TMP_Text displayField;
 
         private Type selectableType;

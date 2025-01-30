@@ -28,5 +28,10 @@ namespace BrunoMikoski.DebugTools
         public string Hotkey  { get; set; }
         
         public bool CloseDebugPanelAfterExecution { get; set; }
+
+        /// <summary>
+        /// Validation method to be checked, if this method is enabled or not
+        /// </summary>
+        public string ValidateMethodEnabled { get; set; }
     }
 }
