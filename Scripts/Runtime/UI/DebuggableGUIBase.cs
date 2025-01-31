@@ -21,7 +21,7 @@ namespace BrunoMikoski.DebugTools.GUI
         [SerializeField]
         protected TMP_Text subTitle;
         [SerializeField]
-        protected Button button;
+        protected Selectable selectable;
 
         internal DebugPage DebugPage;
         
