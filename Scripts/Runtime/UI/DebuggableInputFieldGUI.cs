@@ -41,6 +41,7 @@ namespace BrunoMikoski.DebugTools.GUI
         {
             base.Initialize(targetDebuggableItem, targetDebugPage);
             inputField.onSubmit.AddListener(OnInputFieldSubmit);
+            inputField.onDeselect.AddListener(OnInputFieldSubmit);
             
             if(!IsEditable(debuggableField.FieldInfo.FieldType))
                 SetAsReadOnly();
@@ -55,6 +56,7 @@ namespace BrunoMikoski.DebugTools.GUI
         private void OnDestroy()
         {
             inputField.onSubmit.RemoveListener(OnInputFieldSubmit);
+            inputField.onDeselect.RemoveListener(OnInputFieldSubmit);
         }
         
         private void OnInputFieldSubmit(string newValue)
