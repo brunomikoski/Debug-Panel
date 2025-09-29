@@ -16,5 +16,7 @@ namespace BrunoMikoski.DebugTools
         /// Use this to display useful information about this class, this is also used for searching so you could add tags here to simplify search
         /// </summary>
         public string SubTitle  { get; set; }
+        
+        public string InstanceValidationMethodName { get; set; }
     }
 }

@@ -80,7 +80,7 @@ namespace BrunoMikoski.DebugTools
         private DebugPage activePageBeforeSearch;
         private DebugPage favoritesDebugPage;
         private DebugPage profilablesDebugPage;
-        private bool isVisible = true;
+        protected bool IsVisible = true;
         
         private static bool hasCachedInstance;
         private static DebugPanel cachedInstance;
@@ -123,14 +123,14 @@ namespace BrunoMikoski.DebugTools
                 DontDestroyOnLoad(this.gameObject);
         }
 
-        private IEnumerator Start()
+        protected virtual IEnumerator Start()
         {
             yield return null;
             if (activeLoadDebuggable)
                 ReloadDebuggables();
         }
         
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             backdropButton.onClick.RemoveListener(Hide);
             closeButton.onClick.RemoveListener(Hide);
@@ -204,7 +204,28 @@ namespace BrunoMikoski.DebugTools
             
             Instance.SetVisible(true);
         }
-        
+
+        public void Toggle()
+        {
+            if (!TryGetInstance())
+            {
+#if UNITY_EDITOR
+                Debug.LogWarning("DebugPanel is not available anywhere, make sure you add the prefab");
+#endif
+                return;
+            }
+            
+            if (Instance.IsVisible)
+            {
+                Hide();
+            }
+            else
+            {
+                Show();
+            }
+        }
+
+
         public static void ReloadDebuggables()
         {
             if (!TryGetInstance())
@@ -217,6 +238,7 @@ namespace BrunoMikoski.DebugTools
             
             Instance.ReloadDebuggablesInternal();
         }
+        
         
         private void OnScrollRectValueChanged(Vector2 normalizedPosition)
         {
@@ -286,18 +308,18 @@ namespace BrunoMikoski.DebugTools
 
         protected virtual void SetVisible(bool visible)
         {
-            if (visible == isVisible)
+            if (visible == IsVisible)
                 return;
 
-            bool wasVisible = isVisible;
+            bool wasVisible = IsVisible;
             
             root.gameObject.SetActive(visible);
             if (showOverlayWhenOpen)
                 backdrop.gameObject.SetActive(visible);
             
-            isVisible = visible;
+            IsVisible = visible;
 
-            if (!wasVisible && isVisible)
+            if (!wasVisible && IsVisible)
             {
                 if (!Mathf.Approximately(timescaleWhileOpen, 1))
                 {
@@ -307,7 +329,7 @@ namespace BrunoMikoski.DebugTools
                 
                 PrepareToDisplay();
             }
-            else if (wasVisible && !isVisible)
+            else if (wasVisible && !IsVisible)
             {
                 if (!Mathf.Approximately(timescaleWhileOpen, 1))
                     Time.timeScale = previousTimeScale;
@@ -400,6 +422,40 @@ namespace BrunoMikoski.DebugTools
                 {
                     Debug.LogError($"Object {debuggableMonoBehaviour} is registered as a Debuggable but doesn't contains the [DebuggableClass] attribute, ignoring it");
                     continue;
+                }
+
+                // If an instance validation method name is provided, invoke it and only proceed if it returns true
+                if (!string.IsNullOrEmpty(debuggableClassAttribute.InstanceValidationMethodName))
+                {
+                    string methodName = debuggableClassAttribute.InstanceValidationMethodName;
+                    MethodInfo validationMethod = debuggableMonoBehaviour.GetType().GetMethod(methodName,
+                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+                    if (validationMethod == null)
+                    {
+                        Debug.LogError($"[DebugPanel] Validation method '{methodName}' not found on {debuggableMonoBehaviour.GetType().FullName}. Skipping debuggable instance.");
+                        continue;
+                    }
+
+                    if (validationMethod.GetParameters().Length != 0 || validationMethod.ReturnType != typeof(bool))
+                    {
+                        Debug.LogError($"[DebugPanel] Validation method '{methodName}' on {debuggableMonoBehaviour.GetType().FullName} must be parameterless and return bool. Skipping debuggable instance.");
+                        continue;
+                    }
+
+                    bool isValid = false;
+                    try
+                    {
+                        isValid = (bool)validationMethod.Invoke(debuggableMonoBehaviour, null);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError($"[DebugPanel] Exception invoking validation method '{methodName}' on {debuggableMonoBehaviour.GetType().FullName}: {e}");
+                        continue;
+                    }
+
+                    if (!isValid)
+                        continue;
                 }
 
                 string pagePath = debuggableClassAttribute.Path;
@@ -706,7 +762,7 @@ namespace BrunoMikoski.DebugTools
             if (!triggerSettings.IsTriggered()) 
                 return;
             
-            if (!isVisible)
+            if (!IsVisible)
                 Show();
             else
                 Hide();
