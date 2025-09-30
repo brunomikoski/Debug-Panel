@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using BrunoMikoski.DebugTools.GUI;
 using TMPro;
@@ -328,12 +329,24 @@ namespace BrunoMikoski.DebugTools
                 }
                 
                 PrepareToDisplay();
+                OnAfterShown();
             }
             else if (wasVisible && !IsVisible)
             {
                 if (!Mathf.Approximately(timescaleWhileOpen, 1))
                     Time.timeScale = previousTimeScale;
+
+                OnAfterHidden();
             }
+        }
+
+        protected virtual void OnAfterHidden()
+        {
+            
+        }
+
+        protected virtual void OnAfterShown()
+        {
         }
 
         protected virtual void PrepareToDisplay()
@@ -387,6 +400,16 @@ namespace BrunoMikoski.DebugTools
             backButton.gameObject.SetActive(targetDebugPage.HasParentPage());
             StartCoroutine(WaitToUpdateScrollPositionEnumerator());
         }
+        
+        protected void TrySelectFirstItem()
+        {
+            DebuggableGUIBase firstItem = debugPanelGUI.DisplayingItems.FirstOrDefault();
+            if (firstItem != null)
+            {
+                firstItem.Select();
+            }
+        }
+
 
         private static void AddDynamicAction(DebuggableAction targetAction)
         {
@@ -797,5 +820,6 @@ namespace BrunoMikoski.DebugTools
                 Instance.favoritesDebugPage.RemoveItem(debuggableItem);
             }
         }
+
     }
 }

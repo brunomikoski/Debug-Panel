@@ -11,7 +11,7 @@ namespace BrunoMikoski.DebugTools.GUI
         [SerializeField] 
         private TMP_Text title;
 
-        private List<DebuggableGUIBase> displayingItems = new List<DebuggableGUIBase>();
+        public List<DebuggableGUIBase> DisplayingItems { get; private set; }  = new List<DebuggableGUIBase>();
 
         private DebugPage currentDebugPage;
 
@@ -19,7 +19,7 @@ namespace BrunoMikoski.DebugTools.GUI
 
         private DebuggableGUIBase[] templates;
 
-
+        
         private void Awake()
         {
             templates = GetComponentsInChildren<DebuggableGUIBase>(true);
@@ -84,7 +84,7 @@ namespace BrunoMikoski.DebugTools.GUI
             if (possibleDisplays.Count == 1)
             {
                 debuggableGUIBase = Instantiate(possibleDisplays[0], possibleDisplays[0].transform.parent);
-                displayingItems.Add(debuggableGUIBase);
+                DisplayingItems.Add(debuggableGUIBase);
                 return true;
             }
             if (possibleDisplays.Count > 1)
@@ -100,7 +100,7 @@ namespace BrunoMikoski.DebugTools.GUI
                                 continue;
                         
                             debuggableGUIBase = Instantiate(debuggableFieldGUI, debuggableFieldGUI.transform.parent);
-                            displayingItems.Add(debuggableGUIBase);
+                            DisplayingItems.Add(debuggableGUIBase);
                             return true;
                         }
                     }
@@ -113,17 +113,17 @@ namespace BrunoMikoski.DebugTools.GUI
 
         private void CleanUp()
         {
-            for (int i = 0; i < displayingItems.Count; i++)
-                Destroy(displayingItems[i].gameObject);
+            for (int i = 0; i < DisplayingItems.Count; i++)
+                Destroy(DisplayingItems[i].gameObject);
             
-            displayingItems.Clear();
+            DisplayingItems.Clear();
         }
 
         public void ShowOnlyMatches(string searchValue, DebugPage parentPage)
         {
-            for (int i = 0; i < displayingItems.Count; i++)
+            for (int i = 0; i < DisplayingItems.Count; i++)
             {
-                DebuggableGUIBase displayingItem = displayingItems[i];
+                DebuggableGUIBase displayingItem = DisplayingItems[i];
 
                 bool matchSearch = MatchSearch(parentPage, displayingItem, searchValue);
                 displayingItem.gameObject.SetActive(matchSearch);

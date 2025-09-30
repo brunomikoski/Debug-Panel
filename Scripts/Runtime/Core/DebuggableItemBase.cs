@@ -41,7 +41,7 @@ namespace BrunoMikoski.DebugTools
             this.path = path;
 
             string[] split = path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-            title = split[split.Length - 1];
+            title = split[^1].ToHumanReadableText();
         }
 
         protected DebuggableItemBase(string path, string subTitle) : this(path)

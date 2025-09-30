@@ -140,5 +140,13 @@ namespace BrunoMikoski.DebugTools.GUI
             subTitle.gameObject.SetActive(true);
             subTitle.text = targetSubtitle;
         }
+
+        public void Select()
+        {
+            if (selectable != null)
+            {
+                selectable.Select();
+            }
+        }
     }
 }

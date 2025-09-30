@@ -5,8 +5,7 @@ namespace BrunoMikoski.DebugTools
 {
     internal class DebuggableField : DebuggableItemBase
     {
-        private readonly FieldInfo fieldInfo;
-        public FieldInfo FieldInfo => fieldInfo;
+        public FieldInfo FieldInfo { get; }
 
         private object owner;
         public object Owner => owner;
@@ -22,7 +21,7 @@ namespace BrunoMikoski.DebugTools
         public DebuggableField(string path, FieldInfo fieldInfo, object owner, DebuggableClassAttribute classAttribute,
             DebuggableFieldAttribute fieldAttribute) : base(path)
         {
-            this.fieldInfo = fieldInfo;
+            this.FieldInfo = fieldInfo;
             this.owner = owner;
             this.classAttribute = classAttribute;
             this.fieldAttribute = fieldAttribute;
@@ -31,7 +30,7 @@ namespace BrunoMikoski.DebugTools
         public DebuggableField(string path, string subTitle, FieldInfo fieldInfo, object owner,
             DebuggableClassAttribute classAttribute, DebuggableFieldAttribute fieldAttribute) : base(path, subTitle)
         {
-            this.fieldInfo = fieldInfo;
+            this.FieldInfo = fieldInfo;
             this.owner = owner;
             this.classAttribute = classAttribute;
             this.fieldAttribute = fieldAttribute;
@@ -40,7 +39,7 @@ namespace BrunoMikoski.DebugTools
         public DebuggableField(string path, string subTitle, string spriteName, FieldInfo fieldInfo, object owner,
             DebuggableClassAttribute classAttribute, DebuggableFieldAttribute fieldAttribute) : base(path, subTitle)
         {
-            this.fieldInfo = fieldInfo;
+            this.FieldInfo = fieldInfo;
             this.owner = owner;
             this.classAttribute = classAttribute;
             this.fieldAttribute = fieldAttribute;
