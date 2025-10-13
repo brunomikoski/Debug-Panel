@@ -9,7 +9,7 @@ namespace BrunoMikoski.DebugTools
         [SerializeField]
         private string hotKey;
         
-        private readonly KeyCode[] keyCodes = new KeyCode[0];
+        private readonly KeyCode[] keyCodes = Array.Empty<KeyCode>();
         private readonly bool alt;
         private readonly bool shift;
         private readonly bool ctrl;
@@ -87,14 +87,14 @@ namespace BrunoMikoski.DebugTools
                 return false;
 
             if (IsAnyOfKeyCodesDown()
-                && (!alt || alt && (Input.GetKey(KeyCode.AltGr) || Input.GetKey(KeyCode.LeftAlt) ||
-                                    Input.GetKey(KeyCode.RightAlt)))
-                && (!shift || shift && (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
-                && (!ctrl || ctrl && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)
-                                                                        || Input.GetKey(KeyCode.LeftApple)
-                                                                        || Input.GetKey(KeyCode.RightApple)
-                                                                        || Input.GetKey(KeyCode.LeftCommand)
-                                                                        || Input.GetKey(KeyCode.RightCommand))))
+                && (!alt || alt && (InputCompat.GetKey(KeyCode.AltGr) || InputCompat.GetKey(KeyCode.LeftAlt) ||
+                                    InputCompat.GetKey(KeyCode.RightAlt)))
+                && (!shift || shift && (InputCompat.GetKey(KeyCode.LeftShift) || InputCompat.GetKey(KeyCode.RightShift)))
+                && (!ctrl || ctrl && (InputCompat.GetKey(KeyCode.LeftControl) || InputCompat.GetKey(KeyCode.RightControl)
+                                                                        || InputCompat.GetKey(KeyCode.LeftApple)
+                                                                        || InputCompat.GetKey(KeyCode.RightApple)
+                                                                        || InputCompat.GetKey(KeyCode.LeftCommand)
+                                                                        || InputCompat.GetKey(KeyCode.RightCommand))))
             {
                 return true;
             }
@@ -106,7 +106,7 @@ namespace BrunoMikoski.DebugTools
         {
             for (int i = 0; i < keyCodes.Length; i++)
             {
-                if (Input.GetKeyDown(keyCodes[i]))
+                if (InputCompat.GetKeyDown(keyCodes[i]))
                     return true;
             }
 

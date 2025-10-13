@@ -47,7 +47,7 @@ namespace BrunoMikoski.DebugTools
 
         private bool TouchBasedInputTriggered()
         {
-            if (Input.touchCount == fingerCount)
+            if (InputCompat.TouchCount() == fingerCount)
             {
                 touchHeldTime += Time.deltaTime;
                 if (touchHeldTime >= seconds)
