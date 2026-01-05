@@ -278,7 +278,23 @@ namespace BrunoMikoski.DebugTools
             previousSearchValue = searchValue;
         }
         
-        private void OnClickBack()
+        protected bool IsDisplayingChildPage()
+        {
+            if (pathToDebugPage.TryGetValue(currentDisplayedPagePath, out DebugPage currentPage))
+            {
+                if (currentPage.HasParentPage())
+                    return true;
+            }
+            else
+            {
+                if (currentDisplayedPage != null && currentDisplayedPage.HasParentPage())
+                    return true;
+            }
+            
+            return false;
+        }
+        
+        protected void OnClickBack()
         {
             if (pathToDebugPage.TryGetValue(currentDisplayedPagePath, out DebugPage currentPage))
             {
@@ -305,6 +321,7 @@ namespace BrunoMikoski.DebugTools
         {
             yield return null;
             scrollRect.verticalNormalizedPosition = currentDisplayedPage.LastScrollHeight;
+            TrySelectFirstItem();
         }
 
         protected virtual void SetVisible(bool visible)
@@ -403,7 +420,7 @@ namespace BrunoMikoski.DebugTools
         
         protected void TrySelectFirstItem()
         {
-            DebuggableGUIBase firstItem = debugPanelGUI.DisplayingItems.FirstOrDefault();
+            DebuggableGUIBase firstItem = debugPanelGUI.GetFirstVisibleItem();
             if (firstItem != null)
             {
                 firstItem.Select();
