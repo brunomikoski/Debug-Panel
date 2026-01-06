@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugTools.GUI
 {
@@ -158,5 +159,17 @@ namespace BrunoMikoski.DebugTools.GUI
             return false;
         }
         
+        public DebuggableGUIBase GetFirstVisibleItem()
+        {
+            foreach (DebuggableGUIBase item in DisplayingItems)
+            {
+                if (item != null && item.gameObject.activeSelf)
+                {
+                    return item;
+                }
+            }
+            
+            return null;
+        }
     }
 }

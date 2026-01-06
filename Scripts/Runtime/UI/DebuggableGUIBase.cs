@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace BrunoMikoski.DebugTools.GUI
 {
-    public abstract class DebuggableGUIBase : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
+    public abstract class DebuggableGUIBase : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, ISubmitHandler
     {
         private const int TIME_TO_FAVORITE = 2;
 
@@ -88,11 +88,17 @@ namespace BrunoMikoski.DebugTools.GUI
                 eventData.Use();
                 
         }
+        
         void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
         {
             if (eventData.used)
                 return;
             
+            OnClick();
+        }
+
+        public void OnSubmit(BaseEventData eventData)
+        {
             OnClick();
         }
 
