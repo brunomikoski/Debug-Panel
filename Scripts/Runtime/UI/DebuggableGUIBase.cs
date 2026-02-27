@@ -93,6 +93,14 @@ namespace BrunoMikoski.DebugTools.GUI
         {
             if (eventData.used)
                 return;
+
+            // Right-click toggles favorite on PC
+            if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                ToggleFavorite();
+                eventData.Use();
+                return;
+            }
             
             OnClick();
         }

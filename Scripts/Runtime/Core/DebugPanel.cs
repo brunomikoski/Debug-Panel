@@ -178,6 +178,18 @@ namespace BrunoMikoski.DebugTools
         {
             AddDynamicAction(new DebuggableAction(path, subTitle, targetAction));
         }
+
+        public static void RemoveAction(string path)
+        {
+            for (int i = 0; i < LIFE_TIME_DYNAMIC_ACTIONS.Count; i++)
+            {
+                DebuggableAction dynamicAction = LIFE_TIME_DYNAMIC_ACTIONS[i];
+                if (!dynamicAction.Path.Equals(path, StringComparison.Ordinal))
+                    continue;
+
+                LIFE_TIME_DYNAMIC_ACTIONS.Remove(dynamicAction);
+            }
+        }
         
         public static void Hide()
         {
@@ -321,7 +333,8 @@ namespace BrunoMikoski.DebugTools
         {
             yield return null;
             scrollRect.verticalNormalizedPosition = currentDisplayedPage.LastScrollHeight;
-            TrySelectFirstItem();
+            if (currentDisplayedPage != searchResultsPage)
+                TrySelectFirstItem();
         }
 
         protected virtual void SetVisible(bool visible)
@@ -543,7 +556,12 @@ namespace BrunoMikoski.DebugTools
             }
 
             for (int i = 0; i < LIFE_TIME_DYNAMIC_ACTIONS.Count; i++)
-                AddDebuggableToAppropriatedPath(LIFE_TIME_DYNAMIC_ACTIONS[i], null);
+            {
+                DebuggableAction dynamicAction = LIFE_TIME_DYNAMIC_ACTIONS[i];
+                AddDebuggableToAppropriatedPath(dynamicAction, null);
+                if (dynamicAction.IsFavorite)
+                    favoritesDebugPage.AddItem(dynamicAction);
+            }
         }
 
         private Sprite GetSpriteByName(string targetSpriteName)
