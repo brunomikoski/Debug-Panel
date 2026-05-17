@@ -148,7 +148,7 @@ namespace BrunoMikoski.DebugTools
             
 
 #if UNITY_6000_0_OR_NEWER
-            cachedInstance = FindFirstObjectByType<DebugPanel>();
+            cachedInstance = FindAnyObjectByType<DebugPanel>();
 #else
             cachedInstance = FindObjectOfType<DebugPanel>();
 #endif
@@ -790,7 +790,7 @@ namespace BrunoMikoski.DebugTools
             List<object> debuggableMonoBehaviours = new List<object>();
 
 #if UNITY_6000_0_OR_NEWER
-            MonoBehaviour[] behavioursInScene = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
+            MonoBehaviour[] behavioursInScene = FindObjectsByType<MonoBehaviour>();
 #else
             MonoBehaviour[] behavioursInScene = FindObjectsOfType<MonoBehaviour>();
 #endif
