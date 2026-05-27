@@ -643,8 +643,8 @@ namespace BrunoMikoski.DebugTools
 
                     string path = attribute.Path;
                     if (string.IsNullOrEmpty(path))
-                        path = $"{fieldInfo.Name}";
-                    
+                        path = GetDisplayNameForField(fieldInfo);
+
                     dynamicFields.Add(new DebuggableField(path, fieldInfo, debuggableMonoBehaviours, debuggableClassAttribute, attribute));
                 }
 
@@ -652,6 +652,20 @@ namespace BrunoMikoski.DebugTools
             }
 
             return dynamicFields;
+        }
+
+        private static string GetDisplayNameForField(FieldInfo fieldInfo)
+        {
+            string fieldName = fieldInfo.Name;
+
+            if (fieldName.Length > 0 && fieldName[0] == '<')
+            {
+                int closeIndex = fieldName.IndexOf('>');
+                if (closeIndex > 1)
+                    return fieldName.Substring(1, closeIndex - 1);
+            }
+
+            return fieldName;
         }
 
         private DebugPage GetOrCreatePageByPath(string pagePath, string subTitle = "", Sprite targetSprite = null, bool visible = true, int priority = 0)
