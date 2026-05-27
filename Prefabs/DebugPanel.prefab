@@ -103,6 +103,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -476,6 +477,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -720,6 +722,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -915,6 +918,7 @@ GameObject:
   - component: {fileID: 2027006383}
   - component: {fileID: 2027006382}
   - component: {fileID: 2027006381}
+  - component: {fileID: 396947484128767005}
   m_Layer: 5
   m_Name: PickerGUI
   m_TagString: Untagged
@@ -1089,6 +1093,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &396947484128767005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2027006379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25bc00a176c9ca148a2440ed2a2a50c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BrunoMikoski.DebugPanel::BrunoMikoski.DebugTools.GUI.ScrollToItemOnSelection
+  onlyOnGamepad: 0
+  deferOneFrame: 1
 --- !u!1 &60694879504012929
 GameObject:
   m_ObjectHideFlags: 0
@@ -1192,6 +1210,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1425,6 +1444,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1753,6 +1773,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1909,6 +1930,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2045,6 +2067,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2257,6 +2280,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -3210,6 +3234,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -3346,6 +3371,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -3482,6 +3508,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -3529,6 +3556,7 @@ GameObject:
   - component: {fileID: 2677705722408819548}
   - component: {fileID: 3923927797592594841}
   - component: {fileID: 3347333983278751660}
+  - component: {fileID: 2739849543440686869}
   m_Layer: 5
   m_Name: InputFieldGUI
   m_TagString: Untagged
@@ -3658,6 +3686,20 @@ MonoBehaviour:
   subTitle: {fileID: 3241279270732445193}
   selectable: {fileID: 4558242891957506189}
   inputField: {fileID: 4558242891957506189}
+--- !u!114 &2739849543440686869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057211149030422822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25bc00a176c9ca148a2440ed2a2a50c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BrunoMikoski.DebugPanel::BrunoMikoski.DebugTools.GUI.ScrollToItemOnSelection
+  onlyOnGamepad: 0
+  deferOneFrame: 1
 --- !u!1 &1146606161271325989
 GameObject:
   m_ObjectHideFlags: 0
@@ -3761,6 +3803,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -3922,6 +3965,7 @@ GameObject:
   - component: {fileID: 8631715613460007362}
   - component: {fileID: 8688570919159728831}
   - component: {fileID: 3296422289364813559}
+  - component: {fileID: 8222119808242158534}
   m_Layer: 5
   m_Name: ProfileMethodGUI
   m_TagString: Untagged
@@ -4077,6 +4121,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &8222119808242158534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1338234896898031499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25bc00a176c9ca148a2440ed2a2a50c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BrunoMikoski.DebugPanel::BrunoMikoski.DebugTools.GUI.ScrollToItemOnSelection
+  onlyOnGamepad: 0
+  deferOneFrame: 1
 --- !u!1 &1439058212506698399
 GameObject:
   m_ObjectHideFlags: 0
@@ -4334,6 +4392,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -5676,6 +5735,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -5813,6 +5873,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -6274,6 +6335,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -6410,6 +6472,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -6599,6 +6662,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -6755,6 +6819,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -7417,6 +7482,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -7485,6 +7551,7 @@ GameObject:
   - component: {fileID: 4171152847710189957}
   - component: {fileID: 413058302008874881}
   - component: {fileID: 300915101722755609}
+  - component: {fileID: 1752002286208630625}
   m_Layer: 5
   m_Name: MultiLineStringGUI
   m_TagString: Untagged
@@ -7633,6 +7700,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &1752002286208630625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4440983552371146791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25bc00a176c9ca148a2440ed2a2a50c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BrunoMikoski.DebugPanel::BrunoMikoski.DebugTools.GUI.ScrollToItemOnSelection
+  onlyOnGamepad: 0
+  deferOneFrame: 1
 --- !u!1 &4449267511147640988
 GameObject:
   m_ObjectHideFlags: 0
@@ -7737,6 +7818,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -8044,6 +8126,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -8201,6 +8284,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -8836,6 +8920,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -9791,6 +9876,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -10043,6 +10129,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -10091,6 +10178,7 @@ GameObject:
   - component: {fileID: 3735073699853430505}
   - component: {fileID: 4686145851199480083}
   - component: {fileID: 8077909038571594553}
+  - component: {fileID: 8854368573212297711}
   m_Layer: 5
   m_Name: PickerOptionCellGUI
   m_TagString: Untagged
@@ -10268,6 +10356,20 @@ MonoBehaviour:
   subTitle: {fileID: 8844550642135003722}
   selectable: {fileID: 8022170933605127214}
   toggle: {fileID: 8022170933605127214}
+--- !u!114 &8854368573212297711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5705500447046305829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25bc00a176c9ca148a2440ed2a2a50c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BrunoMikoski.DebugPanel::BrunoMikoski.DebugTools.GUI.ScrollToItemOnSelection
+  onlyOnGamepad: 0
+  deferOneFrame: 1
 --- !u!1 &5815267899500187442
 GameObject:
   m_ObjectHideFlags: 0
@@ -10526,6 +10628,7 @@ GameObject:
   - component: {fileID: 5881267215558507900}
   - component: {fileID: 6244611210422476650}
   - component: {fileID: 5922705081216314826}
+  - component: {fileID: 6021215535945375936}
   m_Layer: 5
   m_Name: ToggleCelGUI
   m_TagString: Untagged
@@ -10658,6 +10761,20 @@ MonoBehaviour:
   contents: {fileID: 6413458385472241314}
   contentsCanvasGroup: {fileID: 8468039000681518987}
   toggle: {fileID: 884815408310494266}
+--- !u!114 &6021215535945375936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5982977771338462159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25bc00a176c9ca148a2440ed2a2a50c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BrunoMikoski.DebugPanel::BrunoMikoski.DebugTools.GUI.ScrollToItemOnSelection
+  onlyOnGamepad: 0
+  deferOneFrame: 1
 --- !u!1 &6014862755966962213
 GameObject:
   m_ObjectHideFlags: 0
@@ -10762,6 +10879,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -10918,6 +11036,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -10966,6 +11085,7 @@ GameObject:
   - component: {fileID: 1932059159115928951}
   - component: {fileID: 9054413740616936904}
   - component: {fileID: 4090764347372692546}
+  - component: {fileID: 5707297167916458870}
   m_Layer: 5
   m_Name: SOCPickerOptionCellGUI
   m_TagString: Untagged
@@ -11143,6 +11263,20 @@ MonoBehaviour:
   subTitle: {fileID: 8684070735161806091}
   selectable: {fileID: 7345812066153488152}
   toggle: {fileID: 7345812066153488152}
+--- !u!114 &5707297167916458870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160679522519629961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25bc00a176c9ca148a2440ed2a2a50c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BrunoMikoski.DebugPanel::BrunoMikoski.DebugTools.GUI.ScrollToItemOnSelection
+  onlyOnGamepad: 0
+  deferOneFrame: 1
 --- !u!1 &6222543773815337512
 GameObject:
   m_ObjectHideFlags: 0
@@ -11475,6 +11609,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -11675,6 +11810,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -11811,6 +11947,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -12212,6 +12349,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -12348,6 +12486,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -12569,6 +12708,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -13071,6 +13211,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -13530,6 +13671,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -14493,6 +14635,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -14740,6 +14883,7 @@ GameObject:
   - component: {fileID: 7113176761926650134}
   - component: {fileID: 250140581435234602}
   - component: {fileID: 2090422568590232786}
+  - component: {fileID: 4347871220825085194}
   m_Layer: 5
   m_Name: SliderCellGUI
   m_TagString: Untagged
@@ -14844,6 +14988,20 @@ MonoBehaviour:
   selectable: {fileID: 8108551327316379037}
   inputField: {fileID: 6657528334304183711}
   slider: {fileID: 8108551327316379037}
+--- !u!114 &4347871220825085194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8108551328491487533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25bc00a176c9ca148a2440ed2a2a50c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BrunoMikoski.DebugPanel::BrunoMikoski.DebugTools.GUI.ScrollToItemOnSelection
+  onlyOnGamepad: 0
+  deferOneFrame: 1
 --- !u!1 &8108551328604343759
 GameObject:
   m_ObjectHideFlags: 0
@@ -15351,6 +15509,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -15850,6 +16009,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -16234,6 +16394,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -16282,6 +16443,7 @@ GameObject:
   - component: {fileID: 7576605771645281956}
   - component: {fileID: 8937455242012631313}
   - component: {fileID: 7308062564887563361}
+  - component: {fileID: 5450262737945832831}
   m_Layer: 5
   m_Name: SOCPickerGUI
   m_TagString: Untagged
@@ -16455,6 +16617,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5450262737945832831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8806033530538472643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25bc00a176c9ca148a2440ed2a2a50c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BrunoMikoski.DebugPanel::BrunoMikoski.DebugTools.GUI.ScrollToItemOnSelection
+  onlyOnGamepad: 0
+  deferOneFrame: 1
 --- !u!1 &8834546320771784614
 GameObject:
   m_ObjectHideFlags: 0
@@ -17015,6 +17191,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -17379,7 +17556,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8484565640725956560, guid: de6fb205fd5c87f45a209ed4bea4fbdc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1940348986661358741}
   m_SourcePrefab: {fileID: 100100000, guid: de6fb205fd5c87f45a209ed4bea4fbdc, type: 3}
 --- !u!224 &5192095010105731545 stripped
 RectTransform:
@@ -17402,12 +17582,31 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7423393607863528442, guid: de6fb205fd5c87f45a209ed4bea4fbdc, type: 3}
   m_PrefabInstance: {fileID: 1031098313}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 8484565641741846553}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &8484565641741846553 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8484565640725956560, guid: de6fb205fd5c87f45a209ed4bea4fbdc, type: 3}
+  m_PrefabInstance: {fileID: 1031098313}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1940348986661358741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8484565641741846553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25bc00a176c9ca148a2440ed2a2a50c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BrunoMikoski.DebugPanel::BrunoMikoski.DebugTools.GUI.ScrollToItemOnSelection
+  onlyOnGamepad: 0
+  deferOneFrame: 1
 --- !u!1001 &9141932413469499977
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17639,19 +17838,41 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3348935453614668362, guid: ae05fd03975a063489720beb52ae1886, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3540699079399237574}
   m_SourcePrefab: {fileID: 100100000, guid: ae05fd03975a063489720beb52ae1886, type: 3}
 --- !u!114 &4764085260931281961 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4378560234415789664, guid: ae05fd03975a063489720beb52ae1886, type: 3}
   m_PrefabInstance: {fileID: 9141932413469499977}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 5811723886191138819}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &5811723886191138819 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3348935453614668362, guid: ae05fd03975a063489720beb52ae1886, type: 3}
+  m_PrefabInstance: {fileID: 9141932413469499977}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3540699079399237574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5811723886191138819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25bc00a176c9ca148a2440ed2a2a50c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BrunoMikoski.DebugPanel::BrunoMikoski.DebugTools.GUI.ScrollToItemOnSelection
+  onlyOnGamepad: 0
+  deferOneFrame: 1
 --- !u!224 &7860568662988339651 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1425656005311994762, guid: ae05fd03975a063489720beb52ae1886, type: 3}
