@@ -252,6 +252,45 @@ namespace BrunoMikoski.DebugTools
             Instance.ReloadDebuggablesInternal();
         }
         
+        public static bool TryGetCommands(List<DebugCommandInfo> results)
+        {
+            results.Clear();
+            if (!TryGetInstance())
+                return false;
+
+            if (!Instance.IsVisible)
+                Instance.ReloadDebuggablesInternal();
+
+            for (int i = 0; i < Instance.activeDebuggableItems.Count; i++)
+            {
+                DebuggableItemBase item = Instance.activeDebuggableItems[i];
+                if (item is not DebuggableInvokableBase || item is ProfilableMethod)
+                    continue;
+
+                results.Add(new DebugCommandInfo(item.FullPath, item.Title, item.SubTitle));
+            }
+
+            return true;
+        }
+
+        public static bool TryInvokeCommand(string fullPath)
+        {
+            if (!TryGetInstance())
+                return false;
+
+            for (int i = 0; i < Instance.activeDebuggableItems.Count; i++)
+            {
+                DebuggableItemBase item = Instance.activeDebuggableItems[i];
+                if (item is not DebuggableInvokableBase invokable || item is ProfilableMethod)
+                    continue;
+
+                if (string.Equals(item.FullPath, fullPath, StringComparison.Ordinal))
+                    return invokable.Invoke();
+            }
+
+            return false;
+        }
+
         
         private void OnScrollRectValueChanged(Vector2 normalizedPosition)
         {
