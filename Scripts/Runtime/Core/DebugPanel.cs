@@ -68,6 +68,8 @@ namespace BrunoMikoski.DebugTools
         private bool keepAlive;
         [SerializeField, Tooltip("Try to load new Debuggables after each new scene is loaded")] 
         private bool activeLoadDebuggable;
+        [SerializeField, Tooltip("Debuggables and actions whose path starts with any of these are not loaded")]
+        private string[] excludedPaths;
 
         private Dictionary<string, DebugPage> pathToDebugPage = new Dictionary<string, DebugPage>(100);
         private List<object> debuggables = new List<object>(1000);
@@ -554,6 +556,9 @@ namespace BrunoMikoski.DebugTools
                 if (string.IsNullOrEmpty(pagePath))
                     pagePath = debuggableMonoBehaviour.GetType().Name;
 
+                if (IsPathExcluded(pagePath))
+                    continue;
+
                 DebugPage categoryPage = GetOrCreatePageByPath(pagePath, debuggableClassAttribute.SubTitle);
                 
                 List<DebuggableMethod> debuggableMethods =
@@ -597,10 +602,27 @@ namespace BrunoMikoski.DebugTools
             for (int i = 0; i < LIFE_TIME_DYNAMIC_ACTIONS.Count; i++)
             {
                 DebuggableAction dynamicAction = LIFE_TIME_DYNAMIC_ACTIONS[i];
+                if (IsPathExcluded(dynamicAction.Path))
+                    continue;
+
                 AddDebuggableToAppropriatedPath(dynamicAction, null);
                 if (dynamicAction.IsFavorite)
                     favoritesDebugPage.AddItem(dynamicAction);
             }
+        }
+
+        private bool IsPathExcluded(string path)
+        {
+            if (excludedPaths == null)
+                return false;
+
+            for (int i = 0; i < excludedPaths.Length; i++)
+            {
+                string excludedPath = excludedPaths[i];
+                if (!string.IsNullOrEmpty(excludedPath) && path.StartsWith(excludedPath, StringComparison.Ordinal))
+                    return true;
+            }
+            return false;
         }
 
         private Sprite GetSpriteByName(string targetSpriteName)
