@@ -153,6 +153,28 @@ You can define hotkeys for specific actions, following [Unity hotkey standard](h
 % (ctrl on Windows, cmd on macOS), # (shift), & (alt).
 ```
 
+## Organizing the panel
+A `Path` that starts with `/` is placed from the top of the panel instead of under the class page. This works on `[DebuggableMethod]`, `[DebuggableField]` and `DebugPanel.AddAction`, so one class can put entries in different pages. A class whose entries all start with `/` gets no page of its own.
+
+```c#
+[DebuggableClass]
+public sealed class SaveSystem : MonoBehaviour
+{
+    [DebuggableMethod(Path = "/Save Data/Delete Everything")]
+    private void DeleteEverything() { }
+
+    [DebuggableField(Path = "/Overlays/Save Indicator")]
+    private bool showSaveIndicator;
+}
+```
+
+`DebugPanel.AddRootPage(path, subTitle)` gives a top-level page a subtitle and a fixed place. Pages show in the order they were added, after Favorites and Profilables, and only once something is inside them.
+
+```c#
+DebugPanel.AddRootPage("/Cheats", "Designers, QA: jump the game to a state");
+DebugPanel.AddRootPage("/Save Data", "QA: wipe stored data");
+```
+
 
 # FAQ
 ### How does the Favorite Feature work?

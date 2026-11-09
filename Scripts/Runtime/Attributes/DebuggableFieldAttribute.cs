@@ -8,6 +8,7 @@ namespace BrunoMikoski.DebugTools
     {
         /// <summary>
         /// Used to define the Path to this object, you can create a full path using /
+        /// Start it with / to place it from the top of the panel instead of under the class page.
         /// <example>Path = "Level Design/Player Tweaks/Hero"</example>
         /// </summary>
         public string Path  { get; set; }

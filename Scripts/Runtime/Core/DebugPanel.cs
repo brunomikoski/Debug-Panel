@@ -16,8 +16,22 @@ namespace BrunoMikoski.DebugTools
     {
         private static List<object> LIFE_TIME_NON_MONOBEHAVIOUR = new List<object>(50);
         private static List<DebuggableAction> LIFE_TIME_DYNAMIC_ACTIONS = new List<DebuggableAction>(100);
+        private static Dictionary<string, RootPageSettings> LIFE_TIME_ROOT_PAGES = new Dictionary<string, RootPageSettings>(16);
         private const string DEFAULT_CATEGORY_NAME = "General";
-        
+        private const int FIRST_ROOT_PAGE_PRIORITY = -80;
+
+        private readonly struct RootPageSettings
+        {
+            public readonly string SubTitle;
+            public readonly int Priority;
+
+            public RootPageSettings(string subTitle, int priority)
+            {
+                SubTitle = subTitle;
+                Priority = priority;
+            }
+        }
+
         [Header("References")]
         [SerializeField]
         private DebugPanelGUI debugPanelGUI;
@@ -101,6 +115,7 @@ namespace BrunoMikoski.DebugTools
         {
             LIFE_TIME_NON_MONOBEHAVIOUR = new List<object>(50);
             LIFE_TIME_DYNAMIC_ACTIONS = new List<DebuggableAction>(100);
+            LIFE_TIME_ROOT_PAGES = new Dictionary<string, RootPageSettings>(16);
             hasCachedInstance = default;
             cachedInstance = null;
         }
@@ -190,7 +205,17 @@ namespace BrunoMikoski.DebugTools
                 LIFE_TIME_DYNAMIC_ACTIONS.Remove(dynamicAction);
             }
         }
-        
+
+        public static void AddRootPage(string path, string subTitle)
+        {
+            string pagePath = $"{DEFAULT_CATEGORY_NAME}/{path.Trim('/')}/";
+            if (LIFE_TIME_ROOT_PAGES.ContainsKey(pagePath))
+                return;
+
+            int priority = FIRST_ROOT_PAGE_PRIORITY + LIFE_TIME_ROOT_PAGES.Count;
+            LIFE_TIME_ROOT_PAGES.Add(pagePath, new RootPageSettings(subTitle, priority));
+        }
+
         public static void Hide()
         {
             if (!TryGetInstance())
@@ -515,10 +540,15 @@ namespace BrunoMikoski.DebugTools
                 if (string.IsNullOrEmpty(pagePath))
                     pagePath = debuggableMonoBehaviour.GetType().Name;
 
-                DebugPage categoryPage = GetOrCreatePageByPath(pagePath, debuggableClassAttribute.SubTitle);
-                
                 List<DebuggableMethod> debuggableMethods =
                     GetDebuggableMethodsFromObject(debuggableMonoBehaviour, debuggableClassAttribute);
+
+                List<DebuggableField> debuggableFields =
+                    GetDebuggableFieldsFromObject(debuggableMonoBehaviour, debuggableClassAttribute);
+
+                DebugPage categoryPage = null;
+                if (ContainsRelativePath(debuggableMethods) || ContainsRelativePath(debuggableFields))
+                    categoryPage = GetOrCreatePageByPath(pagePath, debuggableClassAttribute.SubTitle);
 
                 for (int j = 0; j < debuggableMethods.Count; j++)
                 {
@@ -527,9 +557,6 @@ namespace BrunoMikoski.DebugTools
                     if (debuggableMethod.IsFavorite)
                         favoritesDebugPage.AddItem(debuggableMethod);
                 }
-
-                List<DebuggableField> debuggableFields =
-                    GetDebuggableFieldsFromObject(debuggableMonoBehaviour, debuggableClassAttribute);
 
                 for (int j = 0; j < debuggableFields.Count; j++)
                 {
@@ -578,10 +605,30 @@ namespace BrunoMikoski.DebugTools
             return null;
         }
 
+        private static bool IsAbsolutePath(string path)
+        {
+            return path.StartsWith("/", StringComparison.Ordinal);
+        }
+
+        private static bool ContainsRelativePath(IReadOnlyList<DebuggableItemBase> debuggableItems)
+        {
+            for (int i = 0; i < debuggableItems.Count; i++)
+            {
+                if (!IsAbsolutePath(debuggableItems[i].Path))
+                    return true;
+            }
+
+            return false;
+        }
+
         private void AddDebuggableToAppropriatedPath(DebuggableItemBase targetDebuggableBase, DebugPage parentPage)
         {
+            bool isAbsolutePath = IsAbsolutePath(targetDebuggableBase.Path);
+            if (isAbsolutePath)
+                parentPage = null;
+
             DebugPage finalPage;
-            
+
             int lastIndexOfPath = targetDebuggableBase.Path.LastIndexOf("/", StringComparison.Ordinal);
             if (lastIndexOfPath == -1)
             {
@@ -611,7 +658,9 @@ namespace BrunoMikoski.DebugTools
             string fullPath = $"{finalPage.PagePath}{targetDebuggableBase.Path}".Replace("//", "/");
             if (targetDebuggableBase is DebuggableAction debuggableAction)
                 fullPath = $"{DEFAULT_CATEGORY_NAME}/{debuggableAction.Path}";
-            
+            if (isAbsolutePath)
+                fullPath = $"{DEFAULT_CATEGORY_NAME}{targetDebuggableBase.Path}";
+
             targetDebuggableBase.SetFinalFullPath(fullPath);
 
             if (finalPage.IsFavorite)
@@ -645,7 +694,7 @@ namespace BrunoMikoski.DebugTools
                     if (string.IsNullOrEmpty(path))
                         path = GetDisplayNameForField(fieldInfo);
 
-                    dynamicFields.Add(new DebuggableField(path, fieldInfo, debuggableMonoBehaviours, debuggableClassAttribute, attribute));
+                    dynamicFields.Add(new DebuggableField(path, attribute.SubTitle, fieldInfo, debuggableMonoBehaviours, debuggableClassAttribute, attribute));
                 }
 
                 type = type.BaseType;
@@ -688,7 +737,15 @@ namespace BrunoMikoski.DebugTools
 
                 if (!pathToDebugPage.TryGetValue(pageFinalPath, out DebugPage resultPage))
                 {
-                    resultPage = new DebugPage(pageFinalPath, folder, subTitle, targetSprite, priority);
+                    string pageSubTitle = subTitle;
+                    int pagePriority = priority;
+                    if (LIFE_TIME_ROOT_PAGES.TryGetValue(pageFinalPath, out RootPageSettings rootPageSettings))
+                    {
+                        pageSubTitle = rootPageSettings.SubTitle;
+                        pagePriority = rootPageSettings.Priority;
+                    }
+
+                    resultPage = new DebugPage(pageFinalPath, folder, pageSubTitle, targetSprite, pagePriority);
                     resultPage.SetVisibility(visible);
                     if (parentPage != null)
                         parentPage.AddChildPage(resultPage);
