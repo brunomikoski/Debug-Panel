@@ -35,17 +35,17 @@ namespace BrunoMikoski.DebugTools.GUI
 
         protected T GetValue<T>()
         {
-            TryExecuteBeforeGetValueMethod();
+            TryInvokeOwnerMethod(debuggableField.FieldAttribute.OnBeforeGetValueMethodName);
             object value = debuggableField.FieldInfo.GetValue(debuggableField.Owner);
             return (T)value;
         }
 
-        private void TryExecuteBeforeGetValueMethod()
+        private void TryInvokeOwnerMethod(string methodName)
         {
-            if (string.IsNullOrEmpty(debuggableField.FieldAttribute.OnBeforeGetValueMethodName))
+            if (string.IsNullOrEmpty(methodName))
                 return;
-            
-            debuggableField.Owner.GetType().GetMethod(debuggableField.FieldAttribute.OnBeforeGetValueMethodName,
+
+            debuggableField.Owner.GetType().GetMethod(methodName,
                     BindingFlags.Public
                     | BindingFlags.NonPublic
                     | BindingFlags.Instance
@@ -58,7 +58,7 @@ namespace BrunoMikoski.DebugTools.GUI
             try
             {
                 debuggableField.FieldInfo.SetValue(debuggableField.Owner, targetValue);
-                TryExecuteOnValueChangedMethod();
+                TryInvokeOwnerMethod(debuggableField.FieldAttribute.OnAfterSetValueMethodName);
                 return true;
             }
             catch (Exception e)
@@ -66,19 +66,6 @@ namespace BrunoMikoski.DebugTools.GUI
                 Debug.LogException(e);
                 return false;
             }
-        }
-
-        private void TryExecuteOnValueChangedMethod()
-        {
-            if (string.IsNullOrEmpty(debuggableField.FieldAttribute.OnAfterSetValueMethodName)) 
-                return;
-
-            debuggableField.Owner.GetType().GetMethod(debuggableField.FieldAttribute.OnAfterSetValueMethodName,
-                    BindingFlags.Public
-                    | BindingFlags.NonPublic
-                    | BindingFlags.Instance
-                    | BindingFlags.DeclaredOnly)
-                ?.Invoke(debuggableField.Owner, null);
         }
 
         public abstract bool CanBeUsedForField(FieldInfo targetFieldInfo);
